@@ -1,0 +1,20 @@
+{
+    "KPackageStructure": "KWin/Script",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "rxappdev"
+            }
+        ],
+        "Name": "Mouse Tiler",
+        "Description": "Tile your windows with minimal effort",
+        "Icon": "preferences-desktop-virtual",
+        "Id": "mousetiler",
+        "Version": "0.0.1",
+        "License": "GPLv3",
+        "Website": "https://github.com/rxappdev/MouseTiler"
+    },
+    "X-Plasma-API": "declarativescript",
+    "X-Plasma-MainScript": "ui/main.qml",
+    "X-KDE-ConfigModule": "kwin/effects/configs/kcm_kwin4_genericscripted"
+}
