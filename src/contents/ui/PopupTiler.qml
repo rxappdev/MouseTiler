@@ -19,6 +19,11 @@ PlasmaCore.Dialog {
     property bool showAll: false
     property bool lastShowAll: false
     property var hint: null
+    property bool showPopupDropHint: false
+    property var popupDropHintX: 0
+    property var popupDropHintY: 0
+    property var popupDropHintWidth: 0
+    property var popupDropHintHeight: 0
 
     width: clientArea.width
     height: clientArea.height
@@ -35,6 +40,11 @@ PlasmaCore.Dialog {
         activeScreen = null;
         activeLayoutIndex = -1;
         activeTileIndex = -1;
+    }
+
+    function resetShowAll() {
+        showAll = false;
+        lastShowAll = false;
     }
 
     function screenChanged(forceUpdate = false) {
@@ -85,8 +95,69 @@ PlasmaCore.Dialog {
         showAll = !showAll;
     }
 
+    function updateAndShowPopupDropHint() {
+        if (root.config.showTargetTileHint) {
+            let special = layoutRepeater.model[activeLayoutIndex].special;
+            let geometry;
+            switch (special) {
+                case 'SPECIAL_FILL':
+                    if (root.currentMoveWindow != null) {
+                        geometry = root.getFillGeometry(root.currentMoveWindow, activeTileIndex == 0);
+                    }
+                    break;
+                case 'SPECIAL_SPLIT_VERTICAL':
+                    if (root.currentMoveWindow != null) {
+                        geometry = splitAndMoveSplitted(root.currentMoveWindow, true, activeTileIndex == 0, false);
+                    }
+                    break;
+                case 'SPECIAL_SPLIT_HORIZONTAL':
+                    if (root.currentMoveWindow != null) {
+                        geometry = splitAndMoveSplitted(root.currentMoveWindow, false, activeTileIndex == 0, false);
+                    }
+                    break;
+                default:
+                    let layout = layoutRepeater.model[activeLayoutIndex].tiles[activeTileIndex];
+                    popupDropHintX = clientArea.x + layout.x / 100 * clientArea.width;
+                    popupDropHintY = clientArea.y + layout.y / 100 * clientArea.height;
+                    popupDropHintWidth = layout.w / 100 * clientArea.width;
+                    popupDropHintHeight = layout.h / 100 * clientArea.height;
+                    showPopupDropHint = true;
+                    break;
+            }
+            if (geometry != null) {
+                popupDropHintX = geometry.x;
+                popupDropHintY = geometry.y;
+                popupDropHintWidth = geometry.width;
+                popupDropHintHeight = geometry.height;
+                showPopupDropHint = true;
+            }
+        }
+    }
+
     Item {
         anchors.fill: parent
+
+        Rectangle {
+            id: popupDropHint
+            anchors.left: parent.left
+            anchors.leftMargin: popupDropHintX
+            anchors.top: parent.top
+            anchors.topMargin: popupDropHintY
+            width: popupDropHintWidth
+            height: popupDropHintHeight
+            border.color: "#0099FF"
+            border.width: 2
+            color: "transparent"
+            radius: 12
+            visible: showPopupDropHint
+
+            Rectangle {
+                anchors.fill: parent
+                color: "#0099FF"
+                radius: 12
+                opacity: 0.35
+            }
+        }
 
         Rectangle {
             id: layouts
@@ -254,9 +325,16 @@ PlasmaCore.Dialog {
                 if (layoutIndex != activeLayoutIndex || tileIndex != activeTileIndex) {
                     activeLayoutIndex = layoutIndex;
                     activeTileIndex = tileIndex;
-                    if (activeLayoutIndex >= 0 && activeTileIndex >= 0 && layoutRepeater.model[activeLayoutIndex].tiles[activeTileIndex].hint) {
-                        hint = layoutRepeater.model[activeLayoutIndex].tiles[activeTileIndex].hint;
+
+                    if (activeLayoutIndex >= 0 && activeTileIndex >= 0) {
+                        updateAndShowPopupDropHint();
+                        if (layoutRepeater.model[activeLayoutIndex].tiles[activeTileIndex].hint) {
+                            hint = layoutRepeater.model[activeLayoutIndex].tiles[activeTileIndex].hint;
+                        } else {
+                            hint = null;
+                        }
                     } else {
+                        showPopupDropHint = false;
                         hint = null;
                     }
                 }

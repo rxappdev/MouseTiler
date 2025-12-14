@@ -20,6 +20,7 @@ Item {
     property bool moved: false
     property bool usePopupTiler: false
     property var currentTiler: popupTiler
+    property var currentMoveWindow: null
 
     function log(string) {
         if (!debugLogs) return;
@@ -95,10 +96,21 @@ SPECIAL_FILL-Fill
 
         config = {
             // user settings
+            usePopupTilerByDefault: KWin.readConfig("defaultTiler", 0) == 0,
+            startHidden: KWin.readConfig("startHidden", false),
+            rememberTiler: KWin.readConfig("rememberTiler", false),
             overlay: convertOverlayLayout(KWin.readConfig("overlayLayout", defaultOverlayLayout), defaultOverlayLayout),
+            rememberAllLayouts: KWin.readConfig("rememberAllLayouts", false),
+            showTargetTileHint: KWin.readConfig("showTargetTileHint", true),
             layouts: convertLayouts(KWin.readConfig("popupLayout", defaultPopupLayouts), defaultPopupLayouts),
             allLayouts: convertLayouts(KWin.readConfig("allPopupLayouts", defaultAllLayouts), defaultAllLayouts)
         };
+
+        setDefaultTiler();
+    }
+
+    function setDefaultTiler() {
+        currentTiler = config.usePopupTilerByDefault ? popupTiler : overlayTiler;
     }
 
     function convertOverlayLayout(userLayout, defaultLayout) {
@@ -271,6 +283,7 @@ SPECIAL_FILL-Fill
         function onInteractiveMoveResizeStarted() {
             if (client.move) {
                 moving = true;
+                currentMoveWindow = client;
                 showTiler();
             }
         }
@@ -312,13 +325,17 @@ SPECIAL_FILL-Fill
                     }
                 }
                 hideTiler();
+                if (!config.rememberTiler) {
+                    setDefaultTiler();
+                }
             }
             moving = false;
             moved = false;
+            currentMoveWindow = null;
         }
     }
 
-    function splitAndMoveSplitted(client, vertical, leftOrTop) {
+    function splitAndMoveSplitted(client, vertical, leftOrTop, moveSplitted = true) {
         var largestIndex = -1;
         var largestArea = -1;
 
@@ -341,7 +358,9 @@ SPECIAL_FILL-Fill
             let geometryFirst = vertical ? Qt.rect(window.x, window.y, window.width, window.height / 2) : Qt.rect(window.x, window.y, window.width / 2, window.height);
             let geometrySecond = vertical ? Qt.rect(window.x, window.y + window.height / 2, window.width, window.height / 2) : Qt.rect(window.x + window.width / 2, window.y, window.width / 2, window.height);
 
-            moveAndResizeWindow(window, leftOrTop ? geometrySecond : geometryFirst);
+            if (moveSplitted) {
+                moveAndResizeWindow(window, leftOrTop ? geometrySecond : geometryFirst);
+            }
 
             return leftOrTop ? geometryFirst : geometrySecond;
         }
@@ -539,7 +558,7 @@ SPECIAL_FILL-Fill
                 if (currentTiler.visible) {
                     hideTiler();
                 } else {
-                    showTiler();
+                    showTiler(true);
                 }
             }
         }
@@ -553,10 +572,15 @@ SPECIAL_FILL-Fill
         return false;
     }
 
-    function showTiler() {
-        currentTiler.reset();
-        currentTiler.visible = true;
-        currentTiler.screenChanged();
+    function showTiler(force = false) {
+        if (!config.startHidden || force) {
+            currentTiler.reset();
+            if (!config.rememberAllLayouts && currentTiler == popupTiler) {
+                currentTiler.resetShowAll();
+            }
+            currentTiler.visible = true;
+            currentTiler.screenChanged();
+        }
     }
 
     ShortcutHandler {
@@ -572,7 +596,7 @@ SPECIAL_FILL-Fill
                 currentTiler = popupTiler;
             }
             if (wasVisible) {
-                showTiler();
+                showTiler(true);
             }
         }
     }

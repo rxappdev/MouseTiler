@@ -49,6 +49,7 @@ Allows you to tile your windows with minimum effort by moving the mouse just a f
 * Two mouse tiling modes - Grid and Overlay (use one or both)
 * Manual text configuration of the modes
 * Multi-monitor support
+* v0.0.3 - Preview of where the tile will end up
 
 ![](./assets/popup_tiler.png)<br>
 **Grid Tiler Default**
@@ -61,12 +62,17 @@ Allows you to tile your windows with minimum effort by moving the mouse just a f
 
 ### <p id="features_planned"></p>Planned for v1.0.0 (and beyond)
 
-* Preview of where the tile will end up
 * GUI configuration
     * Default layout suggestions based on screen ratio (such as 16:9, 32:9, 4:3 - not sure which ones will be implemented yet)
 * Define better default script colors - currently they are more or less just hex values I randomly typed towards blueish theme
 * Use current theme colors instead (with option to use the default script colors - per user choice)
 * Implement all the settings (and more) currently disabled in the configuration dialog
+
+### Feature requests to investigate
+
+* Option to enable automatic tiling
+* Add additional titlebar button ? - System Settings > Colours & Themes > Window Decorations > ... > Configure Titlebar Buttons...
+* Hide overlay/popup grid if mouse has not moved for X time
 
 ## <p id="how"></p>How it works
 
