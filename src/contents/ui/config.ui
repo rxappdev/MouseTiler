@@ -131,7 +131,7 @@
           <item>
            <widget class="QCheckBox" name="kcfg_restoreSize">
             <property name="text">
-             <string>Restore previous window size when starting to move a window</string>
+             <string>Restore previous window size when starting to move a window.</string>
             </property>
            </widget>
           </item>
@@ -341,7 +341,7 @@
           <item>
            <widget class="QLabel" name="label_29">
             <property name="text">
-             <string>Additional margin around the Overlay. Increase this in case you use edge snapping.</string>
+             <string>Margin around the Overlay. Increase this in case you use edge snapping and want to leave a gap to allow it to work.</string>
             </property>
            </widget>
           </item>

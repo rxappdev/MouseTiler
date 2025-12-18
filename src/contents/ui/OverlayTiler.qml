@@ -6,8 +6,7 @@ PlasmaCore.Dialog {
     id: overlayTiler
 
     property var activeScreen: null
-    property var clientArea: {}
-    property var config
+    property var clientArea: ({width: 0, height: 0, x: 0, y: 0})
     property var tilePadding: 2
     property int activeIndex: -1
     property int spanFromIndex: -1
@@ -34,9 +33,9 @@ PlasmaCore.Dialog {
         updateSpan();
     }
 
-    function screenChanged() {
+    function updateScreen() {
         if (activeScreen != Workspace.activeScreen) {
-            root.logE('screenChanged ' + Workspace.virtualScreenSize);
+            root.logE('updateScreen ' + Workspace.virtualScreenSize);
             reset();
             activeScreen = Workspace.activeScreen;
             clientArea = Workspace.clientArea(KWin.FullScreenArea, activeScreen, Workspace.currentDesktop);
@@ -96,6 +95,10 @@ PlasmaCore.Dialog {
         id: tiles
         anchors.fill: parent
 
+        Colors {
+            id: colors
+        }
+
         Repeater {
             id: tileRepeater
             model: root.config.overlay
@@ -115,7 +118,7 @@ PlasmaCore.Dialog {
                 Rectangle {
                     anchors.fill: parent
                     anchors.margins: tilePadding
-                    border.color: tileBorderColor
+                    border.color: colors.tileBorderColor
                     border.width: 2
                     color: "transparent"
                     radius: 12
@@ -123,12 +126,12 @@ PlasmaCore.Dialog {
                     Rectangle {
                         anchors.fill: parent
                         radius: 12
-                        color: active || spanned ? tileBackgroundColorActive : tileBackgroundColor
+                        color: active || spanned ? colors.tileBackgroundColorActive : colors.tileBackgroundColor
                     }
 
                     Text {
                         anchors.centerIn: parent
-                        color: overlayTextColor
+                        color: colors.overlayTextColor
                         textFormat: Text.StyledText
                         text: spannedFrom ? "Stop spanning (<b>Ctrl+Space</b> by default)<br>Toggle visibility (<b>Meta+Space</b> by default)<br><br>Switch mode (<b>Ctrl+Meta+Space</b> by default)" : "Span from this tile (<b>Ctrl+Space</b> by default)<br>Toggle visibility (<b>Meta+Space</b> by default)<br><br>Switch mode (<b>Ctrl+Meta+Space</b> by default)"
                         font.pixelSize: 16
@@ -145,7 +148,7 @@ PlasmaCore.Dialog {
             repeat: true
             running: overlayTiler.visible
             onTriggered: {
-                screenChanged();
+                updateScreen();
 
                 let localCursorPos = Workspace.activeScreen.mapFromGlobal(Workspace.cursorPos);
                 let x = localCursorPos.x - root.config.overlayScreenEdgeMargin;

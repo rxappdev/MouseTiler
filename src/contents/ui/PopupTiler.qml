@@ -7,8 +7,7 @@ PlasmaCore.Dialog {
     id: popupTiler
 
     property var activeScreen: null
-    property var clientArea: {}
-    property var config
+    property var clientArea: ({width: 0, height: 0, x: 0, y: 0})
     property int tilePadding: 2
     property int borderOffset: 2
     property int activeLayoutIndex: -1
@@ -47,9 +46,9 @@ PlasmaCore.Dialog {
         lastShowAll = false;
     }
 
-    function screenChanged(forceUpdate = false) {
+    function updateScreen(forceUpdate = false) {
         if (forceUpdate || activeScreen != Workspace.activeScreen) {
-            root.logE('screenChanged ' + Workspace.virtualScreenSize);
+            root.logE('updateScreen ' + Workspace.virtualScreenSize);
             activeScreen = Workspace.activeScreen;
             clientArea = Workspace.clientArea(KWin.FullScreenArea, Workspace.activeScreen, Workspace.currentDesktop);
 
@@ -139,6 +138,10 @@ PlasmaCore.Dialog {
     Item {
         anchors.fill: parent
 
+        Colors {
+            id: colors
+        }
+
         Rectangle {
             id: popupDropHint
             anchors.left: parent.left
@@ -147,7 +150,7 @@ PlasmaCore.Dialog {
             anchors.topMargin: popupDropHintY
             width: popupDropHintWidth
             height: popupDropHintHeight
-            border.color: tileBorderColor
+            border.color: colors.tileBorderColor
             border.width: 2
             color: "transparent"
             radius: 12
@@ -155,7 +158,7 @@ PlasmaCore.Dialog {
 
             Rectangle {
                 anchors.fill: parent
-                color: hintBackgroundColor
+                color: colors.hintBackgroundColor
                 radius: 12
             }
         }
@@ -164,8 +167,8 @@ PlasmaCore.Dialog {
             id: layouts
             width: layoutGrid.implicitWidth + layoutGrid.columnSpacing * 2
             height: layoutGrid.implicitHeight + layoutGrid.rowSpacing * 2
-            color: backgroundColor
-            border.color: borderColor
+            color: colors.backgroundColor
+            border.color: colors.borderColor
             border.width: 1
             radius: 8
 
@@ -193,7 +196,7 @@ PlasmaCore.Dialog {
                         width: root.config.gridWidth
                         height: root.config.gridHeight
                         color: "transparent"
-                        border.color: borderColor
+                        border.color: colors.borderColor
                         border.width: 1
                         radius: 8
 
@@ -217,7 +220,7 @@ PlasmaCore.Dialog {
                                 Rectangle {
                                     anchors.fill: parent
                                     anchors.margins: tilePadding
-                                    border.color: tileBorderColor
+                                    border.color: colors.tileBorderColor
                                     border.width: 1
                                     // color: "#152030"
                                     color: "transparent"
@@ -226,19 +229,19 @@ PlasmaCore.Dialog {
 
                                     Rectangle {
                                         anchors.fill: parent
-                                        color: layoutActive && tileActive ? tileBackgroundColorActive : tileBackgroundColor
+                                        color: layoutActive && tileActive ? colors.tileBackgroundColorActive : colors.tileBackgroundColor
                                         radius: 6
                                     }
 
                                     Text {
                                         anchors.centerIn: parent
-                                        color: textColor
+                                        color: colors.textColor
                                         textFormat: Text.StyledText
                                         text: modelData.t && modelData.t.length > 0 ? modelData.t : ""
                                         font.pixelSize: 14
                                         font.family: "Hack"
                                         horizontalAlignment: Text.AlignHCenter
-                                        visible: modelData.t
+                                        visible: modelData.t ? modelData.t : false
                                     }
                                 }
                             }
@@ -252,8 +255,8 @@ PlasmaCore.Dialog {
             id: popupHint
             width: layoutGrid.implicitWidth + layoutGrid.columnSpacing * 2
             height: popupHintText.implicitHeight + layoutGrid.rowSpacing * 2
-            color: backgroundColor
-            border.color: borderColor
+            color: colors.backgroundColor
+            border.color: colors.borderColor
             border.width: 1
             radius: 8
 
@@ -266,7 +269,7 @@ PlasmaCore.Dialog {
                 id: popupHintText
                 width: parent.width - 4
                 anchors.centerIn: parent
-                color: textColor
+                color: colors.textColor
                 textFormat: Text.StyledText
                 text: hint != null ? hint : showAll ? "Show default (<b>Ctrl+Space</b>) Visibility (<b>Meta+Space</b>) Mode (<b>Ctrl+Meta+Space</b>)" : "Show all (<b>Ctrl+Space</b>) Visibility (<b>Meta+Space</b>) Mode (<b>Ctrl+Meta+Space</b>)"
                 font.pixelSize: 12
@@ -290,7 +293,7 @@ PlasmaCore.Dialog {
                         lastShowAll = false;
                     }
                 }
-                screenChanged(forceUpdate);
+                updateScreen(forceUpdate);
 
                 let x = Workspace.cursorPos.x;
                 let y = Workspace.cursorPos.y;
