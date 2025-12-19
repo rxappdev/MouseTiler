@@ -87,7 +87,7 @@ SPECIAL_SPLIT_HORIZONTAL-Horizontal Split
         const defaultPopupLayouts = `1x1
 2x1
 3x1
-1x2
+SPECIAL_SPLIT_HORIZONTAL-Horizontal Split
 0,0,75,100+25,0,75,100+25,0,50,100-75 50 75 (%)
 4x1
 2x2
@@ -102,6 +102,8 @@ SPECIAL_FILL-Fill
             restoreSize: KWin.readConfig("restoreSize", false),
             theme: KWin.readConfig("theme", 0),
             edgeMargin: KWin.readConfig("tileMargin", 0),
+            autoHide: KWin.readConfig("autoHide", false),
+            autoHideTime: KWin.readConfig("autoHideTime", 650),
             overlay: convertOverlayLayout(KWin.readConfig("overlayLayout", defaultOverlayLayout), defaultOverlayLayout),
             overlayScreenEdgeMargin: KWin.readConfig("overlayScreenEdgeMargin", 0),
             overlayPollingRate: KWin.readConfig("overlayPollingRate", 100),
@@ -303,6 +305,9 @@ SPECIAL_FILL-Fill
                 moving = true;
                 currentMoveWindow = client;
                 showTiler();
+                if (config.autoHide) {
+                    autoHideTimer.startAutoHideTimer();
+                }
             } else if (client.resize && client.mt_originalSize) {
                 delete client.mt_originalSize;
             }
@@ -311,6 +316,9 @@ SPECIAL_FILL-Fill
         function onInteractiveMoveResizeStepped() {
             if (moving && !moved) {
                 moved = true;
+                if (currentTiler.visible) {
+                    autoHideTimer.stopAutoHideTimer();
+                }
             }
         }
 
@@ -518,6 +526,43 @@ SPECIAL_FILL-Fill
             }
         } else {
             window.frameGeometry = Qt.rect(geometry.x, geometry.y, window.width, window.height);
+        }
+    }
+
+    Timer {
+        id: autoHideTimer
+
+        property var timerIsRunning: false
+
+        function startAutoHideTimer() {
+            if (!timerIsRunning) {
+                autoHideTimer.interval = config.autoHideTime;
+                autoHideTimer.repeat = false;
+                autoHideTimer.triggered.connect(onTimeoutTriggered);
+                timerIsRunning = true;
+
+                autoHideTimer.start();
+            }
+        }
+
+        function stopAutoHideTimer() {
+            if (timerIsRunning) {
+                autoHideTimer.triggered.disconnect(onTimeoutTriggered);
+                timerIsRunning = false;
+                autoHideTimer.stop();
+            }
+        }
+
+        function onTimeoutTriggered() {
+            log('Auto-hiding tiler');
+            autoHideTimer.triggered.disconnect(onTimeoutTriggered);
+            timerIsRunning = false;
+            autoHideTimer.stop();
+
+            hideTiler();
+            if (!config.rememberTiler) {
+                setDefaultTiler();
+            }
         }
     }
 

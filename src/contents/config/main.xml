@@ -20,6 +20,12 @@
         <entry name="tileMargin" type="Int">
             <default>0</default>
         </entry>
+        <entry name="autoHide" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="autoHideTime" type="Int">
+            <default>650</default>
+        </entry>
         <entry name="overlayLayout" type="String">
             <default>4x2</default>
         </entry>
@@ -54,7 +60,7 @@
             <default>1x1
 2x1
 3x1
-1x2
+SPECIAL_SPLIT_HORIZONTAL-Horizontal Split
 0,0,75,100+25,0,75,100+25,0,50,100-75 50 75 (%)
 4x1
 2x2

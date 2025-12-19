@@ -162,6 +162,7 @@ PlasmaCore.Dialog {
                         break;
                     }
                 }
+
                 if (index != activeIndex) {
                     activeIndex = index;
                     updateSpan();

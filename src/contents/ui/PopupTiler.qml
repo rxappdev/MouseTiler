@@ -116,16 +116,16 @@ PlasmaCore.Dialog {
                     break;
                 default:
                     let layout = layoutRepeater.model[activeLayoutIndex].tiles[activeTileIndex];
-                    popupDropHintX = clientArea.x + layout.x / 100 * clientArea.width;
-                    popupDropHintY = clientArea.y + layout.y / 100 * clientArea.height;
+                    popupDropHintX = layout.x / 100 * clientArea.width;
+                    popupDropHintY = layout.y / 100 * clientArea.height;
                     popupDropHintWidth = layout.w / 100 * clientArea.width;
                     popupDropHintHeight = layout.h / 100 * clientArea.height;
                     showPopupDropHint = true;
                     return; // Force return to avoid hiding popup
             }
             if (geometry != null) {
-                popupDropHintX = geometry.x;
-                popupDropHintY = geometry.y;
+                popupDropHintX = geometry.x - clientArea.x;
+                popupDropHintY = geometry.y - clientArea.y;
                 popupDropHintWidth = geometry.width;
                 popupDropHintHeight = geometry.height;
                 showPopupDropHint = true;
