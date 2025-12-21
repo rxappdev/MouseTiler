@@ -22,6 +22,7 @@ PlasmaCore.Dialog {
     property var popupDropHintY: 0
     property var popupDropHintWidth: 0
     property var popupDropHintHeight: 0
+    property bool sizeEstablished: false
 
     width: clientArea.width
     height: clientArea.height
@@ -329,6 +330,16 @@ PlasmaCore.Dialog {
                 font.family: "Hack"
                 horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.WordWrap
+            }
+        }
+
+        Timer {
+            interval: 1
+            repeat: false
+            running: popupTiler.visible && !sizeEstablished
+            onTriggered: {
+                sizeEstablished = true;
+                updateScreen(true);
             }
         }
 
