@@ -33,6 +33,11 @@ PlasmaCore.Dialog {
         updateSpan();
     }
 
+    function startAnimations() {
+        overlayTiler.opacity = 0;
+        showOverlayTilerAnimation.start();
+    }
+
     function updateScreen() {
         if (activeScreen != Workspace.activeScreen) {
             root.logE('updateScreen ' + Workspace.virtualScreenSize);
@@ -94,6 +99,27 @@ PlasmaCore.Dialog {
     Item {
         id: tiles
         anchors.fill: parent
+
+        SequentialAnimation {
+            id: showOverlayTilerAnimation
+            running: false
+
+            NumberAnimation {
+                target: overlayTiler;
+                property: "opacity";
+                from: 0;
+                to: 0;
+                duration: 15;
+            }
+
+            NumberAnimation {
+                target: overlayTiler;
+                property: "opacity";
+                from: 1;
+                to: 1;
+                duration: 1;
+            }
+        }
 
         Colors {
             id: colors

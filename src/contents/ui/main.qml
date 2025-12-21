@@ -308,7 +308,7 @@ SPECIAL_FILL-Fill
                 }
                 moving = true;
                 currentMoveWindow = client;
-                showTiler();
+                showTiler(true);
                 if (config.autoHide) {
                     autoHideTimer.startAutoHideTimer();
                 }
@@ -662,7 +662,7 @@ SPECIAL_FILL-Fill
                 if (currentTiler.visible) {
                     hideTiler();
                 } else {
-                    showTiler(true);
+                    showTiler(false, true);
                 }
             }
         }
@@ -676,7 +676,7 @@ SPECIAL_FILL-Fill
         return false;
     }
 
-    function showTiler(force = false) {
+    function showTiler(animate, force = false) {
         if (!config.startHidden || force) {
             currentTiler.reset();
             if (!config.rememberAllLayouts && currentTiler == popupTiler) {
@@ -684,6 +684,9 @@ SPECIAL_FILL-Fill
             }
             currentTiler.visible = true;
             currentTiler.updateScreen();
+            if (animate) {
+                currentTiler.startAnimations();
+            }
         }
     }
 
@@ -700,7 +703,7 @@ SPECIAL_FILL-Fill
                 currentTiler = popupTiler;
             }
             if (wasVisible) {
-                showTiler(true);
+                showTiler(false, true);
             }
         }
     }

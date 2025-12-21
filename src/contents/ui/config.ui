@@ -285,7 +285,7 @@
           <item>
            <widget class="QLabel" name="label_22">
             <property name="text">
-             <string>Auto-hide the tiler if the window has not been moved within the specified time. Click the window titlebar without moving the window for the tiler to hide.</string>
+             <string>Auto-hide the tiler if the window has not been moved within the specified time. Click the window titlebar without moving the window for the tiler to hide. A trick can be achieved by setting this to 5 - the tiler will only show when dragging a window (or worst case show for only 1 frame).</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -313,7 +313,7 @@
                <string> ms</string>
               </property>
               <property name="minimum">
-               <number>10</number>
+               <number>5</number>
               </property>
               <property name="maximum">
                <number>3000</number>
