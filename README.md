@@ -50,6 +50,9 @@ Allows you to tile your windows with minimum effort by moving the mouse just a f
 * Follow system theme or use one of pre-defined color themes
 * Highly customizable, from tile size to grid position (over 20 settings)
 
+![](./assets/info_animation_v3.gif)<br>
+**Feature Preview**
+
 ![](./assets/popup_tiler.png)<br>
 **Grid Tiler Default**
 
@@ -69,7 +72,7 @@ I might implement all/some of the features listed here in the future if the situ
 * GUI layout designer
 * GUI popup tiler configuration
 * GUI overlay tiler configuration
-* Default layout based on screen type (such as Standar - Wide - Ultra Wide - Tilted)
+* Default layout based on screen type (such as Standar - Wide - Ultra Wide - Rotated Standard - Rotated Wide - Rotated Ultra Wide)
 * Theme color selection with preview of how the tiler looks
 
 ### Feature requests to investigate

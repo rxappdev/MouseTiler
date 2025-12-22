@@ -772,7 +772,7 @@
                <string> px</string>
               </property>
               <property name="minimum">
-               <number>120</number>
+               <number>60</number>
               </property>
               <property name="maximum">
                <number>250</number>
@@ -800,7 +800,7 @@
                <number>60</number>
               </property>
               <property name="maximum">
-               <number>160</number>
+               <number>250</number>
               </property>
               <property name="singleStep">
                <number>5</number>
