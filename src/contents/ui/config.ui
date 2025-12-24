@@ -363,6 +363,22 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
+        <widget class="QGroupBox" name="groupBox_8">
+         <property name="title">
+          <string>General Settings</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_17">
+          <item>
+           <widget class="QCheckBox" name="kcfg_showOverlayTextHint">
+            <property name="text">
+             <string>Show keyboard shortcut text hint inside current tile.</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <widget class="QGroupBox" name="groupBox_overlayModeLayout">
          <property name="title">
           <string>Overlay Mode Layout</string>
@@ -529,7 +545,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_5">
          <property name="title">
-          <string>General settings</string>
+          <string>General Settings</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_13">
           <item>

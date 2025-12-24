@@ -108,6 +108,7 @@ SPECIAL_FILL-Fill
             edgeMargin: KWin.readConfig("tileMargin", 0),
             autoHide: KWin.readConfig("autoHide", false),
             autoHideTime: KWin.readConfig("autoHideTime", 650),
+            showOverlayTextHint: KWin.readConfig("showOverlayTextHint", true),
             overlay: convertOverlayLayout(KWin.readConfig("overlayLayout", defaultOverlayLayout), defaultOverlayLayout),
             overlayScreenEdgeMargin: KWin.readConfig("overlayScreenEdgeMargin", 0),
             overlayPollingRate: KWin.readConfig("overlayPollingRate", 100),

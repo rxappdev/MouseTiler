@@ -26,6 +26,9 @@
         <entry name="autoHideTime" type="Int">
             <default>650</default>
         </entry>
+        <entry name="showOverlayTextHint" type="Bool">
+            <default>true</default>
+        </entry>
         <entry name="overlayLayout" type="String">
             <default>4x2</default>
         </entry>

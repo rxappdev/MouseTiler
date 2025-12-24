@@ -163,7 +163,7 @@ PlasmaCore.Dialog {
                         font.pixelSize: 16
                         font.family: "Hack"
                         horizontalAlignment: Text.AlignHCenter
-                        visible: active && spanFromIndex == -1 || spannedFrom
+                        visible: root.config.showOverlayTextHint && (active && spanFromIndex == -1 || spannedFrom)
                     }
                 }
             }
