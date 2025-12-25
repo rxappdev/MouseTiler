@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0 http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
-    <kcfgfile name=""/>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0 http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+    <kcfgfile name="" />
     <group name="">
         <entry name="defaultTiler" type="Int">
             <default>0</default>
@@ -47,6 +49,12 @@
         <entry name="showTextHint" type="Bool">
             <default>true</default>
         </entry>
+        <!-- TODO: Ideally probably should figure out how to properly switch modes more cleanly.
+            Thinking of something like:
+            * Popup Grid always on mouse
+            * Popup Grid always at screen edges
+            * Popup Grid when hovering at screen edges
+         -->
         <entry name="popupGridAt" type="Int">
             <default>0</default>
         </entry>
