@@ -52,6 +52,132 @@ PlasmaCore.Dialog {
         showPopupTilerAnimation.start();
     }
 
+    // Sets the position of X to the left of the screen.
+    function setPositionXLeft() {
+        positionX = 0;
+    }
+
+    // Sets the position of X to the center of the screen.
+    function setPositionXCenter() {
+        positionX = clientArea.width / 2 - layouts.width / 2;
+    }
+
+    // Sets the position of X to the right of the screen.
+    function setPositionXRight() {
+        positionX = clientArea.width - layouts.width;
+    }
+
+    // Sets the position of Y to the top of the screen.
+    function setPositionYTop() {
+        positionX = 0;
+    }
+
+    // Sets the position of Y to the center of the screen.
+    function setPositionYCenter() {
+        positionX = clientArea.height / 2 - layouts.height / 2;
+    }
+
+    // Sets the position of Y to the bottom of the screen.
+    function setPositionYBottom() {
+        positionX = clientArea.height - layouts.height;
+    }
+
+    // Updates the Popup Grid position relative to the mouse.
+    function updatePositionsForPopupGridAtMouse() {
+        switch (root.config.horizontalAlignment) {
+            default:
+                positionX = localCursorPos.x - root.config.gridWidth / 2 - root.config.gridSpacing;
+                break;
+            case 1:
+                positionX = localCursorPos.x - layouts.width / 2;
+                break;
+            case 2:
+                positionX = localCursorPos.x - layouts.width + root.config.gridWidth / 2 + root.config.gridSpacing;
+                break;
+        }
+
+        switch (root.config.verticalAlignment) {
+            default:
+                positionY = localCursorPos.y - root.config.gridHeight / 2 - root.config.gridSpacing;
+                break;
+            case 1:
+                positionY = localCursorPos.y - layouts.height / 2;
+                break;
+            case 2:
+                positionY = localCursorPos.y - layouts.height + root.config.gridHeight / 2 + root.config.gridSpacing;
+                break;
+        }        
+    }
+
+    // Updates the Popup Grid position at the edge of the screen.
+    function updatePositionsForPopupGridAtEdge() {
+        switch (root.config.popupLocationTrigger) {
+            case root.locationTriggerTopId:
+                positionX = setPositionXCenter();
+                positionY = setPositionYTop();
+                break;
+            case root.locationTriggerLeftId:
+                positionX = setPositionXLeft();
+                positionY = setPositionYCenter();
+                break;
+            case root.locationTriggerRightId:
+                positionX = setPositionXRight();
+                positionY = setPositionYCenter();
+                break;
+            case root.locationTriggerBottomId:
+                positionX = setPositionXCenter();
+                positionY = setPositionYBottom();
+                break;
+            default:
+                break;
+        }
+    }
+
+    // Updates the Popup Grid position at a fixed place on the screen.
+    function updatePositionsForFixedScreenPosition() {
+        switch (root.config.horizontalAlignment) {
+            default:
+                positionX = 0;
+                break;
+            case 1:
+                positionX = clientArea.width / 2 - layouts.width / 2;
+                break;
+            case 2:
+                positionX = clientArea.width - layouts.width;
+                break;
+        }
+
+        switch (root.config.verticalAlignment) {
+            default:
+                positionY = 0;
+                break;
+            case 1:
+                positionY = clientArea.height / 2 - layouts.height / 2;
+                break;
+            case 2:
+                positionY = clientArea.height - layouts.height;
+                break;
+        }
+    }
+
+    // Clamps the position values of the grid.
+    function clampPositions() {
+        if (positionX < 0) {
+            positionX = 0;
+        } else if (positionX + layouts.width > popupTiler.width) {
+            positionX = popupTiler.width - layouts.width;
+        }
+
+        if (positionY < 0) {
+            positionY = 0;
+        } else if (root.config.showTextHint && positionY + layouts.height + popupHint.height + 2 > popupTiler.height) {
+            positionY = popupTiler.height - layouts.height - popupHint.height - 2;
+        } else if (!root.config.showTextHint && positionY + layouts.height > popupTiler.height) {
+            positionY = popupTiler.height - layouts.height;
+        }
+    }
+
+    // Updates the location of the grid depending on the mode selected.
     function updateScreen(forceUpdate = false) {
         if (forceUpdate || activeScreen != Workspace.activeScreen) {
             root.logE('updateScreen ' + Workspace.virtualScreenSize);
@@ -61,71 +187,14 @@ PlasmaCore.Dialog {
             let localCursorPos = Workspace.activeScreen.mapFromGlobal(Workspace.cursorPos);
 
             if (root.config.popupGridAtMouse) {
-                switch (root.config.horizontalAlignment) {
-                    default:
-                        positionX = localCursorPos.x - root.config.gridWidth / 2 - root.config.gridSpacing;
-                        break;
-                    case 1:
-                        positionX = localCursorPos.x - layouts.width / 2;
-                        break;
-                    case 2:
-                        positionX = localCursorPos.x - layouts.width + root.config.gridWidth / 2 + root.config.gridSpacing;
-                        break;
-                }
-
-                switch (root.config.verticalAlignment) {
-                    default:
-                        positionY = localCursorPos.y - root.config.gridHeight / 2 - root.config.gridSpacing;
-                        break;
-                    case 1:
-                        positionY = localCursorPos.y - layouts.height / 2;
-                        break;
-                    case 2:
-                        positionY = localCursorPos.y - layouts.height + root.config.gridHeight / 2 + root.config.gridSpacing;
-                        break;
-                }
+                updatePositionsForPopupGridAtMouse();
+            } else if (root.config.popupLocationTrigger != root.locationTriggerAnywhereId) {
+                updatePositionsForPopupGridAtEdge();
             } else {
-                switch (root.config.horizontalAlignment) {
-                    default:
-                        positionX = 0;
-                        break;
-                    case 1:
-                        positionX = clientArea.width / 2 - layouts.width / 2;
-                        break;
-                    case 2:
-                        positionX = clientArea.width - layouts.width;
-                        break;
-                }
-
-                switch (root.config.verticalAlignment) {
-                    default:
-                        positionY = 0;
-                        break;
-                    case 1:
-                        positionY = clientArea.height / 2 - layouts.height / 2;
-                        break;
-                    case 2:
-                        positionY = clientArea.height - layouts.height;
-                        break;
-                }
+                updatePositionsForFixedScreenPosition();
             }
 
-            // positionX = localCursorPos.x - layouts.width / 2;
-            // positionY = localCursorPos.y - (layouts.height + popupHint.height + 2) / 2;
-
-            if (positionX < 0) {
-                positionX = 0;
-            } else if (positionX + layouts.width > popupTiler.width) {
-                positionX = popupTiler.width - layouts.width;
-            }
-
-            if (positionY < 0) {
-                positionY = 0;
-            } else if (root.config.showTextHint && positionY + layouts.height + popupHint.height + 2 > popupTiler.height) {
-                positionY = popupTiler.height - layouts.height - popupHint.height - 2;
-            } else if (!root.config.showTextHint && positionY + layouts.height > popupTiler.height) {
-                positionY = popupTiler.height - layouts.height;
-            }
+            clampPositions()
         }
     }
 

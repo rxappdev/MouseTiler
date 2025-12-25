@@ -22,6 +22,13 @@ Item {
     property var currentTiler: popupTiler
     property var currentMoveWindow: null
 
+    // Likely a better way to program this dynamically but fine for now.
+    readonly property int locationTriggerAnywhereId: 0
+    readonly property int locationTriggerTopId: 1
+    readonly property int locationTriggerLeftId: 2
+    readonly property int locationTriggerRightId: 3
+    readonly property int locationTriggerBottomId: 4
+
     function log(string) {
         if (!debugLogs) return;
         console.warn('MouseTiler: ' + string);
@@ -116,6 +123,8 @@ SPECIAL_FILL-Fill
             showTargetTileHint: KWin.readConfig("showTargetTileHint", true),
             showTextHint: KWin.readConfig("showTextHint", true),
             popupGridAtMouse: KWin.readConfig("popupGridAt", 0) == 0,
+            popupLocationTrigger: KWin.readConfig("popupLocationTrigger", 0),
+            popupLocationTriggerLengthPercentage: KWin.readConfig("lengthPercentage", 25),
             horizontalAlignment: KWin.readConfig("horizontalAlignment", 1),
             verticalAlignment: KWin.readConfig("verticalAlignment", 1),
             gridColumns: KWin.readConfig("gridColumns", 3),
@@ -291,6 +300,7 @@ SPECIAL_FILL-Fill
 
     function addWindow(client) {
         if (!isValidWindow(client)) return;
+
         log('Adding window: ' + client.resourceClass);
 
         client.closed.connect(onClosed);
@@ -305,6 +315,36 @@ SPECIAL_FILL-Fill
             client.interactiveMoveResizeFinished.disconnect(onInteractiveMoveResizeFinished);
         }
 
+        // Checks if the mouse is within the threshold set by alignment and percentage.
+        function isWithinEdgeThreshold() {
+            // If trigger is set to "Anywhere" (0) or Popup Tiler is not active, return true
+            if (config.popupLocationTrigger == locationTriggerAnywhereId || currentTiler != popupTiler) return true;
+
+            let area = Workspace.clientArea(KWin.FullScreenArea, Workspace.activeScreen, Workspace.currentDesktop);
+            let cursor = Workspace.cursorPos;
+            let percentage = config.popupLocationTriggerLengthPercentage / 100;
+
+            // TODO: Change thresholds to allow an option where it only triggers for the area of the screen the pop-up grid takes on the edge?
+            switch (config.popupLocationTrigger) {
+                case locationTriggerTopId:
+                    let verticalThreshold = area.y + (area.height * percentage);
+                    return cursor.y <= verticalThreshold;
+                // TODO: Fix left and right triggers.
+                case locationTriggerLeftId:
+                    let leftThreshold = area.x + (area.width * percentage);
+                    return cursor.x <= leftThreshold;
+                case locationTriggerRightId:
+                    let rightThreshold = area.x + area.width - (area.width * percentage);
+                    return cursor.x >= rightThreshold;
+                case locationTriggerBottomId:
+                    let bottomThreshold = area.y + area.height - (area.height * percentage);
+                    return cursor.y >= bottomThreshold;
+                default:
+                    break;
+            }
+        }
+
+        // Checks if the tiler should show.
         function onInteractiveMoveResizeStarted() {
             if (client.move) {
                 if (config.restoreSize && client.mt_originalSize) {
@@ -313,7 +353,13 @@ SPECIAL_FILL-Fill
                 }
                 moving = true;
                 currentMoveWindow = client;
-                showTiler(true);
+                var shouldShow = true;
+                
+                // Check where the mouse is.
+                if (isWithinEdgeThreshold()) {
+                    showTiler(true);
+                }
+
                 if (config.autoHide) {
                     autoHideTimer.startAutoHideTimer();
                 }
@@ -322,7 +368,21 @@ SPECIAL_FILL-Fill
             }
         }
 
+        // Checks if the tiler should still be shown.
         function onInteractiveMoveResizeStepped() {
+            // Continuously check trigger condition while moving
+            if (moving && currentTiler == popupTiler && config.popupLocationTrigger == locationTriggerTopId) {
+                if (isWithinEdgeThreshold()) {
+                    if (!currentTiler.visible) {
+                        showTiler(true);
+                    }
+                } else {
+                    if (currentTiler.visible) {
+                        hideTiler();
+                    }
+                }
+            }
+
             if (moving && !moved) {
                 moved = true;
                 if (currentTiler.visible) {

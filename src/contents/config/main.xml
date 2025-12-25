@@ -50,6 +50,12 @@
         <entry name="popupGridAt" type="Int">
             <default>0</default>
         </entry>
+        <entry name="popupLocationTrigger" type="Int">
+            <default>0</default>
+        </entry>
+        <entry name="lengthPercentage" type="Int">
+            <default>25</default>
+        </entry>
         <entry name="horizontalAlignment" type="Int">
             <default>1</default>
         </entry>
