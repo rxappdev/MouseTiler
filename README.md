@@ -45,13 +45,13 @@ Allows you to tile your windows with minimum effort by moving the mouse just a f
 
 ## <p id="features"></p>Features
 
-* Two mouse tiling modes - Grid and Overlay (use one or both)
+* Two mouse tiling modes - Popup Grid and Overlay ( similar to FancyZones ) - you can use one or both
 * Manual text configuration of the modes
 * Multi-monitor support
 * Follow system theme or use one of pre-defined color themes
 * Highly customizable, from tile size to grid position (over 20 settings)
 
-![](./assets/info_animation_v3.gif)<br>
+![](./assets/info_animation_v4.gif)<br>
 **Feature Preview**
 
 ![](./assets/popup_tiler.png)<br>
