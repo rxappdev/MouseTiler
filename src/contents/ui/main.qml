@@ -184,9 +184,9 @@ SPECIAL_FILL-Fill
             if (sections[sectionIndex].startsWith('d') && !hasDefault) {
                 hasDefault = true;
             } else if (!hasLayout) {
-                let tiles = sections[sectionIndex].split('+');
-                if (tiles.length == 1 && tiles[0].trim().length > 0) {
-                    name = tiles[0].trim();
+                let tiles = sections[sectionIndex].replace(/\s+/g, '').split('+');
+                if (tiles.length == 1 && tiles[0].length > 0) {
+                    name = tiles[0];
                 }
                 for (let tileIndex = 0; tileIndex < tiles.length; tileIndex++) {
                     let coordinates = tiles[tileIndex].split(',');
@@ -200,15 +200,20 @@ SPECIAL_FILL-Fill
                                     isValid = true;
                                     break;
                                 case 'SPECIAL_SPLIT_VERTICAL':
-                                    layout.tiles.push({x: 0, y: 0, w: 100, h: 50, t: "SPLIT", hint: "Split largest tile and place on top"});
-                                    layout.tiles.push({x: 0, y: 50, w: 100, h: 50, t: "SPLIT", d: false, hint: "Split largest tile and place on bottom"});
+                                    layout.tiles.push({x: 0, y: 0, w: 100, h: 50, t: "SPLIT", hint: "Split largest window and place on top"});
+                                    layout.tiles.push({x: 0, y: 50, w: 100, h: 50, t: "SPLIT", d: false, hint: "Split largest window and place on bottom"});
                                     layout.special = 'SPECIAL_SPLIT_VERTICAL';
                                     isValid = true;
                                     break;
                                 case 'SPECIAL_SPLIT_HORIZONTAL':
-                                    layout.tiles.push({x: 0, y: 0, w: 50, h: 100, t: "SPLIT", hint: "Split largest tile and place to the left"});
-                                    layout.tiles.push({x: 50, y: 0, w: 50, h: 100, t: "SPLIT", d: false, hint: "Split largest tile and place to the right"});
+                                    layout.tiles.push({x: 0, y: 0, w: 50, h: 100, t: "SPLIT", hint: "Split largest window and place to the left"});
+                                    layout.tiles.push({x: 50, y: 0, w: 50, h: 100, t: "SPLIT", d: false, hint: "Split largest window and place to the right"});
                                     layout.special = 'SPECIAL_SPLIT_HORIZONTAL';
+                                    isValid = true;
+                                    break;
+                                case 'SPECIAL_MAXIMIZE':
+                                    layout.tiles.push({x: 0, y: 0, w: 100, h: 100, t: "⬁ &nbsp; &nbsp; &nbsp; ⬀<br>MAXIMIZE<br>⬃ &nbsp; &nbsp; &nbsp; ⬂", hint: "Maximize window - it will return to previous size when moved"});
+                                    layout.special = 'SPECIAL_MAXIMIZE';
                                     isValid = true;
                                     break;
                             }
@@ -241,12 +246,61 @@ SPECIAL_FILL-Fill
                         }
                     } else if (coordinates.length == 4) {
                         // x,y,w,h
-                        let x = parseInt(coordinates[0]);
-                        let y = parseInt(coordinates[1]);
-                        let w = parseInt(coordinates[2]);
-                        let h = parseInt(coordinates[3]);
-                        layout.tiles.push({x: x, y: y, w: w, h: h});
+                        let x, pxX, y, pxY, w, pxW, h, pxH;
                         isValid = true;
+                        if (coordinates[0].endsWith('px')) {
+                            pxX = parseInt(coordinates[0]);
+                            if (Number.isNaN(pxX)) {
+                                isValid = false;
+                            }
+                        } else {
+                            x = parseInt(coordinates[0]);
+                            if (Number.isNaN(x)) {
+                                isValid = false;
+                            }
+                        }
+
+                        if (coordinates[1].endsWith('px')) {
+                            pxY = parseInt(coordinates[1]);
+                            if (Number.isNaN(pxY)) {
+                                isValid = false;
+                            }
+                        } else {
+                            y = parseInt(coordinates[1]);
+                            if (Number.isNaN(y)) {
+                                isValid = false;
+                            }
+                        }
+
+                        if (coordinates[2].endsWith('px')) {
+                            pxW = parseInt(coordinates[2]);
+                            if (Number.isNaN(pxW)) {
+                                isValid = false;
+                            }
+                        } else {
+                            w = parseInt(coordinates[2]);
+                            if (Number.isNaN(w)) {
+                                isValid = false;
+                            }
+                        }
+
+                        if (coordinates[3].endsWith('px')) {
+                            pxH = parseInt(coordinates[3]);
+                            if (Number.isNaN(pxH)) {
+                                isValid = false;
+                            }
+                        } else {
+                            h = parseInt(coordinates[3]);
+                            if (Number.isNaN(h)) {
+                                isValid = false;
+                            }
+                        }
+
+                        if (isValid) {
+                            layout.tiles.push({x: x, pxX: pxX, y: y, pxY: pxY, w: w, pxW: pxW, h: h, pxH: pxH});
+                        } else {
+                            logE('Invalid user layout: ' + tiles[tileIndex]);
+                        }
                     } else {
                         logE('Invalid user layout: ' + tiles[tileIndex]);
                     }

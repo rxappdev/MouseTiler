@@ -1003,7 +1003,8 @@
           <item>
            <widget class="QLabel" name="label_popupLayoutExplanation">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the layouts for the Popup mode - one layout per line.&lt;br/&gt;&lt;br/&gt;Valid format is either a grid [XxY] (example 4x2) or [X,Y,Width,Height] each value in percent (example 0,0,100,100 for a full screen tile equal to 1x1). The layout can be made of multiple grids and/or cells separated by a + (example 0,0,50,100+50,0,50,100 which is equal to a 2x1).&lt;br/&gt;&lt;br/&gt;You can also use one of special layouts: SPECIAL_FILL, SPECIAL_SPLIT_VERTICAL and SPECIAL_SPLIT_HORIZONTAL.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the layouts for the Popup mode - one layout per line.&lt;br/&gt;&lt;br/&gt;Valid format is either a grid [XxY] (example 4x2) or [X,Y,Width,Height]. Any of the values can be in percent (recommended) or pixels (using px suffix - not recommended).&lt;br/&gt;&lt;br/&gt;Example 0,0,100,100 for a full screen tile equal to 1x1 or 20,10,400px,200px for a 400 pixel wide, 200 pixel high tile placed at 20% screen width and 10% screen height.
+&lt;br/&gt;&lt;br/&gt; The layout can be made of multiple grids and/or cells separated by a + (example 0,0,50,100+50,0,50,100 which is equal to a 2x1).&lt;br/&gt;&lt;br/&gt;You can also use one of special layouts: SPECIAL_FILL, SPECIAL_SPLIT_VERTICAL and SPECIAL_SPLIT_HORIZONTAL.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -1012,22 +1013,6 @@
           </item>
          </layout>
         </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Policy::MinimumExpanding</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>
@@ -1071,7 +1056,8 @@
           <item>
            <widget class="QLabel" name="label_allPopupLayoutsExplanation">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set all the layouts for the Popup mode - one layout per line.&lt;br/&gt;&lt;br/&gt;Valid format is either a grid [XxY] (example 4x2) or [X,Y,Width,Height] each value in percent (example 0,0,100,100 for a full screen tile equal to 1x1). The layout can be made of multiple grids and/or cells separated by a + (example 0,0,50,100+50,0,50,100 which is equal to a 2x1).&lt;br/&gt;&lt;br/&gt;You can also use one of special layouts: SPECIAL_FILL, SPECIAL_SPLIT_VERTICAL and SPECIAL_SPLIT_HORIZONTAL.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set all the layouts for the Popup mode - one layout per line.&lt;br/&gt;&lt;br/&gt;Valid format is either a grid [XxY] (example 4x2) or [X,Y,Width,Height]. Any of the values can be in percent (recommended) or pixels (using px suffix - not recommended).&lt;br/&gt;&lt;br/&gt;Example 0,0,100,100 for a full screen tile equal to 1x1 or 20,10,400px,200px for a 400 pixel wide, 200 pixel high tile placed at 20% screen width and 10% screen height.
+&lt;br/&gt;&lt;br/&gt; The layout can be made of multiple grids and/or cells separated by a + (example 0,0,50,100+50,0,50,100 which is equal to a 2x1).&lt;br/&gt;&lt;br/&gt;You can also use one of special layouts: SPECIAL_FILL, SPECIAL_SPLIT_VERTICAL and SPECIAL_SPLIT_HORIZONTAL.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -1080,22 +1066,6 @@
           </item>
          </layout>
         </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Policy::MinimumExpanding</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>
