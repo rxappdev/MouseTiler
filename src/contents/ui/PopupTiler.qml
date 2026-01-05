@@ -400,9 +400,9 @@ PlasmaCore.Dialog {
         Rectangle {
             id: popupWindowCursor
             anchors.left: parent.left
-            anchors.leftMargin: root.getCursorPosition().x - clientArea.x
+            anchors.leftMargin: root.getCursorPosition().x - clientArea.x - 6
             anchors.top: parent.top
-            anchors.topMargin: root.getCursorPosition().y - clientArea.y - 5
+            anchors.topMargin: root.getCursorPosition().y - clientArea.y - 6
             width: 12
             height: 12
             border.color: colors.tileBorderColor
