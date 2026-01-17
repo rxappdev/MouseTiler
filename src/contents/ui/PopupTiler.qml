@@ -510,18 +510,43 @@ PlasmaCore.Dialog {
 
                     if (activeLayoutIndex >= 0 && activeTileIndex >= 0) {
                         updateAndShowPopupDropHint();
-                        if (layoutRepeater.model[activeLayoutIndex].tiles[activeTileIndex].hint) {
-                            let special = layoutRepeater.model[activeLayoutIndex].special;
+                        let special = layoutRepeater.model[activeLayoutIndex].special;
+                        let tile = layoutRepeater.model[activeLayoutIndex].tiles[activeTileIndex];
+                        if (tile.hint) {
                             switch (special) {
                                 case 'SPECIAL_KEEP_ABOVE':
-                                    hint = layoutRepeater.model[activeLayoutIndex].tiles[activeTileIndex].hint + '<br>Currently <b>' + (root.currentlyMovedWindow.keepAbove ? 'Enabled' : 'Disabled') + '</b>';
+                                    hint = tile.hint + '<br>Currently <b>' + (root.currentlyMovedWindow.keepAbove ? 'Enabled' : 'Disabled') + '</b>';
                                     break;
                                 case 'SPECIAL_KEEP_BELOW':
-                                    hint = layoutRepeater.model[activeLayoutIndex].tiles[activeTileIndex].hint + '<br>Currently <b>' + (root.currentlyMovedWindow.keepBelow ? 'Enabled' : 'Disabled') + '</b>';
+                                    hint = tile.hint + '<br>Currently <b>' + (root.currentlyMovedWindow.keepBelow ? 'Enabled' : 'Disabled') + '</b>';
                                     break;
                                 default:
-                                    hint = layoutRepeater.model[activeLayoutIndex].tiles[activeTileIndex].hint;
+                                    hint = tile.hint;
                                     break;
+                            }
+                        } else if ((root.config.showSizeHint || root.config.showPositionHint) && !special) {
+                            hint = '';
+
+                            if (root.config.showPositionHint) {
+                                let x = (tile.x == undefined ? tile.pxX : tile.x / 100 * clientArea.width) - (tile.aX == undefined ? 0 : tile.aX * width / 100);
+                                let y = (tile.y == undefined ? tile.pxY : tile.y / 100 * clientArea.height) - (tile.aY == undefined ? 0 : tile.aY * height / 100);
+                                if (root.config.showPositionHintInPixels) {
+                                    hint += 'X: <b>' + Math.round(x) + '</b> Y: <b>' + Math.round(y) + '</b>';
+                                } else {
+                                    hint += 'X: <b>' + Math.round(100 * x / clientArea.width) + '</b>% Y: <b>' + Math.round(100 * y / clientArea.height) + '</b>%';
+                                }
+                            }
+                            if (root.config.showSizeHint) {
+                                let width = tile.w == undefined ? tile.pxW : tile.w / 100 * clientArea.width;
+                                let height = tile.h == undefined ? tile.pxH : tile.h / 100 * clientArea.height;
+                                if (hint.length > 0) {
+                                    hint += '<br>';
+                                }
+                                if (root.config.showSizeHintInPixels) {
+                                    hint += 'W: <b>' + Math.round(width) + '</b> H: <b>' + Math.round(height) + '</b>';
+                                } else {
+                                    hint += 'W: <b>' + Math.round(100 * width / clientArea.width) + '</b>% H: <b>' + Math.round(100 * height / clientArea.height) + '</b>%';
+                                }
                             }
                         } else {
                             hint = null;

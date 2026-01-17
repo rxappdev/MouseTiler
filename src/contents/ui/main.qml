@@ -146,7 +146,11 @@ SPECIAL_FILL;Fill
             gridHeight: KWin.readConfig("gridHeight", 70),
             popupGridPollingRate: KWin.readConfig("popupGridPollingRate", 100),
             layouts: convertLayouts(KWin.readConfig("popupLayout", defaultPopupLayouts), defaultPopupLayouts),
-            allLayouts: convertLayouts(KWin.readConfig("allPopupLayouts", defaultAllLayouts), defaultAllLayouts)
+            allLayouts: convertLayouts(KWin.readConfig("allPopupLayouts", defaultAllLayouts), defaultAllLayouts),
+            showPositionHint: KWin.readConfig("showPositionHint", false),
+            showPositionHintInPixels: KWin.readConfig("positionHintFormat", 0) == 0,
+            showSizeHint: KWin.readConfig("showSizeHint", false),
+            showSizeHintInPixels: KWin.readConfig("sizeHintFormat", 0) == 0
 
             // live settings
         };
