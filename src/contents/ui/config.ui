@@ -573,6 +573,19 @@
            </widget>
           </item>
           <item>
+           <widget class="QLabel" name="label_67">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Brand new &lt;a href=&quot;https://rxweb.epizy.com/mousetiler/editor.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#5294e2;&quot;&gt;graphical web editor&lt;/span&gt;&lt;/a&gt; launching soon! (Expected around 21st January 2026 - can be previewed already).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+            <property name="openExternalLinks">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLineEdit" name="kcfg_overlayLayout"/>
           </item>
          </layout>
@@ -1131,6 +1144,19 @@
            </widget>
           </item>
           <item>
+           <widget class="QLabel" name="label_65">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Brand new &lt;a href=&quot;https://rxweb.epizy.com/mousetiler/editor.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#5294e2;&quot;&gt;graphical web editor&lt;/span&gt;&lt;/a&gt; launching soon! (Expected around 21st January 2026 - can be previewed already).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+            <property name="openExternalLinks">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPlainTextEdit" name="kcfg_popupLayout">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
@@ -1179,6 +1205,19 @@
            <widget class="QLabel" name="label_59">
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;All Popup Grid Layouts&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_66">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Brand new &lt;a href=&quot;https://rxweb.epizy.com/mousetiler/editor.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#5294e2;&quot;&gt;graphical web editor&lt;/span&gt;&lt;/a&gt; launching soon! (Expected around 21st January 2026 - can be previewed already).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+            <property name="openExternalLinks">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
