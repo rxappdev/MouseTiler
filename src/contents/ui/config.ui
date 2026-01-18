@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1060</width>
-    <height>769</height>
+    <height>765</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,8 +18,8 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>950</width>
-    <height>500</height>
+    <width>1060</width>
+    <height>765</height>
    </size>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -42,7 +42,7 @@
           <bool>true</bool>
          </property>
          <property name="title">
-          <string>Default Tiler</string>
+          <string/>
          </property>
          <property name="alignment">
           <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
@@ -54,7 +54,7 @@
           <item>
            <widget class="QLabel" name="label_restoreTypeExplanation">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This decides which tiler will show up when you start moving a window. You can still toggle between the tilers by using the shortcut (&lt;span style=&quot; font-weight:700;&quot;&gt;Meta+Ctrl+Space&lt;/span&gt; by default).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Default Tiler&lt;/span&gt;: This decides which tiler will show up when you start moving a window. You can still toggle between the tilers by using the shortcut (&lt;span style=&quot; font-weight:700;&quot;&gt;Meta+Ctrl+Space&lt;/span&gt;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -122,15 +122,75 @@
         </widget>
        </item>
        <item>
+        <widget class="QGroupBox" name="groupBox_12">
+         <property name="title">
+          <string/>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_20">
+          <item>
+           <widget class="QLabel" name="label_54">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Center in tile&lt;/span&gt;: Configure how the center in tile works. You can toggle between regular tiling, and centering in the tile by using the shortcut (&lt;span style=&quot; font-weight:700;&quot;&gt;Meta+Ctrl+C&lt;/span&gt;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QFormLayout" name="formLayout_7">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_55">
+              <property name="text">
+               <string>Default mode</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="kcfg_centerInTileMode">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <item>
+               <property name="text">
+                <string>Tile normally</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Tile normally first time, then remember previous mode during same session</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Center in tile</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Center in tile first time, then remember previous mode during same session</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <widget class="QGroupBox" name="groupBox_11">
          <property name="title">
-          <string>Visibility</string>
+          <string/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_15">
           <item>
            <widget class="QLabel" name="label_22">
             <property name="text">
-             <string>Determines when the default tiler is visible. Previous visibility is kept when changing modes using the keyboard shortcut.</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Visibility&lt;/span&gt;: Determines when the default tiler is visible. Previous visibility is kept when changing modes using the keyboard shortcut.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -245,13 +305,13 @@
        <item>
         <widget class="QGroupBox" name="groupBox_6">
          <property name="title">
-          <string>Colors</string>
+          <string/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_14">
           <item>
            <widget class="QLabel" name="label_42">
             <property name="text">
-             <string>Change the tiler color theme. By default the tiler follows your current theme colors.</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Colors&lt;/span&gt;: Change the tiler color theme. By default the tiler follows your current theme colors.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -335,13 +395,13 @@
           <bool>true</bool>
          </property>
          <property name="title">
-          <string>Window Margins</string>
+          <string/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_9">
           <item>
            <widget class="QLabel" name="label_28">
             <property name="text">
-             <string>Set the margins around windows. This allows for gaps between/around windows.</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Window Margins&lt;/span&gt;: Set the margins around windows. This allows for gaps between/around windows.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -387,13 +447,13 @@
        <item>
         <widget class="QGroupBox" name="groupBox_9">
          <property name="title">
-          <string>Input Type</string>
+          <string/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_18">
           <item>
            <widget class="QLabel" name="label_44">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Change the default input type (needed when you use certain Stylus or Touchpad as input). You can toggle between the input types with &lt;span style=&quot; font-weight:700;&quot;&gt;Ctrl+Alt+I&lt;/span&gt;. When using Window as input, an indicator will be displayed in the top-center indicating the position used by the tiler.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Input Type&lt;/span&gt;: Change the default input type (needed when you use certain Stylus or Touchpad as input). You can toggle between the input types with &lt;span style=&quot; font-weight:700;&quot;&gt;Ctrl+Alt+I&lt;/span&gt;. When using Window as input, an indicator will be displayed in the top-center indicating the position used by the tiler.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -457,6 +517,7 @@
       <zorder>groupBox_6</zorder>
       <zorder>groupBox_11</zorder>
       <zorder>groupBox_9</zorder>
+      <zorder>groupBox_12</zorder>
      </widget>
      <widget class="QWidget" name="tab_mulltiWindowRestore">
       <attribute name="icon">
@@ -469,9 +530,16 @@
        <item>
         <widget class="QGroupBox" name="groupBox_8">
          <property name="title">
-          <string>General Settings</string>
+          <string/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_17">
+          <item>
+           <widget class="QLabel" name="label_57">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;General Settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QCheckBox" name="kcfg_showOverlayTextHint">
             <property name="text">
@@ -485,7 +553,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_overlayModeLayout">
          <property name="title">
-          <string>Layout</string>
+          <string/>
          </property>
          <property name="checkable">
           <bool>false</bool>
@@ -497,7 +565,7 @@
           <item>
            <widget class="QLabel" name="label_overlayLayout">
             <property name="text">
-             <string>Set the layout for the Overlay mode. Valid format is either a grid [XxY] (example 4x2), [X,Y,Width,Height] each value in percent or pixels using a px suffix (example 0,0,100,100 for a full screen tile equal to 1x1), or [X,Y,Width,Height,AnchorX,AnchorY] - same as previous but anchored around the anchor (example 100,100,50,50,RIGHT,BOTTOM for a 50% wide and 50% high tile placed in the bottom right corner). The layout can be made of multiple grids and/or tiles separated by a + (example 0,0,50,100+50,0,50,100 which is equal to a 2x1). Please see the Popup Grid Layouts tab for more detailed description.</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Layout&lt;/span&gt;: Set the layout for the Overlay mode. Valid format is either a grid [XxY] (example 4x2), [X,Y,Width,Height] each value in percent or pixels using a px suffix (example 0,0,100,100 for a full screen tile equal to 1x1), or [X,Y,Width,Height,AnchorX,AnchorY] - same as previous but anchored around the anchor (example 100,100,50,33,RIGHT,BOTTOM for a 50% wide and 33% high tile placed in the bottom right corner).&lt;/p&gt;&lt;p&gt;The layout can be made of multiple grids and/or tiles separated by a + (example 0,0,50,100+50,0,50,100 which is equal to a 2x1). Please see the &lt;span style=&quot; font-weight:700;&quot;&gt;Popup Grid Layouts&lt;/span&gt; tab for more detailed description.&lt;/p&gt;&lt;p&gt;WARNING - SPECIAL layouts are not supported in Overlay Mode.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -516,13 +584,13 @@
           <bool>true</bool>
          </property>
          <property name="title">
-          <string>Screen Edge Margin</string>
+          <string/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_11">
           <item>
            <widget class="QLabel" name="label_29">
             <property name="text">
-             <string>Margin around the Overlay. Increase this in case you use edge snapping and want to leave a gap to allow it to work.</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Screen Edge Margin&lt;/span&gt;: Margin around the Overlay. Increase this in case you use edge snapping and want to leave a gap to allow it to work.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -562,7 +630,7 @@
           <bool>true</bool>
          </property>
          <property name="title">
-          <string>Mouse Position Polling Rate</string>
+          <string/>
          </property>
          <property name="checkable">
           <bool>false</bool>
@@ -574,7 +642,7 @@
           <item>
            <widget class="QLabel" name="label_multiWindowRestoreAttemptsExplanation">
             <property name="text">
-             <string>Set the polling rate of the Overlay mode mouse position. The shorter the polling rate the faster the Overlay will react to mouse positions but it will introduce unnecessary calculations and might introduce lag (90-200 ms is recommended for smooth experience).</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Mouse Position Polling Rate&lt;/span&gt;: Set the polling rate of the Overlay mode mouse position. The shorter the polling rate the faster the Overlay will react to mouse positions but it will introduce unnecessary calculations and might introduce lag (90-200 ms is recommended for smooth experience).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -649,9 +717,16 @@
        <item>
         <widget class="QGroupBox" name="groupBox_5">
          <property name="title">
-          <string>General Settings</string>
+          <string/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_13">
+          <item>
+           <widget class="QLabel" name="label_56">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;General Settings&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QCheckBox" name="kcfg_rememberAllLayouts">
             <property name="text">
@@ -682,13 +757,13 @@
        <item>
         <widget class="QGroupBox" name="groupBox_7">
          <property name="title">
-          <string>Position</string>
+          <string/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_16">
           <item>
            <widget class="QLabel" name="label_24">
             <property name="text">
-             <string>Determines where the Popup Grid will be displayed. You can chose to show it below mouse pointer or at a fixed screen position.</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Position&lt;/span&gt;: Determines where the Popup Grid will be displayed. You can chose to show it below mouse pointer or at a fixed screen position.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -799,13 +874,13 @@
           <bool>true</bool>
          </property>
          <property name="title">
-          <string>Grid Configuration</string>
+          <string/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_12">
           <item>
            <widget class="QLabel" name="label_32">
             <property name="text">
-             <string>Change the properties of the grid, layouts and tiles.</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Grid Configuration&lt;/span&gt;: Change the properties of the grid, layouts and tiles.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -964,13 +1039,13 @@
           <bool>true</bool>
          </property>
          <property name="title">
-          <string>Mouse Position Polling Rate</string>
+          <string/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_10">
           <item>
            <widget class="QLabel" name="label_21">
             <property name="text">
-             <string>Set the polling rate of the popup grid mode mouse position. The shorter the polling rate the faster the Popup Grid will react to mouse positions but it will introduce unnecessary calculations and might introduce lag (50-150 ms is recommended for smooth experience).</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Mouse Position Polling Rate&lt;/span&gt;: Set the polling rate of the popup grid mode mouse position. The shorter the polling rate the faster the Popup Grid will react to mouse positions but it will introduce unnecessary calculations and might introduce lag (50-150 ms is recommended for smooth experience).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -1045,9 +1120,16 @@
        <item>
         <widget class="QGroupBox" name="groupBox_popupLayout">
          <property name="title">
-          <string>Default Popup Grid Layouts</string>
+          <string/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_applicationBlacklist">
+          <item>
+           <widget class="QLabel" name="label_58">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Default Popup Grid Layouts&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QPlainTextEdit" name="kcfg_popupLayout">
             <property name="sizePolicy">
@@ -1090,9 +1172,16 @@
        <item>
         <widget class="QGroupBox" name="groupBox_allPopupLayouts">
          <property name="title">
-          <string>All Popup Grid Layouts</string>
+          <string/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_applicationWhitelist">
+          <item>
+           <widget class="QLabel" name="label_59">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;All Popup Grid Layouts&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QPlainTextEdit" name="kcfg_allPopupLayouts">
             <property name="sizePolicy">
@@ -1149,10 +1238,10 @@
            <property name="sizeConstraint">
             <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
            </property>
-           <item row="6" column="0">
-            <widget class="QLabel" name="label_11">
+           <item row="4" column="0">
+            <widget class="QLabel" name="label_7">
              <property name="text">
-              <string>Mouse Tiler: Toggle Visibility</string>
+              <string>Mouse Tiler: Show Config</string>
              </property>
             </widget>
            </item>
@@ -1163,70 +1252,6 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="1">
-            <widget class="Line" name="line_8">
-             <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="Line" name="line_7">
-             <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="2">
-            <widget class="QLabel" name="label_14">
-             <property name="text">
-              <string>Show configuration dialog that lets you customize every detail of the tiler.</string>
-             </property>
-             <property name="wordWrap">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="2">
-            <widget class="QLabel" name="label_15">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Popup Grid&lt;/span&gt;&amp;quot; mode: Show or hide all layouts.&lt;/p&gt;&lt;p&gt;&amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Overlay&lt;/span&gt;&amp;quot; mode: Start or stop spanning from the hovered tile (a window can span multiple tiles).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
-             </property>
-             <property name="wordWrap">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="1">
-            <widget class="QLabel" name="label_10">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Ctrl+Space&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="2">
-            <widget class="QLabel" name="label_13">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Toggle between &amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Popup Grid&lt;/span&gt;&amp;quot; and &amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Overlay&lt;/span&gt;&amp;quot; modes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="wordWrap">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="7" column="1">
-            <widget class="QLabel" name="label_47">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Ctrl+Alt+I&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
            <item row="2" column="2">
             <widget class="Line" name="line_4">
              <property name="orientation">
@@ -1234,50 +1259,10 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="1">
-            <widget class="QLabel" name="label_8">
+           <item row="6" column="0">
+            <widget class="QLabel" name="label_11">
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Ctrl+.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
-           <item row="8" column="0">
-            <widget class="Line" name="line">
-             <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLabel" name="label_18">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-               <horstretch>1</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Default Shortcut&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="label_5">
-             <property name="text">
-              <string>Mouse Tiler: Change Mode</string>
-             </property>
-             <property name="wordWrap">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="6" column="1">
-            <widget class="QLabel" name="label_12">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Meta+Space&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>Mouse Tiler: Toggle Visibility</string>
              </property>
             </widget>
            </item>
@@ -1297,17 +1282,68 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="label_7">
+           <item row="5" column="2">
+            <widget class="QLabel" name="label_15">
              <property name="text">
-              <string>Mouse Tiler: Show Config</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Popup Grid&lt;/span&gt;&amp;quot; mode: Show or hide all layouts.&lt;/p&gt;&lt;p&gt;&amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Overlay&lt;/span&gt;&amp;quot; mode: Start or stop spanning from the hovered tile (a window can span multiple tiles).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
-           <item row="2" column="1">
-            <widget class="Line" name="line_2">
+           <item row="7" column="0">
+            <widget class="QLabel" name="label_46">
+             <property name="text">
+              <string>Mouse Tiler: Toggle Input Type</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="2">
+            <widget class="QLabel" name="label_49">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Toggle between &amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Mouse&lt;/span&gt;&amp;quot; and &amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Window&lt;/span&gt;&amp;quot; input types.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0">
+            <widget class="QLabel" name="label_60">
+             <property name="text">
+              <string>Mouse Tiler: Toggle Center In Tile</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="2">
+            <widget class="QLabel" name="label_13">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Toggle between &amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Popup Grid&lt;/span&gt;&amp;quot; and &amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Overlay&lt;/span&gt;&amp;quot; modes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="0">
+            <widget class="Line" name="line">
              <property name="orientation">
               <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="Line" name="line_7">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="1">
+            <widget class="QLabel" name="label_12">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Meta+Space&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
@@ -1327,24 +1363,34 @@
              </property>
             </widget>
            </item>
-           <item row="8" column="2">
+           <item row="9" column="1">
+            <widget class="Line" name="line_5">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="2">
             <widget class="Line" name="line_6">
              <property name="orientation">
               <enum>Qt::Orientation::Horizontal</enum>
              </property>
             </widget>
            </item>
-           <item row="7" column="0">
-            <widget class="QLabel" name="label_46">
-             <property name="text">
-              <string>Mouse Tiler: Toggle Input Type</string>
+           <item row="2" column="1">
+            <widget class="Line" name="line_2">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
              </property>
             </widget>
            </item>
-           <item row="3" column="1">
-            <widget class="QLabel" name="label_6">
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_5">
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Meta+Ctrl+Space&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>Mouse Tiler: Change Mode</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -1372,17 +1418,81 @@
              </property>
             </widget>
            </item>
-           <item row="8" column="1">
-            <widget class="Line" name="line_5">
+           <item row="0" column="1">
+            <widget class="Line" name="line_8">
              <property name="orientation">
               <enum>Qt::Orientation::Horizontal</enum>
              </property>
             </widget>
            </item>
-           <item row="7" column="2">
-            <widget class="QLabel" name="label_49">
+           <item row="1" column="1">
+            <widget class="QLabel" name="label_18">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>1</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Toggle between &amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Mouse&lt;/span&gt;&amp;quot; and &amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Window&lt;/span&gt;&amp;quot; input types.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Default Shortcut&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="2">
+            <widget class="QLabel" name="label_14">
+             <property name="text">
+              <string>Show configuration dialog that lets you customize every detail of the tiler.</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="1">
+            <widget class="QLabel" name="label_61">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Meta+Ctrl+C&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Meta+Ctrl+Space&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="1">
+            <widget class="QLabel" name="label_47">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Ctrl+Alt+I&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QLabel" name="label_8">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Ctrl+.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QLabel" name="label_10">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Ctrl+Space&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="2">
+            <widget class="QLabel" name="label_62">
+             <property name="text">
+              <string>Toggle between regular tiling, and centering in tile.</string>
              </property>
             </widget>
            </item>
@@ -1445,13 +1555,13 @@
        <item>
         <widget class="QGroupBox" name="groupBox_debug">
          <property name="title">
-          <string>Debug Settings</string>
+          <string/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>Intended for development or when submitting a bug/issue to give more details to the current issue. This might write a lot of data to the system log. Not recommended for every day use.</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Debug Settings&lt;/span&gt;: Intended for development or when submitting a bug/issue to give more details to the current issue. This might write a lot of data to the system log. Not recommended for every day use.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -1471,13 +1581,13 @@
        <item>
         <widget class="QGroupBox" name="groupBox_10">
          <property name="title">
-          <string>Popup Grid default tile hint</string>
+          <string/>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_19">
           <item>
            <widget class="QLabel" name="label_51">
             <property name="text">
-             <string>Replaces default hint with Popup Grid non-special tile position and/or size when one of the below options is enabled.</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Popup Grid default tile hint&lt;/span&gt;: Replaces default hint with Popup Grid non-special tile position and/or size (when one of the below options is enabled).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>

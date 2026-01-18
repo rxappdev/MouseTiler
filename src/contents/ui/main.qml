@@ -23,6 +23,7 @@ Item {
     property var currentlyMovedWindow: null
     property bool useMouseCursor: true
     property var windowCursor: Qt.point(0,0)
+    property bool centerInTile: false
 
     function log(string) {
         if (!debugLogs) return;
@@ -121,6 +122,7 @@ SPECIAL_FILL;Fill
         config = {
             // user settings
             usePopupTilerByDefault: KWin.readConfig("defaultTiler", 0) == 0,
+            centerInTileMode: KWin.readConfig("centerInTileMode", 0),
             rememberTiler: KWin.readConfig("rememberTiler", false),
             restoreSize: KWin.readConfig("restoreSize", false),
             tilerVisibility: KWin.readConfig("tilerVisibility", 0),
@@ -156,14 +158,20 @@ SPECIAL_FILL;Fill
         };
         config.tileMarginLeftTop = Math.floor(config.edgeMargin / 2);
         config.tileMarginRightBottom = Math.ceil(config.edgeMargin / 2);
+        config.rememberCenterInTile = config.centerInTileMode == 1 || config.centerInTileMode == 3;
 
         useMouseCursor = config.useMouseCursorByDefault;
 
         setDefaultTiler();
+        setDefaultCenterInTile();
     }
 
     function setDefaultTiler() {
         currentTiler = config.usePopupTilerByDefault ? popupTiler : overlayTiler;
+    }
+
+    function setDefaultCenterInTile() {
+        centerInTile = config.centerInTileMode > 1;
     }
 
     function convertOverlayLayout(userLayout, defaultLayout) {
@@ -546,6 +554,9 @@ SPECIAL_FILL;Fill
                 if (!config.rememberTiler) {
                     setDefaultTiler();
                 }
+                if (!config.rememberCenterInTile) {
+                    setDefaultCenterInTile();
+                }
             }
             moving = false;
             moved = false;
@@ -786,6 +797,9 @@ SPECIAL_FILL;Fill
             if (!config.rememberTiler) {
                 setDefaultTiler();
             }
+            if (!config.rememberCenterInTile) {
+                setDefaultCenterInTile();
+            }
         }
     }
 
@@ -954,6 +968,16 @@ SPECIAL_FILL;Fill
                 windowCursor = Qt.point(currentlyMovedWindow.x + currentlyMovedWindow.width / 2, currentlyMovedWindow.y);
             }
             useMouseCursor = !useMouseCursor;
+        }
+    }
+
+    ShortcutHandler {
+        name: "Mouse Tiler: Toggle Center In Tile"
+        text: "Mouse Tiler: Toggle Center In Tile"
+        sequence: "Meta+Ctrl+C"
+        onActivated: {
+            log('Toggle Center In Tile triggered!');
+            centerInTile = !centerInTile;
         }
     }
 }

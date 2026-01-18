@@ -95,20 +95,32 @@ PlasmaCore.Dialog {
 
     function getGeometry() {
         if (activeIndex >= 0) {
+            let x, y, width, height;
             if (spanFromIndex >= 0) {
-                return {
-                    x: minSpanX,
-                    y: minSpanY,
-                    width: maxSpanX - minSpanX,
-                    height: maxSpanY - minSpanY
-                };
+                x = minSpanX;
+                y = minSpanY;
+                width = maxSpanX - minSpanX;
+                height = maxSpanY - minSpanY;
             } else {
                 let item = tileRepeater.itemAt(activeIndex);
+                x = item.x;
+                y = item.y;
+                width = item.width;
+                height = item.height;
+            }
+            if (root.centerInTile) {
                 return {
-                    x: item.x,
-                    y: item.y,
-                    width: item.width,
-                    height: item.height
+                    x: x + width / 2 - root.currentlyMovedWindow.width / 2,
+                    y: y + height / 2 - root.currentlyMovedWindow.height / 2,
+                    width: root.currentlyMovedWindow.width,
+                    height: root.currentlyMovedWindow.height
+                };
+            } else {
+                return {
+                    x: x,
+                    y: y,
+                    width: width,
+                    height: height
                 };
             }
         }
@@ -182,7 +194,14 @@ PlasmaCore.Dialog {
                         anchors.centerIn: parent
                         color: colors.overlayTextColor
                         textFormat: Text.StyledText
-                        text: spannedFrom ? "Stop spanning (<b>Ctrl+Space</b> by default)<br>Toggle visibility (<b>Meta+Space</b> by default)<br><br>Switch mode (<b>Ctrl+Meta+Space</b> by default)" : "Span from this tile (<b>Ctrl+Space</b> by default)<br>Toggle visibility (<b>Meta+Space</b> by default)<br><br>Switch mode (<b>Ctrl+Meta+Space</b> by default)"
+                        text: {
+                            let defaultHint = spannedFrom ? "Stop spanning (<b>Ctrl+Space</b> by default)<br>Toggle visibility (<b>Meta+Space</b> by default)<br><br>Switch mode (<b>Ctrl+Meta+Space</b> by default)" : "Span from this tile (<b>Ctrl+Space</b> by default)<br>Toggle visibility (<b>Meta+Space</b> by default)<br><br>Switch mode (<b>Ctrl+Meta+Space</b> by default)";
+                            if (root.centerInTile) {
+                                return (spannedFrom ? "<b>Center in spanned tiles</b><br><br>" : "<b>Center in this tile</b><br><br>") + defaultHint;
+                            } else {
+                                return defaultHint;
+                            }
+                        }
                         font.pixelSize: 16
                         font.family: "Hack"
                         horizontalAlignment: Text.AlignHCenter

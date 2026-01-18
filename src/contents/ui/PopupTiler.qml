@@ -18,10 +18,12 @@ PlasmaCore.Dialog {
     property bool lastShowAll: false
     property var hint: null
     property bool showPopupDropHint: false
+    property bool hasValidPopupDropHint: false
     property var popupDropHintX: 0
     property var popupDropHintY: 0
     property var popupDropHintWidth: 0
     property var popupDropHintHeight: 0
+    property bool popupDropHintIsCenterInTile: false
     property bool sizeEstablished: false
     property var revealBox: null
     property bool revealed: false
@@ -147,21 +149,27 @@ PlasmaCore.Dialog {
     }
 
     function getGeometry() {
-        if (activeLayoutIndex >= 0 && activeTileIndex >= 0 && layoutRepeater.model[activeLayoutIndex].special) {
-            return {
-                special: layoutRepeater.model[activeLayoutIndex].special,
-                specialMode: activeTileIndex
-            };
-        } else if (activeLayoutIndex >= 0 && activeTileIndex >= 0) {
-            let layout = layoutRepeater.model[activeLayoutIndex].tiles[activeTileIndex];
-            let width = layout.w == undefined ? layout.pxW : layout.w / 100 * clientArea.width;
-            let height = layout.h == undefined ? layout.pxH : layout.h / 100 * clientArea.height;
-            return {
-                x: clientArea.x + (layout.x == undefined ? layout.pxX : layout.x / 100 * clientArea.width) - (layout.aX == undefined ? 0 : layout.aX * width / 100),
-                y: clientArea.y + (layout.y == undefined ? layout.pxY : layout.y / 100 * clientArea.height) - (layout.aY == undefined ? 0 : layout.aY * height / 100),
-                width: width,
-                height: height
-            };
+        if (activeLayoutIndex >= 0 && activeTileIndex >= 0) {
+            if (root.centerInTile && hasValidPopupDropHint) {
+                return {
+                    x: clientArea.x + popupDropHintX,
+                    y: clientArea.y + popupDropHintY,
+                    width: popupDropHintWidth,
+                    height: popupDropHintHeight
+                };
+            } else if (layoutRepeater.model[activeLayoutIndex].special) {
+                return {
+                    special: layoutRepeater.model[activeLayoutIndex].special,
+                    specialMode: activeTileIndex
+                };
+            } else if (!root.centerInTile) {
+                return {
+                    x: clientArea.x + popupDropHintX,
+                    y: clientArea.y + popupDropHintY,
+                    width: popupDropHintWidth,
+                    height: popupDropHintHeight
+                };
+            }
         }
         return null;
     }
@@ -172,51 +180,74 @@ PlasmaCore.Dialog {
     }
 
     function updateAndShowPopupDropHint() {
-        if (root.config.showTargetTileHint) {
-            let special = layoutRepeater.model[activeLayoutIndex].special;
-            let geometry = null;
-            switch (special) {
-                case 'SPECIAL_FILL':
-                    if (root.currentlyMovedWindow != null) {
-                        geometry = root.getFillGeometry(root.currentlyMovedWindow, activeTileIndex == 0);
-                    }
-                    break;
-                case 'SPECIAL_SPLIT_VERTICAL':
-                    if (root.currentlyMovedWindow != null) {
-                        geometry = splitAndMoveSplitted(root.currentlyMovedWindow, true, activeTileIndex == 0, false);
-                    }
-                    break;
-                case 'SPECIAL_SPLIT_HORIZONTAL':
-                    if (root.currentlyMovedWindow != null) {
-                        geometry = splitAndMoveSplitted(root.currentlyMovedWindow, false, activeTileIndex == 0, false);
-                    }
-                    break;
-                case 'SPECIAL_NO_TITLEBAR_AND_FRAME':
-                case 'SPECIAL_KEEP_ABOVE':
-                case 'SPECIAL_KEEP_BELOW':
-                case 'SPECIAL_EMPTY':
-                case 'SPECIAL_MINIMIZE':
-                case 'SPECIAL_CLOSE':
-                    break;
-                default:
-                    let layout = layoutRepeater.model[activeLayoutIndex].tiles[activeTileIndex];
-                    popupDropHintWidth = layout.w == undefined ? layout.pxW : layout.w / 100 * clientArea.width;
-                    popupDropHintHeight = layout.h == undefined ? layout.pxH : layout.h / 100 * clientArea.height;
-                    popupDropHintX = (layout.x == undefined ? layout.pxX : layout.x / 100 * clientArea.width) - (layout.aX == undefined ? 0 : layout.aX * popupDropHintWidth / 100);
-                    popupDropHintY = (layout.y == undefined ? layout.pxY : layout.y / 100 * clientArea.height) - (layout.aY == undefined ? 0 : layout.aY * popupDropHintHeight / 100);
-                    showPopupDropHint = true;
-                    return; // Force return to avoid hiding popup
-            }
-            if (geometry != null) {
+        let shouldShowPopupDropHint = false;
+        let special = layoutRepeater.model[activeLayoutIndex].special;
+        let geometry = null;
+        switch (special) {
+            case 'SPECIAL_FILL':
+                if (root.currentlyMovedWindow != null) {
+                    geometry = root.getFillGeometry(root.currentlyMovedWindow, activeTileIndex == 0);
+                }
+                break;
+            case 'SPECIAL_SPLIT_VERTICAL':
+                if (root.currentlyMovedWindow != null) {
+                    geometry = splitAndMoveSplitted(root.currentlyMovedWindow, true, activeTileIndex == 0, false);
+                }
+                break;
+            case 'SPECIAL_SPLIT_HORIZONTAL':
+                if (root.currentlyMovedWindow != null) {
+                    geometry = splitAndMoveSplitted(root.currentlyMovedWindow, false, activeTileIndex == 0, false);
+                }
+                break;
+            case 'SPECIAL_NO_TITLEBAR_AND_FRAME':
+            case 'SPECIAL_KEEP_ABOVE':
+            case 'SPECIAL_KEEP_BELOW':
+            case 'SPECIAL_EMPTY':
+            case 'SPECIAL_MINIMIZE':
+            case 'SPECIAL_CLOSE':
+                break;
+            default:
+                let layout = layoutRepeater.model[activeLayoutIndex].tiles[activeTileIndex];
+                let hintWidth = layout.w == undefined ? layout.pxW : layout.w / 100 * clientArea.width;
+                let hintHeight = layout.h == undefined ? layout.pxH : layout.h / 100 * clientArea.height;
+                let hintX = (layout.x == undefined ? layout.pxX : layout.x / 100 * clientArea.width) - (layout.aX == undefined ? 0 : layout.aX * hintWidth / 100);
+                let hintY = (layout.y == undefined ? layout.pxY : layout.y / 100 * clientArea.height) - (layout.aY == undefined ? 0 : layout.aY * hintHeight / 100);
+                if (root.centerInTile) {
+                    popupDropHintWidth = root.currentlyMovedWindow.width;
+                    popupDropHintHeight = root.currentlyMovedWindow.height;
+                    popupDropHintX = hintX + hintWidth / 2 - root.currentlyMovedWindow.width / 2;
+                    popupDropHintY = hintY + hintHeight / 2 - root.currentlyMovedWindow.height / 2;
+                } else {
+                    popupDropHintWidth = hintWidth;
+                    popupDropHintHeight = hintHeight;
+                    popupDropHintX = hintX;
+                    popupDropHintY = hintY;
+                }
+                showPopupDropHint = root.config.showTargetTileHint;
+                hasValidPopupDropHint = true;
+                return; // Force return to avoid hiding popup
+        }
+        if (geometry != null) {
+            if (root.centerInTile) {
+                popupDropHintX = (geometry.x - clientArea.x) + geometry.width / 2 - root.currentlyMovedWindow.width / 2;
+                popupDropHintY = (geometry.y - clientArea.y) + geometry.height / 2 - root.currentlyMovedWindow.height / 2;
+                popupDropHintWidth = root.currentlyMovedWindow.width;
+                popupDropHintHeight = root.currentlyMovedWindow.height;
+                shouldShowPopupDropHint = true;
+            } else {
                 popupDropHintX = geometry.x - clientArea.x;
                 popupDropHintY = geometry.y - clientArea.y;
                 popupDropHintWidth = geometry.width;
                 popupDropHintHeight = geometry.height;
-                showPopupDropHint = true;
-            } else {
-                showPopupDropHint = false;
+                shouldShowPopupDropHint = true;
             }
         }
+        if (root.config.showTargetTileHint) {
+            showPopupDropHint = shouldShowPopupDropHint;
+        } else {
+            showPopupDropHint = false;
+        }
+        hasValidPopupDropHint = shouldShowPopupDropHint;
     }
 
     function updateRevealed(forceUpdate = false) {
@@ -363,11 +394,11 @@ PlasmaCore.Dialog {
                                         anchors.centerIn: parent
                                         color: colors.textColor
                                         textFormat: Text.StyledText
-                                        text: modelData.t && modelData.t.length > 0 ? modelData.t : ""
+                                        text: root.centerInTile && layoutActive && tileActive && hasValidPopupDropHint ? "·" : (modelData.t && modelData.t.length > 0 ? modelData.t : "")
                                         font.pixelSize: 14
                                         font.family: "Hack"
                                         horizontalAlignment: Text.AlignHCenter
-                                        visible: modelData.t ? modelData.t : false
+                                        visible: root.centerInTile && layoutActive && tileActive && hasValidPopupDropHint ? true : (modelData.t ? modelData.t : false)
                                     }
                                 }
                             }
@@ -510,6 +541,7 @@ PlasmaCore.Dialog {
 
                     if (activeLayoutIndex >= 0 && activeTileIndex >= 0) {
                         updateAndShowPopupDropHint();
+                        popupDropHintIsCenterInTile = root.centerInTile;
                         let special = layoutRepeater.model[activeLayoutIndex].special;
                         let tile = layoutRepeater.model[activeLayoutIndex].tiles[activeTileIndex];
                         if (tile.hint) {
@@ -555,6 +587,9 @@ PlasmaCore.Dialog {
                         showPopupDropHint = false;
                         hint = null;
                     }
+                } else if (popupDropHintIsCenterInTile != root.centerInTile && activeLayoutIndex >= 0 && activeTileIndex >= 0) {
+                    updateAndShowPopupDropHint();
+                    popupDropHintIsCenterInTile = root.centerInTile;
                 }
             }
         }
