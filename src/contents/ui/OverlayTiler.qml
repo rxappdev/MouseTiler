@@ -97,14 +97,14 @@ PlasmaCore.Dialog {
         if (activeIndex >= 0) {
             let x, y, width, height;
             if (spanFromIndex >= 0) {
-                x = minSpanX;
-                y = minSpanY;
+                x = clientArea.x + minSpanX;
+                y = clientArea.y + minSpanY;
                 width = maxSpanX - minSpanX;
                 height = maxSpanY - minSpanY;
             } else {
                 let item = tileRepeater.itemAt(activeIndex);
-                x = item.x;
-                y = item.y;
+                x = clientArea.x + item.x;
+                y = clientArea.y + item.y;
                 width = item.width;
                 height = item.height;
             }
