@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import org.kde.kwin
 import org.kde.kirigami as Kirigami
-import QtWebView
+// import QtWebView
 
 ApplicationWindow {
     property var overrides: {}
