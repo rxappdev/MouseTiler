@@ -313,6 +313,8 @@ PlasmaCore.Dialog {
             }
         } else if (!virtualDesktopVisibilityOverride && root.config.virtualDesktopVisibility == 1) {
             hint = "Show tiler (<b>" + root.config.shortcutShowAllSpan + "</b>)";
+            hasValidPopupDropHint = false;
+            showPopupDropHint = false;
         } else if (activeLayoutIndex >= 0 && activeTileIndex >= 0) {
             updateAndShowPopupDropHint();
             popupDropHintIsCenterInTile = root.centerInTile;
