@@ -113,20 +113,16 @@ PlasmaCore.Dialog {
                         break;
                 }
 
-                if (visibleHeight == 0) {
-                    positionY = 0;
-                } else {
-                    switch (root.config.verticalAlignment) {
-                        default:
-                            positionY = 0;
-                            break;
-                        case 1:
-                            positionY = clientArea.height / 2 - layouts.height / 2;
-                            break;
-                        case 2:
-                            positionY = clientArea.height - layouts.height;
-                            break;
-                    }
+                switch (root.config.verticalAlignment) {
+                    default:
+                        positionY = 0;
+                        break;
+                    case 1:
+                        positionY = clientArea.height / 2 - visibleHeight / 2;
+                        break;
+                    case 2:
+                        positionY = clientArea.height - visibleHeight;
+                        break;
                 }
             }
 

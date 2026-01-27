@@ -538,6 +538,7 @@ SPECIAL_FILL;Fill
                                 Workspace.slotWindowMaximize();
                                 break;
                         }
+                        setCurrentVirtualDesktop();
                     } else {
                         var geometry = currentTiler.getGeometry();
                         if (geometry != null) {
