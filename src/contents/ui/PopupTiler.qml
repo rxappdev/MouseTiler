@@ -28,6 +28,9 @@ PlasmaCore.Dialog {
     property var revealBox: null
     property bool revealed: false
     property bool currentlyHovered: false
+    property int activeVirtualDesktopIndex: -1
+    property var activeVirtualDesktopHoverTime: -1
+    property bool virtualDesktopVisibilityOverride: false
 
     width: clientArea.width
     height: clientArea.height
@@ -67,6 +70,8 @@ PlasmaCore.Dialog {
 
             let localCursorPos = Workspace.activeScreen.mapFromGlobal(root.getCursorPosition());
 
+            let visibleHeight = virtualDesktopVisibilityOverride || root.config.virtualDesktopVisibility != 1 ? layouts.height : 0;
+
             if (root.config.popupGridAt == 0) {
                 switch (root.config.horizontalAlignment) {
                     default:
@@ -80,16 +85,20 @@ PlasmaCore.Dialog {
                         break;
                 }
 
-                switch (root.config.verticalAlignment) {
-                    default:
-                        positionY = localCursorPos.y - root.config.gridHeight / 2 - root.config.gridSpacing;
-                        break;
-                    case 1:
-                        positionY = localCursorPos.y - layouts.height / 2;
-                        break;
-                    case 2:
-                        positionY = localCursorPos.y - layouts.height + root.config.gridHeight / 2 + root.config.gridSpacing;
-                        break;
+                if (visibleHeight == 0) {
+                    positionY = localCursorPos.y;
+                } else {
+                    switch (root.config.verticalAlignment) {
+                        default:
+                            positionY = localCursorPos.y - root.config.gridHeight / 2 - root.config.gridSpacing;
+                            break;
+                        case 1:
+                            positionY = localCursorPos.y - layouts.height / 2;
+                            break;
+                        case 2:
+                            positionY = localCursorPos.y - layouts.height + root.config.gridHeight / 2 + root.config.gridSpacing;
+                            break;
+                    }
                 }
             } else {
                 switch (root.config.horizontalAlignment) {
@@ -104,16 +113,20 @@ PlasmaCore.Dialog {
                         break;
                 }
 
-                switch (root.config.verticalAlignment) {
-                    default:
-                        positionY = 0;
-                        break;
-                    case 1:
-                        positionY = clientArea.height / 2 - layouts.height / 2;
-                        break;
-                    case 2:
-                        positionY = clientArea.height - layouts.height;
-                        break;
+                if (visibleHeight == 0) {
+                    positionY = 0;
+                } else {
+                    switch (root.config.verticalAlignment) {
+                        default:
+                            positionY = 0;
+                            break;
+                        case 1:
+                            positionY = clientArea.height / 2 - layouts.height / 2;
+                            break;
+                        case 2:
+                            positionY = clientArea.height - layouts.height;
+                            break;
+                    }
                 }
             }
 
@@ -126,19 +139,28 @@ PlasmaCore.Dialog {
                 positionX = popupTiler.width - layouts.width;
             }
 
+            let totalHeight = visibleHeight;
+            if (root.virtualDesktopVisibile) {
+                if (totalHeight > 0) {
+                    totalHeight += 2;
+                }
+                totalHeight += virtualDesktop.height;
+            }
+            if (root.config.showTextHint) {
+                totalHeight += popupHint.height + 2;
+            }
+
             if (positionY < 0) {
                 positionY = 0;
-            } else if (root.config.showTextHint && positionY + layouts.height + popupHint.height + 2 > popupTiler.height) {
-                positionY = popupTiler.height - layouts.height - popupHint.height - 2;
-            } else if (!root.config.showTextHint && positionY + layouts.height > popupTiler.height) {
-                positionY = popupTiler.height - layouts.height;
+            } else if (positionY + totalHeight > popupTiler.height) {
+                positionY = popupTiler.height - totalHeight;
             }
 
             if (root.config.tilerVisibility == 3) {
                 let triggerLeft = Math.max(positionX - config.revealMargin, 0);
                 let triggerRight = Math.min(positionX + layouts.width + config.revealMargin, popupTiler.width);
                 let triggerTop = Math.max(positionY - config.revealMargin, 0);
-                let triggerBottom = Math.min(positionY + layouts.height + config.revealMargin, popupTiler.height);
+                let triggerBottom = Math.min(positionY + totalHeight + config.revealMargin, popupTiler.height);
                 let leftTop = Workspace.activeScreen.mapToGlobal(Qt.point(triggerLeft, triggerTop));
                 let rightBottom = Workspace.activeScreen.mapToGlobal(Qt.point(triggerRight, triggerBottom));
                 revealBox = { left: leftTop.x, right: rightBottom.x, top: leftTop.y, bottom: rightBottom.y };
@@ -176,9 +198,22 @@ PlasmaCore.Dialog {
         return null;
     }
 
+    function getActiveVirtualDesktopIndex() {
+        return activeVirtualDesktopIndex;
+    }
+
+    function resetVirtualDesktopOverride() {
+        virtualDesktopVisibilityOverride = false;
+    }
+
     function toggleShowAll() {
         reset();
-        showAll = !showAll;
+        if (!virtualDesktopVisibilityOverride) {
+            virtualDesktopVisibilityOverride = true;
+        } else {
+            showAll = !showAll;
+            updateHintContent();
+        }
     }
 
     function updateAndShowPopupDropHint() {
@@ -253,7 +288,32 @@ PlasmaCore.Dialog {
     }
 
     function updateHintContent() {
-        if (activeLayoutIndex >= 0 && activeTileIndex >= 0) {
+        if (activeVirtualDesktopIndex >= 0) {
+            hasValidPopupDropHint = false;
+            showPopupDropHint = false;
+            if (root.virtualDesktops[activeVirtualDesktopIndex].isAdd) {
+                switch (config.virtualDesktopDropAction) {
+                    case 0:
+                        hint = '<b>Drop</b> - Add new virtual desktop and move window';
+                        break;
+                    case 1:
+                        hint = '<b>Drop</b> - Add new virtual desktop and maximize window';
+                        break;
+                }
+            } else {
+                let virtualDesktopName = root.virtualDesktops[activeVirtualDesktopIndex].desktop.name;
+                switch (config.virtualDesktopDropAction) {
+                    case 0:
+                        hint = '<b>Hover</b> - Switch to ' + virtualDesktopName + '<br><b>Drop</b> - Move window to ' + virtualDesktopName;
+                        break;
+                    case 1:
+                        hint = '<b>Hover</b> - Switch to ' + virtualDesktopName + '<br><b>Drop</b> - Maximize window on ' + virtualDesktopName;
+                        break;
+                }
+            }
+        } else if (!virtualDesktopVisibilityOverride && root.config.virtualDesktopVisibility == 1) {
+            hint = "Show tiler (<b>" + root.config.shortcutShowAllSpan + "</b>)";
+        } else if (activeLayoutIndex >= 0 && activeTileIndex >= 0) {
             updateAndShowPopupDropHint();
             popupDropHintIsCenterInTile = root.centerInTile;
             let special = layoutRepeater.model[activeLayoutIndex].special;
@@ -420,6 +480,7 @@ PlasmaCore.Dialog {
             border.color: colors.borderColor
             border.width: 1
             radius: 8
+            visible: virtualDesktopVisibilityOverride || root.config.virtualDesktopVisibility != 1
 
             anchors.left: parent.left
             anchors.leftMargin: positionX
@@ -489,11 +550,77 @@ PlasmaCore.Dialog {
                                         // ⸰ ·
                                         text: root.centerInTile && layoutActive && tileActive && hasValidPopupDropHint ? "⸰" : (modelData.t && modelData.t.length > 0 ? modelData.t : "")
                                         font.pixelSize: 14
-                                        font.family: "Hack"
+                                        font.family: "Noto Sans"
                                         horizontalAlignment: Text.AlignHCenter
                                         visible: root.centerInTile && layoutActive && tileActive && hasValidPopupDropHint ? true : (modelData.t ? modelData.t : false)
                                     }
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Rectangle {
+            id: virtualDesktop
+            width: layoutGrid.implicitWidth + layoutGrid.columnSpacing * 2
+            height: virtualDesktopLayout.implicitHeight + layoutGrid.rowSpacing * 2
+            color: colors.backgroundColor
+            border.color: colors.borderColor
+            border.width: 1
+            radius: 8
+            visible: root.virtualDesktopVisibile
+
+            anchors.left: parent.left
+            anchors.leftMargin: positionX
+            anchors.top: layouts.visible ? layouts.bottom : parent.top
+            anchors.topMargin: layouts.visible ? 2 : positionY
+
+            GridLayout {
+                id: virtualDesktopLayout
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                rowSpacing: 1
+                columnSpacing: 1
+                columns: layoutGrid.implicitWidth / 35
+
+                Repeater {
+                    id: virtualDesktopRepeater
+                    model: root.virtualDesktops
+
+                    Item {
+                        id: virtualDesktop
+
+                        property bool currentVirtualDesktop: root.currentVirtualDesktopIndex == index
+                        property bool activeVirtualDesktop: activeVirtualDesktopIndex == index
+
+                        width: 34
+                        height: 34
+
+                        Rectangle {
+                            anchors.fill: parent
+                            anchors.margins: tilePadding
+                            border.color: colors.tileBorderColor
+                            border.width: 1
+                            color: "transparent"
+                            radius: 6
+
+                            Rectangle {
+                                anchors.fill: parent
+                                color: activeVirtualDesktop ? colors.tileBackgroundColorActive : colors.tileBackgroundColor
+                                radius: 6
+                            }
+
+                            Text {
+                                anchors.centerIn: parent
+                                color: colors.textColor
+                                textFormat: Text.StyledText
+                                text: modelData.isAdd ? "+" : "⸰"
+                                font.pixelSize: 14
+                                font.family: "Noto Sans"
+                                horizontalAlignment: Text.AlignHCenter
+                                visible: modelData.isAdd || currentVirtualDesktop
                             }
                         }
                     }
@@ -513,7 +640,7 @@ PlasmaCore.Dialog {
 
             anchors.left: parent.left
             anchors.leftMargin: positionX
-            anchors.top: layouts.bottom
+            anchors.top: virtualDesktop.visible ? virtualDesktop.bottom : layouts.bottom
             anchors.topMargin: 2
 
             Text {
@@ -524,7 +651,7 @@ PlasmaCore.Dialog {
                 textFormat: Text.StyledText
                 text: hint != null ? hint : ""
                 font.pixelSize: 12
-                font.family: "Hack"
+                font.family: "Noto Sans"
                 horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.WordWrap
             }
@@ -586,11 +713,13 @@ PlasmaCore.Dialog {
                 let y = root.getCursorPosition().y;
                 let layoutIndex = -1;
                 let tileIndex = -1;
+                let virtualDesktopIndex = -1;
 
                 if (root.config.windowVisibility == 2) {
                     var updatedHovered;
                     let layoutsPosition = layouts.mapToGlobal(Qt.point(0, 0));
-                    if (layoutsPosition.x <= x && layoutsPosition.x + layouts.width >= x && layoutsPosition.y <= y && layoutsPosition.y + layouts.height >= y) {
+                    let visibleHeight = (layouts.visible ? layouts.height : 0) + (virtualDesktop.visible ? virtualDesktop.height : 0) + (layouts.visible && virtualDesktop.visible ? 2 : 0)
+                    if (layoutsPosition.x <= x && layoutsPosition.x + layouts.width >= x && layoutsPosition.y <= y && layoutsPosition.y + visibleHeight >= y) {
                         updatedHovered = true;
                     } else {
                         updatedHovered = false;
@@ -601,31 +730,59 @@ PlasmaCore.Dialog {
                     }
                 }
 
-                for (let i = 0; i < layoutRepeater.count; i++) {
-                    let currentLayout = layoutRepeater.itemAt(i);
-                    let currentLayoutPosition = currentLayout.mapToGlobal(Qt.point(0, 0));
+                if (layouts.visible) {
+                    for (let i = 0; i < layoutRepeater.count; i++) {
+                        let currentLayout = layoutRepeater.itemAt(i);
+                        let currentLayoutPosition = currentLayout.mapToGlobal(Qt.point(0, 0));
 
-                    if (currentLayoutPosition.x <= x && currentLayoutPosition.x + currentLayout.width >= x && currentLayoutPosition.y <= y && currentLayoutPosition.y + currentLayout.height >= y) {
-                        layoutIndex = i;
-                        // if (layoutRepeater.model[layoutIndex].special) {
-                        //     tileIndex = 0;
-                        // } else {
-                            //for (let j = 0; j < currentLayout.children.length; j++) {
-                            for (let j = currentLayout.children.length - 1; j >= 0; j--) {
-                                let currentTile = currentLayout.children[j];
-                                // if (currentTile.tileDisabled) {
-                                //     continue;
-                                // }
-                                let currentTilePosition = currentTile.mapToGlobal(Qt.point(0, 0));
-                                if (currentTilePosition.x <= x && currentTilePosition.x + currentTile.width >= x && currentTilePosition.y <= y && currentTilePosition.y + currentTile.height >= y) {
-                                    tileIndex = j;
-                                    break;
+                        if (currentLayoutPosition.x <= x && currentLayoutPosition.x + currentLayout.width >= x && currentLayoutPosition.y <= y && currentLayoutPosition.y + currentLayout.height >= y) {
+                            layoutIndex = i;
+                            // if (layoutRepeater.model[layoutIndex].special) {
+                            //     tileIndex = 0;
+                            // } else {
+                                //for (let j = 0; j < currentLayout.children.length; j++) {
+                                for (let j = currentLayout.children.length - 1; j >= 0; j--) {
+                                    let currentTile = currentLayout.children[j];
+                                    // if (currentTile.tileDisabled) {
+                                    //     continue;
+                                    // }
+                                    let currentTilePosition = currentTile.mapToGlobal(Qt.point(0, 0));
+                                    if (currentTilePosition.x <= x && currentTilePosition.x + currentTile.width >= x && currentTilePosition.y <= y && currentTilePosition.y + currentTile.height >= y) {
+                                        tileIndex = j;
+                                        break;
+                                    }
                                 }
-                            }
-                        // }
-                        break;
+                            // }
+                            break;
+                        }
                     }
                 }
+
+                if (root.virtualDesktopVisibile && layoutIndex == -1) {
+                    for (let i = 0; i < virtualDesktopRepeater.count; i++) {
+                        let currentVirtualDesktop = virtualDesktopRepeater.itemAt(i);
+                        let currentVirtualDesktopPosition = currentVirtualDesktop.mapToGlobal(Qt.point(0, 0));
+                        if (currentVirtualDesktopPosition.x <= x && currentVirtualDesktopPosition.x + currentVirtualDesktop.width >= x && currentVirtualDesktopPosition.y <= y && currentVirtualDesktopPosition.y + currentVirtualDesktop.height >= y) {
+                            virtualDesktopIndex = i;
+                        }
+                    }
+                }
+
+                let switchVirtualDesktop = virtualDesktopIndex != -1 && !root.virtualDesktops[virtualDesktopIndex].isAdd && virtualDesktopIndex != root.currentVirtualDesktopIndex;
+                if (activeVirtualDesktopIndex != virtualDesktopIndex) {
+                    activeVirtualDesktopIndex = virtualDesktopIndex;
+                    if (switchVirtualDesktop) {
+                        if (config.virtualDesktopHoverTime == 0) {
+                            Workspace.currentDesktop = root.virtualDesktops[activeVirtualDesktopIndex].desktop;
+                        } else {
+                            activeVirtualDesktopHoverTime = Date.now();
+                        }
+                    }
+                    updateHintContent();
+                } else if (switchVirtualDesktop && config.virtualDesktopHoverTime > 0 && Date.now() - activeVirtualDesktopHoverTime > config.virtualDesktopHoverTime) {
+                    Workspace.currentDesktop = root.virtualDesktops[activeVirtualDesktopIndex].desktop;
+                }
+
                 // TODO: Add support for negative values (-)
                 // TODO: Span more than 1 layout if x < 0 || y < 0 || w > 100 || h > 100 to support SPECIAL_EMPTY
                 if (layoutIndex != activeLayoutIndex || tileIndex != activeTileIndex) {

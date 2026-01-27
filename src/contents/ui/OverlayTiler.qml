@@ -127,6 +127,10 @@ PlasmaCore.Dialog {
         return null;
     }
 
+    function getActiveVirtualDesktopIndex() {
+        return -1;
+    }
+
     Item {
         id: tiles
         anchors.fill: parent
@@ -244,7 +248,7 @@ PlasmaCore.Dialog {
                             return defaultHint;
                         }
                         font.pixelSize: 16
-                        font.family: "Hack"
+                        font.family: "Noto Sans"
                         horizontalAlignment: Text.AlignHCenter
                         visible: root.config.showOverlayTextHint && (active && spanFromIndex == -1 || spannedFrom)
                     }

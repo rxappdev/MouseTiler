@@ -24,6 +24,9 @@ Item {
     property bool useMouseCursor: true
     property var windowCursor: Qt.point(0,0)
     property bool centerInTile: false
+    property list<var> virtualDesktops: ([])
+    property var currentVirtualDesktopIndex: 0
+    property bool virtualDesktopVisibile: false
 
     function log(string) {
         if (!debugLogs) return;
@@ -148,6 +151,11 @@ SPECIAL_FILL;Fill
             gridWidth: KWin.readConfig("gridWidth", 130),
             gridHeight: KWin.readConfig("gridHeight", 70),
             popupGridPollingRate: KWin.readConfig("popupGridPollingRate", 100),
+            virtualDesktopVisibility: KWin.readConfig("virtualDesktopVisibility", 0),
+            virtualDesktopHoverTime: KWin.readConfig("virtualDesktopHoverTime", 0),
+            virtualDesktopDropAction: KWin.readConfig("virtualDesktopDropAction", 0),
+            showAddVirtualDesktopButton: KWin.readConfig("showAddVirtualDesktopButton", true),
+            autoRemoveEmptyVirtualDesktops: KWin.readConfig("autoRemoveEmptyVirtualDesktops", false),
             layouts: convertLayouts(KWin.readConfig("popupLayout", defaultPopupLayouts), defaultPopupLayouts),
             allLayouts: convertLayouts(KWin.readConfig("allPopupLayouts", defaultAllLayouts), defaultAllLayouts),
             shortcutChangeMode: KWin.readConfig("shortcutChangeMode", "Meta+Ctrl+Space"),
@@ -176,6 +184,7 @@ SPECIAL_FILL;Fill
 
         setDefaultTiler();
         setDefaultCenterInTile();
+        updateVirtualDesktops();
     }
 
     function setDefaultTiler() {
@@ -465,6 +474,7 @@ SPECIAL_FILL;Fill
             client.interactiveMoveResizeStarted.disconnect(onInteractiveMoveResizeStarted);
             client.interactiveMoveResizeStepped.disconnect(onInteractiveMoveResizeStepped);
             client.interactiveMoveResizeFinished.disconnect(onInteractiveMoveResizeFinished);
+            removeEmptyVirtualDesktops();
         }
 
         function onInteractiveMoveResizeStarted() {
@@ -476,6 +486,7 @@ SPECIAL_FILL;Fill
                     client.frameGeometry = Qt.rect(getCursorPosition().x - client.mt_originalSize.xOffset, client.frameGeometry.y, client.mt_originalSize.width, client.mt_originalSize.height);
                     delete client.mt_originalSize;
                 }
+                client.mt_originalPosition = {x: client.x, y: client.y};
                 moving = true;
                 currentlyMovedWindow = client;
                 showTiler(true);
@@ -507,73 +518,99 @@ SPECIAL_FILL;Fill
             }
             if (currentTiler.visible) {
                 if (moved) {
-                    var geometry = currentTiler.getGeometry();
-                    if (geometry != null) {
-                        let xOffset = (getCursorPosition().x - client.x) / client.width;
-                        client.mt_originalSize = {xOffset: xOffset, width: client.width, height: client.height};
-
-                        switch (geometry.special) {
-                            case 'SPECIAL_FILL':
-                                geometry = getFillGeometry(client, geometry.specialMode == 0);
-                                addMargins(geometry, true, true, true, true);
-                                if (geometry != null) {
-                                    moveAndResizeWindow(client, geometry);
-                                }
+                    var activeVirtualDesktopIndex = currentTiler.getActiveVirtualDesktopIndex();
+                    if (activeVirtualDesktopIndex != -1) {
+                        let desktop;
+                        if (virtualDesktops[activeVirtualDesktopIndex].isAdd) {
+                            Workspace.createDesktop(Workspace.desktops.length, "");
+                            desktop = Workspace.desktops[Workspace.desktops.length - 1];
+                        } else {
+                            desktop = virtualDesktops[activeVirtualDesktopIndex].desktop;
+                        }
+                        client.desktops = [virtualDesktops[activeVirtualDesktopIndex].desktop];
+                        switch (config.virtualDesktopDropAction) {
+                            case 0:
+                                client.frameGeometry = Qt.rect(client.mt_originalPosition.x, client.mt_originalPosition.y, client.width, client.height);
+                                Workspace.currentDesktop = desktop;
                                 break;
-                            case 'SPECIAL_SPLIT_VERTICAL':
-                                geometry = splitAndMoveSplitted(client, true, geometry.specialMode == 0);
-                                if (geometry != null) {
-                                    moveAndResizeWindow(client, geometry);
-                                }
-                                break;
-                            case 'SPECIAL_SPLIT_HORIZONTAL':
-                                geometry = splitAndMoveSplitted(client, false, geometry.specialMode == 0);
-                                if (geometry != null) {
-                                    moveAndResizeWindow(client, geometry);
-                                }
-                                break;
-                            case 'SPECIAL_NO_TITLEBAR_AND_FRAME':
-                                client.noBorder = !client.noBorder;
-                                break;
-                            case 'SPECIAL_KEEP_ABOVE':
-                                client.keepAbove = !client.keepAbove;
-                                break;
-                            case 'SPECIAL_KEEP_BELOW':
-                                client.keepBelow = !client.keepBelow;
-                                break;
-                            case 'SPECIAL_MAXIMIZE':
+                            case 1:
                                 Workspace.activeWindow = client;
                                 Workspace.slotWindowMaximize();
                                 break;
-                            case 'SPECIAL_MINIMIZE':
-                                client.minimized = true;
-                                break;
-                            case 'SPECIAL_FULLSCREEN':
-                                client.fullScreen = true;
-                                break;
-                            case 'SPECIAL_CLOSE':
-                                Workspace.activeWindow = client;
-                                Workspace.slotWindowClose();
-                                break;
-                            default:
-                                addMargins(geometry, true, true, true, true);
-                                moveAndResizeWindow(client, geometry);
-                                break;
+                        }
+                    } else {
+                        var geometry = currentTiler.getGeometry();
+                        if (geometry != null) {
+                            let xOffset = (getCursorPosition().x - client.x) / client.width;
+                            client.mt_originalSize = {xOffset: xOffset, width: client.width, height: client.height};
+
+                            switch (geometry.special) {
+                                case 'SPECIAL_FILL':
+                                    geometry = getFillGeometry(client, geometry.specialMode == 0);
+                                    addMargins(geometry, true, true, true, true);
+                                    if (geometry != null) {
+                                        moveAndResizeWindow(client, geometry);
+                                    }
+                                    break;
+                                case 'SPECIAL_SPLIT_VERTICAL':
+                                    geometry = splitAndMoveSplitted(client, true, geometry.specialMode == 0);
+                                    if (geometry != null) {
+                                        moveAndResizeWindow(client, geometry);
+                                    }
+                                    break;
+                                case 'SPECIAL_SPLIT_HORIZONTAL':
+                                    geometry = splitAndMoveSplitted(client, false, geometry.specialMode == 0);
+                                    if (geometry != null) {
+                                        moveAndResizeWindow(client, geometry);
+                                    }
+                                    break;
+                                case 'SPECIAL_NO_TITLEBAR_AND_FRAME':
+                                    client.noBorder = !client.noBorder;
+                                    break;
+                                case 'SPECIAL_KEEP_ABOVE':
+                                    client.keepAbove = !client.keepAbove;
+                                    break;
+                                case 'SPECIAL_KEEP_BELOW':
+                                    client.keepBelow = !client.keepBelow;
+                                    break;
+                                case 'SPECIAL_MAXIMIZE':
+                                    Workspace.activeWindow = client;
+                                    Workspace.slotWindowMaximize();
+                                    break;
+                                case 'SPECIAL_MINIMIZE':
+                                    client.minimized = true;
+                                    break;
+                                case 'SPECIAL_FULLSCREEN':
+                                    client.fullScreen = true;
+                                    break;
+                                case 'SPECIAL_CLOSE':
+                                    Workspace.activeWindow = client;
+                                    Workspace.slotWindowClose();
+                                    break;
+                                default:
+                                    addMargins(geometry, true, true, true, true);
+                                    moveAndResizeWindow(client, geometry);
+                                    break;
+                            }
                         }
                     }
                 }
                 hideTiler();
+                popupTiler.resetVirtualDesktopOverride();
                 if (!config.rememberTiler) {
                     setDefaultTiler();
                 }
                 if (!config.rememberCenterInTile) {
                     setDefaultCenterInTile();
                 }
+
+                removeEmptyVirtualDesktops();
             }
             moving = false;
             moved = false;
             currentlyMovedWindow.opacity = 1;
             currentlyMovedWindow = null;
+            delete client.mt_originalPosition;
         }
     }
 
@@ -775,6 +812,72 @@ SPECIAL_FILL;Fill
         }
     }
 
+    function setCurrentVirtualDesktop() {
+        currentVirtualDesktopIndex = Workspace.desktops.indexOf(Workspace.currentDesktop);
+    }
+
+    function updateVirtualDesktops() {
+        switch (config.virtualDesktopVisibility) {
+            case 0:
+            case 1:
+                virtualDesktopVisibile = true;
+                break;
+            case 2:
+                virtualDesktopVisibile = Workspace.desktops.length > 1;
+                break;
+            case 3:
+                virtualDesktopVisibile = false;
+                break;
+        }
+        virtualDesktops = [];
+        if (virtualDesktopVisibile) {
+            for (let i = 0; i < Workspace.desktops.length; i++) {
+                virtualDesktops.push({desktop: Workspace.desktops[i], isAdd: false});
+            }
+            if (config.showAddVirtualDesktopButton) {
+                virtualDesktops.push({isAdd: true});
+            }
+        }
+    }
+
+    function removeEmptyVirtualDesktops() {
+        if (!config.autoRemoveEmptyVirtualDesktops) return;
+        let virtualDesktopWindowCount = Array.from({ length: Workspace.desktops.length }, () => 0);
+        virtualDesktopWindowCount[0]++;
+        let filledCount = 1;
+
+        for (let i = Workspace.stackingOrder.length - 1; i >= 0; i--) {
+            let window = Workspace.stackingOrder[i];
+            if (isValidWindow(window)) {
+                if (window.onAllDesktops) {
+                    // A window occupies all windows - do not remove anything
+                    return;
+                }
+                for (let d = 0; d < window.desktops.length; d++) {
+                    let index = Workspace.desktops.indexOf(window.desktops[d]);
+                    if (virtualDesktopWindowCount[index] == 0) {
+                        filledCount++;
+                        if (filledCount == Workspace.desktops.length) {
+                            // All virtual desktops filled - do not remove anything
+                            return;
+                        }
+                    }
+                    virtualDesktopWindowCount[index]++;
+                }
+            }
+        }
+
+        // i must be > 0, we do not delete the first desktop
+        for (let i = virtualDesktopWindowCount.length; i > 0; i--) {
+            if (virtualDesktopWindowCount[i] == 0) {
+                log('Trying to remove empty virtual desktop with index: ' + i);
+                Workspace.removeDesktop(Workspace.desktops[i]);
+            }
+        }
+
+        setCurrentVirtualDesktop();
+    }
+
     Timer {
         id: autoHideTimer
 
@@ -826,6 +929,14 @@ SPECIAL_FILL;Fill
 
         function onWindowAdded(client) {
             addWindow(client);
+        }
+
+        function onCurrentDesktopChanged(previous) {
+            setCurrentVirtualDesktop();
+        }
+
+        function onDesktopsChanged() {
+            updateVirtualDesktops();
         }
     }
 

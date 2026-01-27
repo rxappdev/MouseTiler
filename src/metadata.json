@@ -10,7 +10,7 @@
         "Description": "Tile your windows with minimal effort",
         "Icon": "preferences-desktop-virtual",
         "Id": "mousetiler",
-        "Version": "3.0.3",
+        "Version": "4.0.0",
         "License": "GPLv3",
         "Website": "https://github.com/rxappdev/MouseTiler"
     },
