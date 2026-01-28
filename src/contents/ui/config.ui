@@ -1290,7 +1290,7 @@
           <item>
            <widget class="QCheckBox" name="kcfg_autoRemoveEmptyVirtualDesktops">
             <property name="text">
-             <string>Auto-remove empty virtual desktops - triggered when the last window on a virtual desktop is closed or when a window is moved</string>
+             <string>Auto-remove empty virtual desktops - triggered when the last window on a virtual desktop is closed or when a window is moved - will never remove the first virtual desktop</string>
             </property>
            </widget>
           </item>
