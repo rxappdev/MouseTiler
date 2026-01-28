@@ -27,6 +27,11 @@ Item {
     property list<var> virtualDesktops: ([])
     property var currentVirtualDesktopIndex: 0
     property bool virtualDesktopVisibile: false
+    property bool moveToVirtualDesktopOnDrop: false
+    property bool moveToVirtualDesktopOnTile: false
+    property var positionAtMoveStart: ({x: 0, y: 0})
+    property var virtualDesktopAtMoveStart: Workspace.currentDesktop
+    property var virtualDesktopChangedSinceMoveStart: false
 
     function log(string) {
         if (!debugLogs) return;
@@ -154,6 +159,8 @@ SPECIAL_FILL;Fill
             virtualDesktopVisibility: KWin.readConfig("virtualDesktopVisibility", 0),
             virtualDesktopDropAction: KWin.readConfig("virtualDesktopDropAction", 0),
             virtualDesktopHoverTime: KWin.readConfig("virtualDesktopHoverTime", 0),
+            moveBackOnDrop: KWin.readConfig("moveBackOnDrop", false),
+            moveBackOnTile: KWin.readConfig("moveBackOnTile", false),
             showAddVirtualDesktopButton: KWin.readConfig("showAddVirtualDesktopButton", true),
             autoRemoveEmptyVirtualDesktops: KWin.readConfig("autoRemoveEmptyVirtualDesktops", false),
             layouts: convertLayouts(KWin.readConfig("popupLayout", defaultPopupLayouts), defaultPopupLayouts),
@@ -163,11 +170,13 @@ SPECIAL_FILL;Fill
             shortcutVisibility: KWin.readConfig("shortcutVisibility", "Meta+Space"),
             shortcutInputType: KWin.readConfig("shortcutInputType", "Ctrl+Alt+I"),
             shortcutCenterInTile: KWin.readConfig("shortcutCenterInTile", "Meta+Ctrl+C"),
+            shortcutMoveOnDrop: KWin.readConfig("shortcutMoveOnDrop", "Meta+Ctrl+V"),
             hintChangeMode: KWin.readConfig("hintChangeMode", true),
             hintShowAllSpan: KWin.readConfig("hintShowAllSpan", true),
             hintVisibility: KWin.readConfig("hintVisibility", true),
             hintInputType: KWin.readConfig("hintInputType", false),
             hintCenterInTile: KWin.readConfig("hintCenterInTile", true),
+            hintMoveOnDrop: KWin.readConfig("hintMoveOnDrop", true),
             showHintHint: KWin.readConfig("showHintHint", true),
             showPositionHint: KWin.readConfig("showPositionHint", false),
             showPositionHintInPixels: KWin.readConfig("positionHintFormat", 0) == 0,
@@ -184,6 +193,7 @@ SPECIAL_FILL;Fill
 
         setDefaultTiler();
         setDefaultCenterInTile();
+        setDefaultMoveToVirtualDesktop();
         updateVirtualDesktops();
     }
 
@@ -193,6 +203,11 @@ SPECIAL_FILL;Fill
 
     function setDefaultCenterInTile() {
         centerInTile = config.centerInTileMode > 1;
+    }
+
+    function setDefaultMoveToVirtualDesktop() {
+        moveToVirtualDesktopOnDrop = !config.moveBackOnDrop;
+        moveToVirtualDesktopOnTile = !config.moveBackOnTile;
     }
 
     function convertOverlayLayout(userLayout, defaultLayout) {
@@ -486,7 +501,9 @@ SPECIAL_FILL;Fill
                     client.frameGeometry = Qt.rect(getCursorPosition().x - client.mt_originalSize.xOffset, client.frameGeometry.y, client.mt_originalSize.width, client.mt_originalSize.height);
                     delete client.mt_originalSize;
                 }
-                client.mt_originalPosition = {x: client.x, y: client.y};
+                positionAtMoveStart = {x: client.x, y: client.y};
+                virtualDesktopAtMoveStart = Workspace.currentDesktop;
+                virtualDesktopChangedSinceMoveStart = false;
                 moving = true;
                 currentlyMovedWindow = client;
                 showTiler(true);
@@ -530,14 +547,22 @@ SPECIAL_FILL;Fill
                         client.desktops = [virtualDesktops[activeVirtualDesktopIndex].desktop];
                         switch (config.virtualDesktopDropAction) {
                             case 0:
-                                client.frameGeometry = Qt.rect(client.mt_originalPosition.x, client.mt_originalPosition.y, client.width, client.height);
-                                Workspace.currentDesktop = desktop;
+                                client.frameGeometry = Qt.rect(positionAtMoveStart.x, positionAtMoveStart.y, client.width, client.height);
+                                if (moveToVirtualDesktopOnDrop) {
+                                    Workspace.currentDesktop = desktop;
+                                } else {
+                                    Workspace.currentDesktop = virtualDesktopAtMoveStart;
+                                }
                                 break;
                             case 1:
                                 Workspace.activeWindow = client;
                                 Workspace.slotWindowMaximize();
+                                if (!moveToVirtualDesktopOnDrop) {
+                                    Workspace.currentDesktop = virtualDesktopAtMoveStart;
+                                }
                                 break;
                         }
+
                         setCurrentVirtualDesktop();
                     } else {
                         var geometry = currentTiler.getGeometry();
@@ -593,6 +618,10 @@ SPECIAL_FILL;Fill
                                     moveAndResizeWindow(client, geometry);
                                     break;
                             }
+                            if (virtualDesktopChangedSinceMoveStart && !moveToVirtualDesktopOnTile) {
+                                Workspace.currentDesktop = virtualDesktopAtMoveStart;
+                                setCurrentVirtualDesktop();
+                            }
                         }
                     }
                 }
@@ -604,6 +633,7 @@ SPECIAL_FILL;Fill
                 if (!config.rememberCenterInTile) {
                     setDefaultCenterInTile();
                 }
+                setDefaultMoveToVirtualDesktop();
 
                 removeEmptyVirtualDesktops();
             }
@@ -611,7 +641,6 @@ SPECIAL_FILL;Fill
             moved = false;
             currentlyMovedWindow.opacity = 1;
             currentlyMovedWindow = null;
-            delete client.mt_originalPosition;
         }
     }
 
@@ -815,6 +844,7 @@ SPECIAL_FILL;Fill
 
     function setCurrentVirtualDesktop() {
         currentVirtualDesktopIndex = Workspace.desktops.indexOf(Workspace.currentDesktop);
+        virtualDesktopChangedSinceMoveStart = Workspace.currentDesktop != virtualDesktopAtMoveStart;
     }
 
     function updateVirtualDesktops() {
@@ -916,6 +946,7 @@ SPECIAL_FILL;Fill
             if (!config.rememberCenterInTile) {
                 setDefaultCenterInTile();
             }
+            setDefaultMoveToVirtualDesktop();
         }
     }
 
@@ -1102,6 +1133,20 @@ SPECIAL_FILL;Fill
         onActivated: {
             log('Toggle Center In Tile triggered!');
             centerInTile = !centerInTile;
+        }
+    }
+
+    ShortcutHandler {
+        name: "Mouse Tiler: Toggle Move To Previous Virtual Desktop"
+        text: "Mouse Tiler: Toggle Move To Previous Virtual Desktop"
+        sequence: "Meta+Ctrl+V"
+        onActivated: {
+            log('Toggle Move To Previous Virtual Desktop triggered!');
+            moveToVirtualDesktopOnDrop = !moveToVirtualDesktopOnDrop;
+            moveToVirtualDesktopOnTile = !moveToVirtualDesktopOnTile;
+            if (popupTiler.visible) {
+                popupTiler.updateHintContent();
+            }
         }
     }
 }

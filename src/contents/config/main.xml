@@ -92,6 +92,12 @@
         <entry name="virtualDesktopHoverTime" type="Int">
             <default>0</default>
         </entry>
+        <entry name="moveBackOnDrop" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="moveBackOnTile" type="Bool">
+            <default>false</default>
+        </entry>
         <entry name="showAddVirtualDesktopButton" type="Bool">
             <default>true</default>
         </entry>
@@ -192,6 +198,9 @@ SPECIAL_CLOSE
         <entry name="shortcutCenterInTile" type="String">
             <default>Meta+Ctrl+C</default>
         </entry>
+        <entry name="shortcutMoveOnDrop" type="String">
+            <default>Meta+Ctrl+V</default>
+        </entry>
         <entry name="hintChangeMode" type="Bool">
             <default>true</default>
         </entry>
@@ -205,6 +214,9 @@ SPECIAL_CLOSE
             <default>false</default>
         </entry>
         <entry name="hintCenterInTile" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="hintMoveOnDrop" type="Bool">
             <default>true</default>
         </entry>
         <entry name="showHintHint" type="Bool">

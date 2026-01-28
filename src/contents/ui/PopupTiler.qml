@@ -204,7 +204,7 @@ PlasmaCore.Dialog {
 
     function toggleShowAll() {
         reset();
-        if (!virtualDesktopVisibilityOverride) {
+        if (root.config.virtualDesktopVisibility == 1 && !virtualDesktopVisibilityOverride) {
             virtualDesktopVisibilityOverride = true;
         } else {
             showAll = !showAll;
@@ -290,21 +290,55 @@ PlasmaCore.Dialog {
             if (root.virtualDesktops[activeVirtualDesktopIndex].isAdd) {
                 switch (config.virtualDesktopDropAction) {
                     case 0:
-                        hint = '<b>Drop</b> - Add new virtual desktop and move window';
+                        if (root.moveToVirtualDesktopOnDrop) {
+                            // hint = '<b>Drop</b> - Switch to a new virtual desktop, and move window';
+                            hint = '<b>Drop</b> - Move window to a new virtual desktop, and switch to it';
+                        } else {
+                            // hint = '<b>Drop</b> - Add new virtual desktop, and move window';
+                            // hint = '<b>Drop</b> - Move window to a new virtual desktop without switching';
+                            hint = '<b>Drop</b> - Move window to a new virtual desktop then go back to ' + root.virtualDesktopAtMoveStart.name;
+                        }
                         break;
                     case 1:
-                        hint = '<b>Drop</b> - Add new virtual desktop and maximize window';
+                        if (root.moveToVirtualDesktopOnDrop) {
+                            // hint = '<b>Drop</b> - Switch to a new virtual desktop, and maximize window';
+                            hint = '<b>Drop</b> - Maximize window on a new virtual desktop, and switch to it';
+                        } else {
+                            // hint = '<b>Drop</b> - Add new virtual desktop, and maximize window';
+                            // hint = '<b>Drop</b> - Maximize window on a new virtual desktop without switching';
+                            hint = '<b>Drop</b> - Maximize window on a new virtual desktop then go back to ' + root.virtualDesktopAtMoveStart.name;
+                        }
                         break;
+                }
+                if (root.config.hintMoveOnDrop) {
+                    hint += ' (<b>' + root.config.shortcutMoveOnDrop + '</b>)';
                 }
             } else {
                 let virtualDesktopName = root.virtualDesktops[activeVirtualDesktopIndex].desktop.name;
                 switch (config.virtualDesktopDropAction) {
                     case 0:
-                        hint = '<b>Hover</b> - Switch to ' + virtualDesktopName + '<br><b>Drop</b> - Move window to ' + virtualDesktopName;
+                        if (root.moveToVirtualDesktopOnDrop) {
+                            // hint = '<b>Hover</b> - Switch to ' + virtualDesktopName + '<br><b>Drop</b> - Move window, and switch to ' + virtualDesktopName;
+                            hint = '<b>Hover</b> - Switch to ' + virtualDesktopName + '<br><b>Drop</b> - Move window to ' + virtualDesktopName + ', and switch to it';
+                        } else {
+                            // hint = '<b>Hover</b> - Switch to ' + virtualDesktopName + '<br><b>Drop</b> - Move window to ' + virtualDesktopName;
+                            // hint = '<b>Hover</b> - Switch to ' + virtualDesktopName + '<br><b>Drop</b> - Move window to ' + virtualDesktopName + ' without switching';
+                            hint = '<b>Hover</b> - Switch to ' + virtualDesktopName + '<br><b>Drop</b> - Move window to ' + virtualDesktopName + ' without switching';
+                        }
                         break;
                     case 1:
-                        hint = '<b>Hover</b> - Switch to ' + virtualDesktopName + '<br><b>Drop</b> - Maximize window on ' + virtualDesktopName;
+                        if (root.moveToVirtualDesktopOnDrop) {
+                            // hint = '<b>Hover</b> - Switch to ' + virtualDesktopName + '<br><b>Drop</b> - Maximize window on, and switch to ' + virtualDesktopName;
+                            hint = '<b>Hover</b> - Switch to ' + virtualDesktopName + '<br><b>Drop</b> - Maximize window on ' + virtualDesktopName + ', and switch to it';
+                        } else {
+                            // hint = '<b>Hover</b> - Switch to ' + virtualDesktopName + '<br><b>Drop</b> - Maximize window on ' + virtualDesktopName;
+                            // hint = '<b>Hover</b> - Switch to ' + virtualDesktopName + '<br><b>Drop</b> - Maximize window on ' + virtualDesktopName + ' without switching';
+                            hint = '<b>Hover</b> - Switch to ' + virtualDesktopName + '<br><b>Drop</b> - Maximize window on ' + virtualDesktopName + ' then go back to ' + root.virtualDesktopAtMoveStart.name;
+                        }
                         break;
+                }
+                if (root.config.hintMoveOnDrop) {
+                    hint += ' (<b>' + root.config.shortcutMoveOnDrop + '</b>)';
                 }
             }
         } else if (!virtualDesktopVisibilityOverride && root.config.virtualDesktopVisibility == 1) {
@@ -336,6 +370,15 @@ PlasmaCore.Dialog {
                     default:
                         hint = tile.hint;
                         break;
+                }
+            } else if (root.virtualDesktopChangedSinceMoveStart) {
+                if (root.moveToVirtualDesktopOnTile) {
+                    hint = 'Tile window on current virtual dekstop';
+                } else {
+                    hint = 'Tile window on ' + Workspace.currentDesktop.name + ' then go back to ' + root.virtualDesktopAtMoveStart.name;
+                }
+                if (root.config.hintMoveOnDrop) {
+                    hint += ' (<b>' + root.config.shortcutMoveOnDrop + '</b>)';
                 }
             } else if ((root.config.showSizeHint || root.config.showPositionHint) && !special) {
                 hint = '';
