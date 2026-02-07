@@ -31,6 +31,9 @@ PlasmaCore.Dialog {
     property int activeVirtualDesktopIndex: -1
     property var activeVirtualDesktopHoverTime: -1
     property bool virtualDesktopVisibilityOverride: false
+    // property bool shouldShowAutoTileScroll: false
+    // property var scrollLeftTime: 0
+    // property var scrollRightTime: 0
 
     width: clientArea.width
     height: clientArea.height
@@ -65,6 +68,10 @@ PlasmaCore.Dialog {
     function updateScreen(forceUpdate = false) {
         if (forceUpdate || activeScreen != Workspace.activeScreen) {
             root.logE('updateScreen ' + Workspace.virtualScreenSize);
+            if (activeScreen != Workspace.activeScreen) {
+                autoTiler.updateAutoTilersInPopupTiler();
+            }
+            // shouldShowAutoTileScroll = autoTiler.shouldShowAutoTileScroll();
             activeScreen = Workspace.activeScreen;
             clientArea = Workspace.clientArea(KWin.FullScreenArea, Workspace.activeScreen, Workspace.currentDesktop);
 
@@ -238,7 +245,14 @@ PlasmaCore.Dialog {
             case 'SPECIAL_EMPTY':
             case 'SPECIAL_MINIMIZE':
             case 'SPECIAL_CLOSE':
+            case 'SPECIAL_AUTO_TILER_TOGGLE':
                 break;
+            case 'SPECIAL_AUTO_TILER_1':
+            case 'SPECIAL_AUTO_TILER_2':
+            case 'SPECIAL_AUTO_TILER_3':
+                if(!layoutRepeater.model[activeLayoutIndex].activeAutoTiler) {
+                    break;
+                }
             default:
                 let layout = layoutRepeater.model[activeLayoutIndex].tiles[activeTileIndex];
                 let hintWidth = layout.w == undefined ? layout.pxW : layout.w / 100 * clientArea.width;
@@ -375,10 +389,15 @@ PlasmaCore.Dialog {
                     case 'SPECIAL_SPLIT_VERTICAL':
                         hint = hasValidPopupDropHint ? tile.hint : '<font color="orange">⚠</font> No window available for splitting';
                         break;
+                    case 'SPECIAL_AUTO_TILER_TOGGLE':
+                        hint = root.currentlyMovedWindow.mt_auto == undefined ? '<b>Enable</b> auto-tiling for this window' : '<b>Disable</b> auto-tiling for this window';
+                        break;
                     default:
                         hint = tile.hint;
                         break;
                 }
+            } else if (layoutRepeater.model[activeLayoutIndex].activeAutoTiler == true && tile.t != '*') {
+                hint = 'Auto-tile in this tile<br>Cycle auto-tiled windows with Ctrl+Alt+Left or Right';
             } else if (root.virtualDesktopChangedSinceMoveStart) {
                 if (root.moveToVirtualDesktopOnTile) {
                     hint = 'Tile window on current virtual dekstop';
@@ -447,6 +466,14 @@ PlasmaCore.Dialog {
 
             if (defaultHint.length > 0) {
                 hint = defaultHint;
+            }
+        }
+
+        if (root.useAutoTilerPreview) {
+            if (root.validAutoTilerPreview) {
+                hint = 'Valid auto tile configuration - good job! :)';
+            } else {
+                hint = '<font color="orange">⚠</font> <b>WARNING</b> <font color="orange">⚠</font> INVALID AUTO TILE CONFIGURATION';
             }
         }
     }
@@ -525,7 +552,7 @@ PlasmaCore.Dialog {
             id: layouts
             width: layoutGrid.implicitWidth + layoutGrid.columnSpacing * 2
             height: layoutGrid.implicitHeight + layoutGrid.rowSpacing * 2
-            color: colors.backgroundColor
+            color: root.config.gridTilerOpacity != 1 ? Qt.alpha(colors.backgroundColor, root.config.gridTilerOpacity) : colors.backgroundColor
             border.color: colors.borderColor
             border.width: 1
             radius: 8
@@ -548,16 +575,17 @@ PlasmaCore.Dialog {
 
                 Repeater {
                     id: layoutRepeater
-                    model: showAll ? root.config.allLayouts : root.config.layouts
+                    model: showAll ? root.popupGridAllLayouts : root.popupGridLayouts
 
                     Rectangle {
                         id: tiles
                         width: root.config.gridWidth
                         height: root.config.gridHeight
                         color: "transparent"
-                        border.color: colors.borderColor
+                        border.color: modelData.activeAutoTiler ? colors.tileBorderColor : colors.borderColor
                         border.width: 1
                         radius: 8
+                        clip: modelData.clip == true
 
                         property bool layoutActive: activeLayoutIndex == index
 
@@ -611,11 +639,63 @@ PlasmaCore.Dialog {
             }
         }
 
+        // Rectangle {
+        //     id: autoTilerScrollLeft
+
+        //     width: 34 + layoutGrid.columnSpacing * 2
+        //     height: 34 + layoutGrid.columnSpacing * 2
+        //     color: root.config.gridTilerOpacity != 1 ? Qt.alpha(colors.backgroundColor, root.config.gridTilerOpacity) : colors.backgroundColor
+        //     border.color: colors.borderColor
+        //     border.width: 1
+        //     radius: 8
+        //     visible: layouts.visible
+        //     anchors.verticalCenter: layouts.verticalCenter
+        //     anchors.right: layouts.left
+        //     anchors.rightMargin: 2
+
+
+        //     Text {
+        //         anchors.centerIn: parent
+        //         color: colors.textColor
+        //         textFormat: Text.StyledText
+        //         text: "◀"
+        //         font.pixelSize: 14
+        //         font.family: "Noto Sans"
+        //         horizontalAlignment: Text.AlignHCenter
+        //     }
+        // }
+
+        // Rectangle {
+        //     id: autoTilerScrollRight
+
+        //     width: 34 + layoutGrid.columnSpacing * 2
+        //     height: 34 + layoutGrid.columnSpacing * 2
+        //     color: root.config.gridTilerOpacity != 1 ? Qt.alpha(colors.backgroundColor, root.config.gridTilerOpacity) : colors.backgroundColor
+        //     border.color: colors.borderColor
+        //     border.width: 1
+        //     radius: 8
+        //     visible: layouts.visible
+        //     anchors.verticalCenter: layouts.verticalCenter
+        //     anchors.left: layouts.right
+        //     anchors.leftMargin: 2
+
+
+        //     Text {
+        //         anchors.centerIn: parent
+        //         color: colors.textColor
+        //         textFormat: Text.StyledText
+        //         text: "▶"
+        //         font.pixelSize: 14
+        //         font.family: "Noto Sans"
+        //         horizontalAlignment: Text.AlignHCenter
+        //     }
+        // }
+
         Rectangle {
             id: virtualDesktop
             width: layoutGrid.implicitWidth + layoutGrid.columnSpacing * 2
             height: virtualDesktopLayout.implicitHeight + layoutGrid.rowSpacing * 2
-            color: colors.backgroundColor
+            color: root.config.gridTilerOpacity != 1 ? Qt.alpha(colors.backgroundColor, root.config.gridTilerOpacity) : colors.backgroundColor
             border.color: colors.borderColor
             border.width: 1
             radius: 8
@@ -681,7 +761,7 @@ PlasmaCore.Dialog {
             id: popupHint
             width: layoutGrid.implicitWidth + layoutGrid.columnSpacing * 2
             height: popupHintText.implicitHeight + layoutGrid.rowSpacing * 2
-            color: colors.backgroundColor
+            color: root.config.gridTilerOpacity != 1 ? Qt.alpha(colors.backgroundColor, root.config.gridTilerOpacity) : colors.backgroundColor
             border.color: colors.borderColor
             border.width: 1
             radius: 8
@@ -822,6 +902,7 @@ PlasmaCore.Dialog {
                     activeVirtualDesktopIndex = virtualDesktopIndex;
                     if (switchVirtualDesktop) {
                         if (config.virtualDesktopHoverTime == 0) {
+                            autoTiler.virtualDesktopAboutToChange(); // Notify to remove window from current virtual desktop auto-tiler
                             Workspace.currentDesktop = root.virtualDesktops[activeVirtualDesktopIndex].desktop;
                         } else {
                             activeVirtualDesktopHoverTime = Date.now();
@@ -829,9 +910,40 @@ PlasmaCore.Dialog {
                     }
                     updateHintContent();
                 } else if (switchVirtualDesktop && config.virtualDesktopHoverTime > 0 && Date.now() - activeVirtualDesktopHoverTime > config.virtualDesktopHoverTime) {
+                    autoTiler.virtualDesktopAboutToChange(); // Notify to remove window from current virtual desktop auto-tiler
                     Workspace.currentDesktop = root.virtualDesktops[activeVirtualDesktopIndex].desktop;
                     updateHintContent();
                 }
+
+                // if (layoutIndex == -1) {
+                //     let leftScroll = autoTilerScrollLeft.mapToGlobal(Qt.point(0, 0));
+                //     let rightScroll = autoTilerScrollRight.mapToGlobal(Qt.point(0, 0));
+                //     if (leftScroll.x <= x && leftScroll.x + autoTilerScrollLeft.width >= x && leftScroll.y <= y && leftScroll.y + autoTilerScrollLeft.height >= y) {
+                //         logDev('HOVERING LEFT!!!!');
+                //         let timeNow = Date.now();
+                //         if (scrollLeftTime == 0) {
+                //             scrollLeftTime = timeNow + 1000;
+                //         } else if (timeNow >= scrollLeftTime) {
+                //             autoTiler.modifyPrimaryIndex(-1);
+                //             scrollLeftTime = timeNow + 1000;
+                //         }
+                //     } else if (rightScroll.x <= x && rightScroll.x + autoTilerScrollRight.width >= x && rightScroll.y <= y && rightScroll.y + autoTilerScrollRight.height >= y) {
+                //         logDev('HOVERING RIGHT!!!!');
+                //         let timeNow = Date.now();
+                //         if (scrollLeftTime == 0) {
+                //             scrollLeftTime = timeNow + 1000;
+                //         } else if (timeNow >= scrollLeftTime) {
+                //             autoTiler.modifyPrimaryIndex(-1);
+                //             scrollLeftTime = timeNow + 1000;
+                //         }
+                //     } else {
+                //         scrollLeftTime = 0;
+                //         scrollRightTime = 0;
+                //     }
+                // } else {
+                //     scrollLeftTime = 0;
+                //     scrollRightTime = 0;
+                // }
 
                 // TODO: Add support for negative values (-)
                 // TODO: Span more than 1 layout if x < 0 || y < 0 || w > 100 || h > 100 to support SPECIAL_EMPTY

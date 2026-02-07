@@ -18,6 +18,8 @@ Item {
     property var mainMenuWindow: undefined
     property bool moving: false
     property bool moved: false
+    property bool resizing: false
+    property bool resized: false
     property bool usePopupTiler: false
     property var currentTiler: popupTiler
     property var currentlyMovedWindow: null
@@ -33,6 +35,11 @@ Item {
     property var virtualDesktopAtMoveStart: Workspace.currentDesktop
     property var virtualDesktopIndexAtMoveStart: Workspace.desktops.indexOf(Workspace.currentDesktop)
     property var virtualDesktopChangedSinceMoveStart: false
+    property bool useAutoTilerPreview: false
+    property bool validAutoTilerPreview: true
+    property list<var> popupGridLayouts: ([])
+    property list<var> popupGridAllLayouts: ([])
+    property bool autoTilerEdgeScroll: false
 
     function log(string) {
         if (!debugLogs) return;
@@ -116,7 +123,11 @@ SPECIAL_CLOSE
 0,0,67,100+67,0,33,50+67,50,33,50
 0,0,33,50+0,50,33,50+33,0,67,100
 0,0,67,50+67,0,33,50+0,50,67,50+67,50,33,50
-0,0,33,50+33,0,67,50+0,50,33,50+33,50,67,50`;
+0,0,33,50+33,0,67,50+0,50,33,50+33,50,67,50
+SPECIAL_AUTO_TILER_TOGGLE
+SPECIAL_AUTO_TILER_1
+SPECIAL_AUTO_TILER_2
+SPECIAL_AUTO_TILER_3`;
         const defaultOverlayLayout = '4x2';
         const defaultPopupLayouts = `1x1
 2x1
@@ -126,7 +137,17 @@ SPECIAL_SPLIT_HORIZONTAL;Horizontal Split
 4x1
 2x2
 SPECIAL_FILL;Fill
-4x2`;
+4x2
+SPECIAL_AUTO_TILER_1
+SPECIAL_AUTO_TILER_2
+SPECIAL_AUTO_TILER_3`;
+
+        useAutoTilerPreview = KWin.readConfig("debugDesignAuto", false);
+
+        popupGridLayouts = convertLayouts(KWin.readConfig("popupLayout", defaultPopupLayouts), defaultPopupLayouts);
+        popupGridAllLayouts = convertLayouts(KWin.readConfig("allPopupLayouts", defaultAllLayouts), defaultAllLayouts);
+
+        autoTilerEdgeScroll = KWin.readConfig("autoTilerEdgeScroll", true);
 
         config = {
             // user settings
@@ -148,10 +169,11 @@ SPECIAL_FILL;Fill
             rememberAllLayouts: KWin.readConfig("rememberAllLayouts", false),
             showTargetTileHint: KWin.readConfig("showTargetTileHint", true),
             showTextHint: KWin.readConfig("showTextHint", true),
+            gridTilerOpacity: Math.min(1, Math.max(0, (KWin.readConfig("gridTilerOpacity", 100) / 100))),
             popupGridAt: KWin.readConfig("popupGridAt", 0),
             horizontalAlignment: KWin.readConfig("horizontalAlignment", 1),
             verticalAlignment: KWin.readConfig("verticalAlignment", 1),
-            gridColumns: KWin.readConfig("gridColumns", 3),
+            gridColumns: useAutoTilerPreview ? 14 : KWin.readConfig("gridColumns", 3),
             gridAllColumns: KWin.readConfig("gridAllColumns", 6),
             gridSpacing: KWin.readConfig("gridSpacing", 10),
             gridWidth: KWin.readConfig("gridWidth", 130),
@@ -164,8 +186,6 @@ SPECIAL_FILL;Fill
             moveBackOnTile: KWin.readConfig("moveBackOnTile", false),
             showAddVirtualDesktopButton: KWin.readConfig("showAddVirtualDesktopButton", true),
             autoRemoveEmptyVirtualDesktops: KWin.readConfig("autoRemoveEmptyVirtualDesktops", false),
-            layouts: convertLayouts(KWin.readConfig("popupLayout", defaultPopupLayouts), defaultPopupLayouts),
-            allLayouts: convertLayouts(KWin.readConfig("allPopupLayouts", defaultAllLayouts), defaultAllLayouts),
             shortcutChangeMode: KWin.readConfig("shortcutChangeMode", "Meta+Ctrl+Space"),
             shortcutShowAllSpan: KWin.readConfig("shortcutShowAllSpan", "Ctrl+Space"),
             shortcutVisibility: KWin.readConfig("shortcutVisibility", "Meta+Space"),
@@ -175,7 +195,7 @@ SPECIAL_FILL;Fill
             hintChangeMode: KWin.readConfig("hintChangeMode", true),
             hintShowAllSpan: KWin.readConfig("hintShowAllSpan", true),
             hintVisibility: KWin.readConfig("hintVisibility", true),
-            hintInputType: KWin.readConfig("hintInputType", false),
+            hintInputType: KWin.readConfig("hintInputType", true),
             hintCenterInTile: KWin.readConfig("hintCenterInTile", true),
             hintMoveOnDrop: KWin.readConfig("hintMoveOnDrop", true),
             showHintHint: KWin.readConfig("showHintHint", true),
@@ -196,6 +216,10 @@ SPECIAL_FILL;Fill
         setDefaultCenterInTile();
         setDefaultMoveToVirtualDesktop();
         updateVirtualDesktops();
+
+        autoTiler.loadAutoTilerConfig();
+        autoTiler.updateLayoutMapping();
+        autoTiler.initAll();
     }
 
     function setDefaultTiler() {
@@ -224,6 +248,43 @@ SPECIAL_FILL;Fill
         return [];
     }
 
+    function convertAutoTilerLayouts(userLayouts, defaultLayouts) {
+        var layoutArray = userLayouts.split('\n');
+        let convertedLayouts = [];
+
+        if (layoutArray.length == 0) {
+            layoutArray = defaultLayouts.split('\n');
+        }
+
+        logE('Converting ' + layoutArray.length + ' auto tiler layouts.');
+
+        let config = {};
+        let firstAutoTileIndex = 0;
+        if (layoutArray.length > 0 && layoutArray[0].startsWith('{') && layoutArray[0].endsWith('}')) {
+            config = JSON.parse(layoutArray[0]);
+            firstAutoTileIndex = 1;
+        }
+
+        if (config.tileTextMode === undefined) {
+            config.tileTextMode = 0;
+        }
+
+        for (let layoutIndex = firstAutoTileIndex; layoutIndex < layoutArray.length; layoutIndex++) {
+            let convertedLayout = convertLayout(layoutArray[layoutIndex], true, layoutIndex + 1 - firstAutoTileIndex, config.tileTextMode);
+            if (convertedLayout != null) {
+                if (useAutoTilerPreview) {
+                    // For generating previews
+                    convertedLayout.clip = true;
+                }
+                convertedLayouts.push(convertedLayout);
+                if (convertedLayout.firstIndex < 0) {
+                    config.carousel = true;
+                }
+            }
+        }
+        return { layouts: convertedLayouts, config: config };
+    }
+
     function convertLayouts(userLayouts, defaultLayouts) {
         var layoutArray = userLayouts.split('\n');
         let convertedLayouts = [];
@@ -243,7 +304,7 @@ SPECIAL_FILL;Fill
         return convertedLayouts;
     }
 
-    function convertLayout(userLayout) {
+    function convertLayout(userLayout, isAutoTile = false, autoTileNumber = 0, tileTextMode = 0) {
         var hasDefault = false;
         var hasLayout = false;
         var hasName = false;
@@ -251,6 +312,12 @@ SPECIAL_FILL;Fill
         var name = "Default";
 
         let layout = { tiles: [] };
+
+        let isValidAutoTile = true;
+        let autoTileArray = isAutoTile ? Array.from({ length: autoTileNumber }, () => NaN) : [];
+        let autoTileArrayPositive = isAutoTile ? Array.from({ length: autoTileNumber }, () => -1) : [];
+        let autoTileArrayNegative = isAutoTile ? Array.from({ length: autoTileNumber }, () => -1) : [];
+        let currentAutoTileHint = '';
 
         const anchorValue = {
             left: "0",
@@ -262,7 +329,9 @@ SPECIAL_FILL;Fill
 
         let sections = userLayout.split(';');
         for (let sectionIndex = 0; sectionIndex < sections.length; sectionIndex++) {
-            if (sections[sectionIndex].startsWith('d') && !hasDefault) {
+            if (sections[sectionIndex] == 'clip') {
+                layout.clip = true;
+            } else if (sections[sectionIndex].startsWith('d') && !hasDefault) {
                 hasDefault = true;
             } else if (!hasLayout) {
                 let tiles = sections[sectionIndex].replace(/\s+/g, '').split('+');
@@ -271,167 +340,246 @@ SPECIAL_FILL;Fill
                 }
                 for (let tileIndex = 0; tileIndex < tiles.length; tileIndex++) {
                     let coordinates = tiles[tileIndex].split(',');
-                    if (coordinates.length == 1) {
-                        if (coordinates[0].startsWith('SPECIAL_')) {
-                            switch (coordinates[0]) {
-                                case 'SPECIAL_FILL':
-                                    layout.tiles.push({x: 0, y: 0, w: 75, h: 100, t: "«&nbsp; FILL &nbsp;»", hint: "Fill largest empty space"});
-                                    layout.tiles.push({x: 75, y: 0, w: 25, h: 100, t: "« »", d: false, hint: "Fill smallest empty space"});
-                                    layout.special = 'SPECIAL_FILL';
-                                    isValid = true;
-                                    break;
-                                case 'SPECIAL_SPLIT_VERTICAL':
-                                    layout.tiles.push({x: 0, y: 0, w: 100, h: 50, t: "SPLIT", hint: "Split largest window and place on top"});
-                                    layout.tiles.push({x: 0, y: 50, w: 100, h: 50, t: "SPLIT", d: false, hint: "Split largest window and place on bottom"});
-                                    layout.special = 'SPECIAL_SPLIT_VERTICAL';
-                                    isValid = true;
-                                    break;
-                                case 'SPECIAL_SPLIT_HORIZONTAL':
-                                    layout.tiles.push({x: 0, y: 0, w: 50, h: 100, t: "SPLIT", hint: "Split largest window and place to the left"});
-                                    layout.tiles.push({x: 50, y: 0, w: 50, h: 100, t: "SPLIT", d: false, hint: "Split largest window and place to the right"});
-                                    layout.special = 'SPECIAL_SPLIT_HORIZONTAL';
-                                    isValid = true;
-                                    break;
-                                case 'SPECIAL_MAXIMIZE':
-                                    layout.tiles.push({x: 0, y: 0, w: 100, h: 100, t: "<br>MAXIMIZE<br>⌞⌝", hint: "Set window to ⌞⌝ Maximized<br>It will return to previous size when moved"});
-                                    layout.special = 'SPECIAL_MAXIMIZE';
-                                    isValid = true;
-                                    break;
-                                case 'SPECIAL_MINIMIZE':
-                                    layout.tiles.push({x: 0, y: 0, w: 100, h: 100, t: "<br>MINIMIZE<br>🗕", hint: "Set window to 🗕 Minimized<br>Useful for windows without a titlebar"});
-                                    layout.special = 'SPECIAL_MINIMIZE';
-                                    isValid = true;
-                                    break;
-                                case 'SPECIAL_FULLSCREEN':
-                                    layout.tiles.push({x: 0, y: 0, w: 100, h: 100, t: "<br>FULLSCREEN<br>🗖", hint: "Set window to 🗖 Fullscreen<br><font color='orange'>⚠</font> <b>WARNING</b> you might need to press <b>Alt+F3</b> to exit"});
-                                    layout.special = 'SPECIAL_FULLSCREEN';
-                                    isValid = true;
-                                    break;
-                                case 'SPECIAL_EMPTY':
-                                    layout.special = 'SPECIAL_EMPTY';
-                                    isValid = true;
-                                    break;
-                                case 'SPECIAL_KEEP_ABOVE':
-                                    layout.tiles.push({x: 0, y: 0, w: 100, h: 100, t: "<br>KEEP ABOVE<br>▲", hint: "Toggle window ▲ Keep Above"});
-                                    layout.special = 'SPECIAL_KEEP_ABOVE';
-                                    isValid = true;
-                                    break;
-                                case 'SPECIAL_KEEP_BELOW':
-                                    layout.tiles.push({x: 0, y: 0, w: 100, h: 100, t: "<br>KEEP BELOW<br>▼", hint: "Toggle window ▼ Keep Below"});
-                                    layout.special = 'SPECIAL_KEEP_BELOW';
-                                    isValid = true;
-                                    break;
-                                case 'SPECIAL_NO_TITLEBAR_AND_FRAME':
-                                    layout.tiles.push({x: 0, y: 0, w: 100, h: 100, t: "NO TITLEBAR<br>AND FRAME", hint: "Toggle window <font size='1'>⊘</font> No Titlebar and Frame<br><font color='orange'>⚠</font> <b>WARNING</b> you might need to press <b>Alt+F3</b> to re-enable"});
-                                    layout.special = 'SPECIAL_NO_TITLEBAR_AND_FRAME';
-                                    isValid = true;
-                                    break;
-                                case 'SPECIAL_CLOSE':
-                                    layout.tiles.push({x: 0, y: 0, w: 100, h: 100, t: "<br>CLOSE<br>🗙", hint: "🗙 Close the window<br>Useful for windows without a titlebar"});
-                                    layout.special = 'SPECIAL_CLOSE';
-                                    isValid = true;
-                                    break;
+                    if (isAutoTile) {
+                        if (coordinates[0].indexOf(':') > 0 && (coordinates.length == 4 || coordinates.length == 6)) {
+                            let autoTileIndex = coordinates[0].split(':');
+                            coordinates[0] = autoTileIndex[1];
+                            log('Auto tile index: ' + autoTileIndex[0] + ' Coordinates: ' + JSON.stringify(coordinates));
+                            if (autoTileIndex[0] == '*') {
+                                log('* - found');
+                                autoTileArray[tileIndex] = '*';
+                                currentAutoTileHint = '*';
+                            } else {
+                                let autoTileIndexConverted = parseInt(autoTileIndex[0]);
+                                log('Converted index: ' + autoTileIndexConverted);
+                                if (autoTileIndexConverted < 0) {
+                                    autoTileArray[tileIndex] = autoTileIndexConverted;
+                                    switch (tileTextMode) {
+                                        case 0:
+                                        case 1:
+                                            currentAutoTileHint = '' + autoTileIndexConverted;
+                                            break;
+                                        case 2:
+                                            currentAutoTileHint = '';
+                                            break;
+                                    }
+                                    autoTileIndexConverted = autoTileNumber + autoTileIndexConverted;
+                                    log('Negative index: ' + autoTileIndexConverted);
+                                    if (autoTileIndexConverted < autoTileNumber) {
+                                        autoTileArrayNegative[autoTileIndexConverted] = tileIndex;
+                                    } else {
+                                        logE('INVALID 1!');
+                                        isValidAutoTile = false;
+                                    }
+                                } else if (autoTileIndexConverted >= 0 && autoTileIndexConverted < autoTileNumber) {
+                                    autoTileArray[tileIndex] = autoTileIndexConverted;
+                                    switch (tileTextMode) {
+                                        case 0:
+                                            currentAutoTileHint = '' + (autoTileIndexConverted + 1);
+                                            break;
+                                        case 1:
+                                            currentAutoTileHint = '' + autoTileIndexConverted;
+                                            break;
+                                        case 2:
+                                            if (autoTileIndexConverted == 0) {
+                                                currentAutoTileHint = 'P';
+                                            } else {
+                                                currentAutoTileHint = '';
+                                            }
+                                            break;
+                                    }
+                                    autoTileArrayPositive[autoTileIndexConverted] = tileIndex;
+                                } else {
+                                    logE('INVALID 2!');
+                                    isValidAutoTile = false;
+                                }
                             }
                         } else {
-                            // no coordinates found - just grid size defined by wxh
-                            let wxh = coordinates[0].split('x');
-                            if (wxh.length == 2) {
-                                let w = parseInt(wxh[0]);
-                                let h = parseInt(wxh[1]);
-                                let width = Math.trunc(100 / w);
-                                let height = Math.trunc(100 / h);
-                                let widthModulo = 100 % w;
-                                let heightModulo = 100 % h;
+                            logE('INVALID 3!');
+                            isValidAutoTile = false;
+                        }
+                    }
 
-                                let yOffset = 0;
-                                for (let y = 0; y < h; y++) {
-                                    let xOffset = 0;
-                                    let currentYOffset = getExtraPercentage(heightModulo, y, h);
-                                    for (let x = 0; x < w; x++) {
-                                        let currentXOffset = getExtraPercentage(widthModulo, x, w);
-                                        layout.tiles.push({x: x * width + xOffset, y: y * height + yOffset, w: width + currentXOffset, h: height + currentYOffset});
-                                        xOffset += currentXOffset;
-                                    }
-                                    yOffset += currentYOffset;
+                    if (isValidAutoTile) {
+                        if (coordinates.length == 1) {
+                            if (coordinates[0].startsWith('SPECIAL_')) {
+                                switch (coordinates[0]) {
+                                    case 'SPECIAL_FILL':
+                                        layout.tiles.push({x: 0, y: 0, w: 75, h: 100, t: "«&nbsp; FILL &nbsp;»", hint: "Fill largest empty space"});
+                                        layout.tiles.push({x: 75, y: 0, w: 25, h: 100, t: "« »", d: false, hint: "Fill smallest empty space"});
+                                        layout.special = 'SPECIAL_FILL';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_SPLIT_VERTICAL':
+                                        layout.tiles.push({x: 0, y: 0, w: 100, h: 50, t: "SPLIT", hint: "Split largest window and place on top"});
+                                        layout.tiles.push({x: 0, y: 50, w: 100, h: 50, t: "SPLIT", d: false, hint: "Split largest window and place on bottom"});
+                                        layout.special = 'SPECIAL_SPLIT_VERTICAL';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_SPLIT_HORIZONTAL':
+                                        layout.tiles.push({x: 0, y: 0, w: 50, h: 100, t: "SPLIT", hint: "Split largest window and place to the left"});
+                                        layout.tiles.push({x: 50, y: 0, w: 50, h: 100, t: "SPLIT", d: false, hint: "Split largest window and place to the right"});
+                                        layout.special = 'SPECIAL_SPLIT_HORIZONTAL';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_MAXIMIZE':
+                                        layout.tiles.push({x: 0, y: 0, w: 100, h: 100, t: "<br>MAXIMIZE<br>⌞⌝", hint: "Set window to ⌞⌝ Maximized<br>It will return to previous size when moved"});
+                                        layout.special = 'SPECIAL_MAXIMIZE';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_MINIMIZE':
+                                        layout.tiles.push({x: 0, y: 0, w: 100, h: 100, t: "<br>MINIMIZE<br>🗕", hint: "Set window to 🗕 Minimized<br>Useful for windows without a titlebar"});
+                                        layout.special = 'SPECIAL_MINIMIZE';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_FULLSCREEN':
+                                        layout.tiles.push({x: 0, y: 0, w: 100, h: 100, t: "<br>FULLSCREEN<br>🗖", hint: "Set window to 🗖 Fullscreen<br><font color='orange'>⚠</font> <b>WARNING</b> you might need to press <b>Alt+F3</b> to exit"});
+                                        layout.special = 'SPECIAL_FULLSCREEN';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_EMPTY':
+                                        layout.special = 'SPECIAL_EMPTY';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_KEEP_ABOVE':
+                                        layout.tiles.push({x: 0, y: 0, w: 100, h: 100, t: "<br>KEEP ABOVE<br>▲", hint: "Toggle window ▲ Keep Above"});
+                                        layout.special = 'SPECIAL_KEEP_ABOVE';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_KEEP_BELOW':
+                                        layout.tiles.push({x: 0, y: 0, w: 100, h: 100, t: "<br>KEEP BELOW<br>▼", hint: "Toggle window ▼ Keep Below"});
+                                        layout.special = 'SPECIAL_KEEP_BELOW';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_NO_TITLEBAR_AND_FRAME':
+                                        layout.tiles.push({x: 0, y: 0, w: 100, h: 100, t: "NO TITLEBAR<br>AND FRAME", hint: "Toggle window <font size='1'>⊘</font> No Titlebar and Frame<br><font color='orange'>⚠</font> <b>WARNING</b> you might need to press <b>Alt+F3</b> to re-enable"});
+                                        layout.special = 'SPECIAL_NO_TITLEBAR_AND_FRAME';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_CLOSE':
+                                        layout.tiles.push({x: 0, y: 0, w: 100, h: 100, t: "<br>CLOSE<br>🗙", hint: "🗙 Close the window<br>Useful for windows without a titlebar"});
+                                        layout.special = 'SPECIAL_CLOSE';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_AUTO_TILER_TOGGLE':
+                                        layout.tiles.push({x: 0, y: 0, w: 100, h: 100, t: "TOGGLE<br>AUTO TILE", hint: "Toggle auto tile"});
+                                        layout.special = 'SPECIAL_AUTO_TILER_TOGGLE';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_AUTO_TILER_1':
+                                        layout.special = 'SPECIAL_AUTO_TILER_1';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_AUTO_TILER_2':
+                                        layout.special = 'SPECIAL_AUTO_TILER_2';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_AUTO_TILER_3':
+                                        layout.special = 'SPECIAL_AUTO_TILER_3';
+                                        isValid = true;
+                                        break;
                                 }
-                                isValid = w > 0 && h > 0;
+                            } else {
+                                // no coordinates found - just grid size defined by wxh
+                                let wxh = coordinates[0].split('x');
+                                if (wxh.length == 2) {
+                                    let w = parseInt(wxh[0]);
+                                    let h = parseInt(wxh[1]);
+                                    let width = Math.trunc(100 / w);
+                                    let height = Math.trunc(100 / h);
+                                    let widthModulo = 100 % w;
+                                    let heightModulo = 100 % h;
+
+                                    let yOffset = 0;
+                                    for (let y = 0; y < h; y++) {
+                                        let xOffset = 0;
+                                        let currentYOffset = getExtraPercentage(heightModulo, y, h);
+                                        for (let x = 0; x < w; x++) {
+                                            let currentXOffset = getExtraPercentage(widthModulo, x, w);
+                                            layout.tiles.push({x: x * width + xOffset, y: y * height + yOffset, w: width + currentXOffset, h: height + currentYOffset});
+                                            xOffset += currentXOffset;
+                                        }
+                                        yOffset += currentYOffset;
+                                    }
+                                    isValid = w > 0 && h > 0;
+                                } else {
+                                    logE('Invalid user layout: ' + tiles[tileIndex]);
+                                }
+                            }
+                        } else if (coordinates.length == 4 || coordinates.length == 6) {
+                            // x, pixel x, y, pixel y, w, pixel w, h, pixel h, anchorX, anchorY
+                            let x, pxX, y, pxY, w, pxW, h, pxH, aX, aY;
+                            isValid = true;
+                            if (coordinates[0].endsWith('px')) {
+                                pxX = parseInt(coordinates[0]);
+                                if (Number.isNaN(pxX)) {
+                                    isValid = false;
+                                }
+                            } else {
+                                x = parseInt(coordinates[0]);
+                                if (Number.isNaN(x)) {
+                                    isValid = false;
+                                }
+                            }
+
+                            if (coordinates[1].endsWith('px')) {
+                                pxY = parseInt(coordinates[1]);
+                                if (Number.isNaN(pxY)) {
+                                    isValid = false;
+                                }
+                            } else {
+                                y = parseInt(coordinates[1]);
+                                if (Number.isNaN(y)) {
+                                    isValid = false;
+                                }
+                            }
+
+                            if (coordinates[2].endsWith('px')) {
+                                pxW = parseInt(coordinates[2]);
+                                if (Number.isNaN(pxW)) {
+                                    isValid = false;
+                                }
+                            } else {
+                                w = parseInt(coordinates[2]);
+                                if (Number.isNaN(w)) {
+                                    isValid = false;
+                                }
+                            }
+
+                            if (coordinates[3].endsWith('px')) {
+                                pxH = parseInt(coordinates[3]);
+                                if (Number.isNaN(pxH)) {
+                                    isValid = false;
+                                }
+                            } else {
+                                h = parseInt(coordinates[3]);
+                                if (Number.isNaN(h)) {
+                                    isValid = false;
+                                }
+                            }
+
+                            if (coordinates.length == 6) {
+                                let numericAX = coordinates[4].replace(/\b(?:left|center|right)\b/gi, value => anchorValue[value.toLowerCase()]);
+                                aX = parseInt(numericAX);
+                                if (Number.isNaN(aX)) {
+                                    isValid = false;
+                                }
+
+                                let numericAY = coordinates[5].replace(/\b(?:top|center|bottom)\b/gi, value => anchorValue[value.toLowerCase()]);
+                                aY = parseInt(numericAY);
+                                if (Number.isNaN(aY)) {
+                                    isValid = false;
+                                }
+                            }
+
+                            if (isValid) {
+                                layout.tiles.push({x: x, pxX: pxX, y: y, pxY: pxY, w: w, pxW: pxW, h: h, pxH: pxH, aX: aX, aY: aY, t: (isAutoTile ? currentAutoTileHint : undefined)});
                             } else {
                                 logE('Invalid user layout: ' + tiles[tileIndex]);
                             }
-                        }
-                    } else if (coordinates.length == 4 || coordinates.length == 6) {
-                        // x, pixel x, y, pixel y, w, pixel w, h, pixel h, anchorX, anchorY
-                        let x, pxX, y, pxY, w, pxW, h, pxH, aX, aY;
-                        isValid = true;
-                        if (coordinates[0].endsWith('px')) {
-                            pxX = parseInt(coordinates[0]);
-                            if (Number.isNaN(pxX)) {
-                                isValid = false;
-                            }
-                        } else {
-                            x = parseInt(coordinates[0]);
-                            if (Number.isNaN(x)) {
-                                isValid = false;
-                            }
-                        }
-
-                        if (coordinates[1].endsWith('px')) {
-                            pxY = parseInt(coordinates[1]);
-                            if (Number.isNaN(pxY)) {
-                                isValid = false;
-                            }
-                        } else {
-                            y = parseInt(coordinates[1]);
-                            if (Number.isNaN(y)) {
-                                isValid = false;
-                            }
-                        }
-
-                        if (coordinates[2].endsWith('px')) {
-                            pxW = parseInt(coordinates[2]);
-                            if (Number.isNaN(pxW)) {
-                                isValid = false;
-                            }
-                        } else {
-                            w = parseInt(coordinates[2]);
-                            if (Number.isNaN(w)) {
-                                isValid = false;
-                            }
-                        }
-
-                        if (coordinates[3].endsWith('px')) {
-                            pxH = parseInt(coordinates[3]);
-                            if (Number.isNaN(pxH)) {
-                                isValid = false;
-                            }
-                        } else {
-                            h = parseInt(coordinates[3]);
-                            if (Number.isNaN(h)) {
-                                isValid = false;
-                            }
-                        }
-
-                        if (coordinates.length == 6) {
-                            let numericAX = coordinates[4].replace(/\b(?:left|center|right)\b/gi, value => anchorValue[value.toLowerCase()]);
-                            aX = parseInt(numericAX);
-                            if (Number.isNaN(aX)) {
-                                isValid = false;
-                            }
-
-                            let numericAY = coordinates[5].replace(/\b(?:top|center|bottom)\b/gi, value => anchorValue[value.toLowerCase()]);
-                            aY = parseInt(numericAY);
-                            if (Number.isNaN(aY)) {
-                                isValid = false;
-                            }
-                        }
-
-                        if (isValid) {
-                            layout.tiles.push({x: x, pxX: pxX, y: y, pxY: pxY, w: w, pxW: pxW, h: h, pxH: pxH, aX: aX, aY: aY});
                         } else {
                             logE('Invalid user layout: ' + tiles[tileIndex]);
                         }
-                    } else {
-                        logE('Invalid user layout: ' + tiles[tileIndex]);
                     }
                 }
                 hasLayout = true;
@@ -442,6 +590,51 @@ SPECIAL_FILL;Fill
                     hasName = true;
                 }
             }
+        }
+        if (isAutoTile) {
+            let negativeCount = 0;
+            let positiveCount = 0;
+            for (let i = autoTileNumber - 1; i >= 0; i--) {
+                if (autoTileArrayNegative[i] != -1) {
+                    negativeCount++;
+                } else {
+                    break;
+                }
+            }
+            for (let i = 0; i < autoTileNumber; i++) {
+                if (autoTileArrayPositive[i] != -1) {
+                    positiveCount++;
+                } else {
+                    break;
+                }
+            }
+            log('negativeCount: ' + negativeCount + ' positiveCount: ' + positiveCount + ' autoTileNumber: ' + autoTileNumber);
+            if (positiveCount < 1 || negativeCount + positiveCount != autoTileNumber) {
+                log('INVALID 5!');
+                isValidAutoTile = false;
+            } else {
+                layout.firstIndex = negativeCount > 0 ? negativeCount * -1 : 0;
+                layout.autoMapping = [];
+
+                // if (negativeCount > 0) {
+                //     for (let i = autoTileNumber - negativeCount; i < autoTileNumber; i++) {
+                //         layout.autoMapping.push(autoTileArrayNegative[i]);
+                //     }
+                // }
+                // for (let i = 0; i < positiveCount; i++) {
+                //     layout.autoMapping.push(autoTileArrayPositive[i]);
+                // }
+
+                layout.autoMapping = [...autoTileArray];
+
+                log('Negative: ' + JSON.stringify(autoTileArrayNegative));
+                log('Positive: ' + JSON.stringify(autoTileArrayPositive));
+                log('layout: ' + JSON.stringify(layout));
+            }
+        }
+        if (!isValidAutoTile) {
+            logE('Not a valid auto-tile');
+            validAutoTilerPreview = false;
         }
         if (isValid) {
             layout.name = name;
@@ -480,12 +673,15 @@ SPECIAL_FILL;Fill
         if (!isValidWindow(client)) return;
         log('Adding window: ' + client.resourceClass);
 
+        autoTiler.windowAdded(client);
+
         client.closed.connect(onClosed);
         client.interactiveMoveResizeStarted.connect(onInteractiveMoveResizeStarted);
         client.interactiveMoveResizeStepped.connect(onInteractiveMoveResizeStepped);
         client.interactiveMoveResizeFinished.connect(onInteractiveMoveResizeFinished);
 
         function onClosed() {
+            autoTiler.windowClosed(client);
             client.closed.disconnect(onClosed);
             client.interactiveMoveResizeStarted.disconnect(onInteractiveMoveResizeStarted);
             client.interactiveMoveResizeStepped.disconnect(onInteractiveMoveResizeStepped);
@@ -498,7 +694,7 @@ SPECIAL_FILL;Fill
                 if (!useMouseCursor) {
                     windowCursor = Qt.point(client.x + client.width / 2, client.y);
                 }
-                if (config.restoreSize && client.mt_originalSize) {
+                if ((config.restoreSize || autoTiler.configAutoTileRestoreSize) && client.mt_originalSize) {
                     client.frameGeometry = Qt.rect(getCursorPosition().x - client.mt_originalSize.xOffset, client.frameGeometry.y, client.mt_originalSize.width, client.mt_originalSize.height);
                     delete client.mt_originalSize;
                 }
@@ -512,8 +708,11 @@ SPECIAL_FILL;Fill
                 if (config.tilerVisibility == 1) {
                     autoHideTimer.startAutoHideTimer();
                 }
-            } else if (client.resize && client.mt_originalSize) {
-                delete client.mt_originalSize;
+            } else if (client.resize) {
+                resizing = true;
+                if (client.mt_originalSize) {
+                    delete client.mt_originalSize;
+                }
             }
         }
 
@@ -528,6 +727,10 @@ SPECIAL_FILL;Fill
                         autoHideTimer.stopAutoHideTimer();
                     }
                 }
+            } else if (resizing) {
+                if (!resized) {
+                    resized = true;
+                }
             }
         }
 
@@ -535,11 +738,15 @@ SPECIAL_FILL;Fill
             if (moving && !useMouseCursor) {
                 windowCursor = Qt.point(client.x + client.width / 2, client.y);
             }
-            if (currentTiler.visible) {
+            if (resized) {
+                autoTiler.windowResized(client);
+            } else if (currentTiler.visible) {
                 if (moved) {
+                    let moveHandledByAutoTiler = false;
                     var activeVirtualDesktopIndex = currentTiler.getActiveVirtualDesktopIndex();
                     if (activeVirtualDesktopIndex != -1) {
                         let desktop;
+                        autoTiler.virtualDesktopAboutToChange(); // Notify to remove window from current virtual desktop auto-tiler
                         if (virtualDesktops[activeVirtualDesktopIndex].isAdd) {
                             Workspace.createDesktop(Workspace.desktops.length, "");
                             desktop = Workspace.desktops[Workspace.desktops.length - 1];
@@ -615,6 +822,22 @@ SPECIAL_FILL;Fill
                                     Workspace.activeWindow = client;
                                     Workspace.slotWindowClose();
                                     break;
+                                case 'SPECIAL_AUTO_TILER_TOGGLE':
+                                    autoTiler.toggleAutoTile(client);
+                                    moveHandledByAutoTiler = true;
+                                    break;
+                                case 'SPECIAL_AUTO_TILER_1':
+                                    autoTiler.windowDropped(client, geometry.specialMode, 0);
+                                    moveHandledByAutoTiler = true;
+                                    break;
+                                case 'SPECIAL_AUTO_TILER_2':
+                                    autoTiler.windowDropped(client, geometry.specialMode, 1);
+                                    moveHandledByAutoTiler = true;
+                                    break;
+                                case 'SPECIAL_AUTO_TILER_3':
+                                    autoTiler.windowDropped(client, geometry.specialMode, 2);
+                                    moveHandledByAutoTiler = true;
+                                    break;
                                 default:
                                     addMargins(geometry, true, true, true, true);
                                     moveAndResizeWindow(client, geometry);
@@ -625,6 +848,10 @@ SPECIAL_FILL;Fill
                                 setCurrentVirtualDesktop();
                             }
                         }
+                    }
+
+                    if (!moveHandledByAutoTiler) {
+                        autoTiler.windowMoved(client);
                     }
                 }
                 hideTiler();
@@ -638,9 +865,13 @@ SPECIAL_FILL;Fill
                 setDefaultMoveToVirtualDesktop();
 
                 removeEmptyVirtualDesktops();
+            } else if (moved) {
+                autoTiler.windowMoved(client);
             }
             moving = false;
             moved = false;
+            resizing = false;
+            resized = false;
             currentlyMovedWindow.opacity = 1;
             currentlyMovedWindow = null;
         }
@@ -847,6 +1078,7 @@ SPECIAL_FILL;Fill
     function setCurrentVirtualDesktop() {
         currentVirtualDesktopIndex = Workspace.desktops.indexOf(Workspace.currentDesktop);
         virtualDesktopChangedSinceMoveStart = Workspace.currentDesktop != virtualDesktopAtMoveStart;
+        autoTiler.updateAutoTilersInPopupTiler();
     }
 
     function updateVirtualDesktops() {
@@ -952,6 +1184,75 @@ SPECIAL_FILL;Fill
         }
     }
 
+    Timer {
+        id: autoTileTimer
+
+        property var timeoutIsRunning: false
+        property var timeoutData: []
+
+        function setTimeout(delay, window) {
+            logE('Setting timeout for ' + delay + ' isRunning: ' + timeoutIsRunning + ' timer count: ' + timeoutData.length + ' id: ' + window.internalId);
+
+            if (!window) {
+                return;
+            // } else if (window.mt_autoRestore > 0) {
+            //     let desktopBefore = Workspace.currentDesktop;
+            //     autoTiler.autoTileWindowOnStart(window);
+            //     Workspace.currentDesktop = desktopBefore;
+            } else {
+                timeoutData.push({time: Date.now() + delay, window: window});
+                timeoutData.sort((a, b) => a.time - b.time);
+
+                if (!timeoutIsRunning) {
+                    autoTileTimer.interval = 250;
+                    autoTileTimer.repeat = true;
+                    autoTileTimer.triggered.connect(onTimeoutTriggered);
+                    timeoutIsRunning = true;
+
+                    autoTileTimer.start();
+                }
+            }
+        }
+
+        function removeTimeoutsFor(window) {
+            for (var i = timeoutData.length - 1; i >= 0; i--) {
+                if (timeoutData[i].window == window) {
+                    timeoutData.splice(i, 1);
+                }
+            }
+            if (timeoutData.length == 0 && timeoutIsRunning) {
+                autoTileTimer.triggered.disconnect(onTimeoutTriggered);
+                timeoutIsRunning = false;
+                autoTileTimer.stop();
+            }
+        }
+
+        function onTimeoutTriggered() {
+            let desktopBefore = Workspace.currentDesktop;
+
+            while (timeoutData.length > 0 && timeoutData[0].time <= Date.now()) {
+                let data = timeoutData.shift();
+                log('Trying to auto tile window: ' + data.window.internalId);
+                autoTiler.autoTileWindowOnStart(data.window);
+            }
+
+            for (var i = timeoutData.length - 1; i >= 0; i--) {
+                if (timeoutData[i].window.mt_autoRestore > 0) {
+                    let data = timeoutData.splice(i, 1)[0];
+                    autoTiler.autoTileWindowOnStart(data.window);
+                }
+            }
+
+            Workspace.currentDesktop = desktopBefore;
+
+            if (timeoutData.length == 0) {
+                autoTileTimer.triggered.disconnect(onTimeoutTriggered);
+                timeoutIsRunning = false;
+                autoTileTimer.stop();
+            }
+        }
+    }
+
     Settings {
         // Saved in default settings file ~/.config/kde.org/kwin.conf
         id: settings
@@ -970,7 +1271,16 @@ SPECIAL_FILL;Fill
         }
 
         function onDesktopsChanged() {
+            autoTiler.virtualDesktopsChanged();
             updateVirtualDesktops();
+        }
+
+        function onScreensChanged() {
+            autoTiler.screensChanged();
+        }
+
+        function onWindowActivated(window) {
+            autoTiler.windowActivated(window);
         }
     }
 
@@ -1018,6 +1328,10 @@ SPECIAL_FILL;Fill
 
         OverlayTiler {
             id: overlayTiler
+        }
+
+        AutoTiler {
+            id: autoTiler
         }
     }
 
@@ -1149,6 +1463,56 @@ SPECIAL_FILL;Fill
             if (popupTiler.visible) {
                 popupTiler.updateHintContent();
             }
+        }
+    }
+
+    ShortcutHandler {
+        name: "Mouse Tiler: Auto Tiler - Decrease Scroll Position"
+        text: "Mouse Tiler: Auto Tiler - Decrease Scroll Position"
+        sequence: "Ctrl+Alt+Left"
+        onActivated: {
+            log('Decrease Scroll Position triggered!');
+            autoTiler.modifyPrimaryIndex(-1);
+        }
+    }
+
+    ShortcutHandler {
+        name: "Mouse Tiler: Auto Tiler - Increase Scroll Position"
+        text: "Mouse Tiler: Auto Tiler - Increase Scroll Position"
+        sequence: "Ctrl+Alt+Right"
+        onActivated: {
+            log('Auto Tiler - Increase Scroll Position triggered!');
+            autoTiler.modifyPrimaryIndex(1);
+        }
+    }
+
+    ShortcutHandler {
+        name: "Mouse Tiler: Toggle Auto Tile For Active Window"
+        text: "Mouse Tiler: Toggle Auto Tile For Active Window"
+        sequence: "Ctrl+Alt+A"
+        onActivated: {
+            log('Toggle Auto Tile For Active Window triggered!');
+            if (autoTiler.isValidAutoTileWindow(Workspace.activeWindow)) {
+                autoTiler.toggleAutoTile(Workspace.activeWindow);
+            }
+        }
+    }
+
+    ScreenEdgeHandler {
+        enabled: autoTilerEdgeScroll
+        edge: ScreenEdgeHandler.LeftEdge
+        onActivated: {
+            log('LEFT Edge triggered!');
+            autoTiler.modifyPrimaryIndex(-1);
+        }
+    }
+
+    ScreenEdgeHandler {
+        enabled: autoTilerEdgeScroll
+        edge: ScreenEdgeHandler.RightEdge
+        onActivated: {
+            log('RIGHT Edge triggered!');
+            autoTiler.modifyPrimaryIndex(1);
         }
     }
 }

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1153</width>
-    <height>803</height>
+    <width>1250</width>
+    <height>886</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>1060</width>
-    <height>765</height>
+    <height>766</height>
    </size>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -36,6 +36,16 @@
        <string>General</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_general">
+       <item>
+        <widget class="QLabel" name="label_84">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700; color:#ffaa00;&quot;&gt;READ ME&lt;/span&gt; There are a lot of settings, bust most people probably only want to change 3 of them (visibility, position, and disable the hints). I have marked them with &lt;span style=&quot; font-weight:700; color:#ffaa00;&quot;&gt;IMPORTANT&lt;/span&gt; tag so they are easy to find.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QGroupBox" name="groupBox_defaultTiler">
          <property name="enabled">
@@ -544,6 +554,7 @@
       <zorder>groupBox_11</zorder>
       <zorder>groupBox_9</zorder>
       <zorder>groupBox_12</zorder>
+      <zorder>label_84</zorder>
      </widget>
      <widget class="QWidget" name="tab_mulltiWindowRestore">
       <attribute name="icon">
@@ -601,7 +612,7 @@
           <item>
            <widget class="QLabel" name="label_67">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ffaa00;&quot;&gt;RECOMMENDED&lt;/span&gt; You can use the &lt;a href=&quot;https://rxweb.epizy.com/mousetiler/editor.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#5294e2;&quot;&gt;graphical web editor&lt;/span&gt;&lt;/a&gt; to edit the layout.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ffaa00;&quot;&gt;TIP&lt;/span&gt; You can use the &lt;a href=&quot;https://rxweb.epizy.com/mousetiler/editor.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#5294e2;&quot;&gt;graphical web editor&lt;/span&gt;&lt;/a&gt; to edit the layout.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -793,6 +804,59 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QSlider" name="kcfg_gridTilerOpacity">
+            <property name="minimum">
+             <number>0</number>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="singleStep">
+             <number>10</number>
+            </property>
+            <property name="value">
+             <number>100</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="tickPosition">
+             <enum>QSlider::TickPosition::TicksBelow</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_15">
+            <item>
+             <widget class="QLabel" name="label_85">
+              <property name="text">
+               <string>  0</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_87">
+              <property name="text">
+               <string>Popup Grid Background Opacity</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_86">
+              <property name="text">
+               <string>100</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
          </layout>
         </widget>
        </item>
@@ -805,7 +869,7 @@
           <item>
            <widget class="QLabel" name="label_24">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Position&lt;/span&gt;: Determines where the Popup Grid will be displayed. You can chose to show it below mouse pointer or at a fixed screen position.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700; color:#ffaa00;&quot;&gt;IMPORTANT&lt;/span&gt;&lt;span style=&quot; font-weight:700;&quot;&gt; Position&lt;/span&gt;: Determines where the Popup Grid will be displayed. You can chose to show it below mouse pointer or at a fixed screen position.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -1339,7 +1403,7 @@
           <item>
            <widget class="QLabel" name="label_65">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ffaa00;&quot;&gt;RECOMMENDED&lt;/span&gt; You can use the &lt;a href=&quot;https://rxweb.epizy.com/mousetiler/editor.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#5294e2;&quot;&gt;graphical web editor&lt;/span&gt;&lt;/a&gt; to edit existining, or create brand new layouts.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ffaa00;&quot;&gt;TIP&lt;/span&gt; You can use the &lt;a href=&quot;https://rxweb.epizy.com/mousetiler/editor.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#5294e2;&quot;&gt;graphical web editor&lt;/span&gt;&lt;/a&gt; to edit existining, or create brand new layouts.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -1368,7 +1432,7 @@
           <item>
            <widget class="QLabel" name="label_popupLayoutExplanation">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the layouts for the Popup mode - one layout per line.&lt;/p&gt;&lt;p&gt;Valid formats:&lt;/p&gt;&lt;p&gt;[&lt;span style=&quot; font-weight:700;&quot;&gt;WxH&lt;/span&gt;] - an W column wide and H rows high grid layout (example 4x2 will give 2 rows with 4 columns each for a total of 8 tiles)&lt;/p&gt;&lt;p&gt;[&lt;span style=&quot; font-weight:700;&quot;&gt;X,Y,Width,Height&lt;/span&gt;] - an Width wide and Height tall tile located at X and Y coordinates (example 20,10,400px,200px for a 400 pixel wide, 200 pixel high tile placed at 20% screen width and 10% screen height)&lt;/p&gt;&lt;p&gt;[&lt;span style=&quot; font-weight:700;&quot;&gt;X,Y,Width,Height,AnchorX,AnchorY&lt;/span&gt;] - same as above, except tile is placed using the tile anchor point (example 50,50,320px,240px,CENTER,CENTER to place a 320x240 pixel large tile in the middle of the screen - without the CENTER anchor, the top-left corner would end up in the middle of the screen instead)&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;X&lt;/span&gt;, &lt;span style=&quot; font-weight:700;&quot;&gt;Y&lt;/span&gt;, &lt;span style=&quot; font-weight:700;&quot;&gt;Width&lt;/span&gt; and &lt;span style=&quot; font-weight:700;&quot;&gt;Height&lt;/span&gt; can be be in percent (usually between 0 and 100 - recommended) or pixels (absolute pixel value using px suffix - not recommended).&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;AnchorX&lt;/span&gt; can be a percentage of tile Width or one of &lt;span style=&quot; font-weight:700;&quot;&gt;LEFT&lt;/span&gt;, &lt;span style=&quot; font-weight:700;&quot;&gt;CENTER&lt;/span&gt; or &lt;span style=&quot; font-weight:700;&quot;&gt;RIGHT&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;AnchorY&lt;/span&gt; can be a percentage of tile Height or one of &lt;span style=&quot; font-weight:700;&quot;&gt;TOP&lt;/span&gt;, &lt;span style=&quot; font-weight:700;&quot;&gt;CENTER&lt;/span&gt; or &lt;span style=&quot; font-weight:700;&quot;&gt;BOTTOM&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;The layout can be made of multiple grids and/or tiles separated by a + (example 0,0,50,100+50,0,50,100 which is equal to a 2x1 grid).&lt;/p&gt;&lt;p&gt;You can also use one of these special layouts: SPECIAL_FILL, SPECIAL_SPLIT_VERTICAL, SPECIAL_SPLIT_HORIZONTAL, SPECIAL_MAXIMIZE, SPECIAL_MINIMIZE, SPECIAL_FULLSCREEN, SPECIAL_KEEP_ABOVE, SPECIAL_KEEP_BELOW, SPECIAL_NO_TITLEBAR_AND_FRAME, SPECIAL_CLOSE and SPECIAL_EMPTY.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the layouts for the Popup mode - one layout per line.&lt;/p&gt;&lt;p&gt;Valid formats:&lt;/p&gt;&lt;p&gt;[&lt;span style=&quot; font-weight:700;&quot;&gt;WxH&lt;/span&gt;] - an W column wide and H rows high grid layout (example 4x2 will give 2 rows with 4 columns each for a total of 8 tiles)&lt;/p&gt;&lt;p&gt;[&lt;span style=&quot; font-weight:700;&quot;&gt;X,Y,Width,Height&lt;/span&gt;] - an Width wide and Height tall tile located at X and Y coordinates (example 20,10,400px,200px for a 400 pixel wide, 200 pixel high tile placed at 20% screen width and 10% screen height)&lt;/p&gt;&lt;p&gt;[&lt;span style=&quot; font-weight:700;&quot;&gt;X,Y,Width,Height,AnchorX,AnchorY&lt;/span&gt;] - same as above, except tile is placed using the tile anchor point (example 50,50,320px,240px,CENTER,CENTER to place a 320x240 pixel large tile in the middle of the screen - without the CENTER anchor, the top-left corner would end up in the middle of the screen instead)&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;X&lt;/span&gt;, &lt;span style=&quot; font-weight:700;&quot;&gt;Y&lt;/span&gt;, &lt;span style=&quot; font-weight:700;&quot;&gt;Width&lt;/span&gt; and &lt;span style=&quot; font-weight:700;&quot;&gt;Height&lt;/span&gt; can be be in percent (usually between 0 and 100 - recommended) or pixels (absolute pixel value using px suffix - not recommended).&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;AnchorX&lt;/span&gt; can be a percentage of tile Width or one of &lt;span style=&quot; font-weight:700;&quot;&gt;LEFT&lt;/span&gt;, &lt;span style=&quot; font-weight:700;&quot;&gt;CENTER&lt;/span&gt; or &lt;span style=&quot; font-weight:700;&quot;&gt;RIGHT&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;AnchorY&lt;/span&gt; can be a percentage of tile Height or one of &lt;span style=&quot; font-weight:700;&quot;&gt;TOP&lt;/span&gt;, &lt;span style=&quot; font-weight:700;&quot;&gt;CENTER&lt;/span&gt; or &lt;span style=&quot; font-weight:700;&quot;&gt;BOTTOM&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;The layout can be made of multiple grids and/or tiles separated by a + (example 0,0,50,100+50,0,50,100 which is equal to a 2x1 grid).&lt;/p&gt;&lt;p&gt;You can also use one of these special layouts: SPECIAL_FILL, SPECIAL_SPLIT_VERTICAL, SPECIAL_SPLIT_HORIZONTAL, SPECIAL_MAXIMIZE, SPECIAL_MINIMIZE, SPECIAL_FULLSCREEN, SPECIAL_KEEP_ABOVE, SPECIAL_KEEP_BELOW, SPECIAL_NO_TITLEBAR_AND_FRAME, SPECIAL_CLOSE, SPECIAL_EMPTY, SPECIAL_AUTO_TILER_TOGGLE, SPECIAL_AUTO_TILER_1, SPECIAL_AUTO_TILER_2 and SPECIAL_AUTO_TILER_3.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -1404,7 +1468,7 @@
           <item>
            <widget class="QLabel" name="label_66">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ffaa00;&quot;&gt;RECOMMENDED&lt;/span&gt; You can use the &lt;a href=&quot;https://rxweb.epizy.com/mousetiler/editor.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#5294e2;&quot;&gt;graphical web editor&lt;/span&gt;&lt;/a&gt; to edit existining, or create brand new layouts.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ffaa00;&quot;&gt;TIP&lt;/span&gt; You can use the &lt;a href=&quot;https://rxweb.epizy.com/mousetiler/editor.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#5294e2;&quot;&gt;graphical web editor&lt;/span&gt;&lt;/a&gt; to edit existining, or create brand new layouts.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -1430,7 +1494,7 @@
           <item>
            <widget class="QLabel" name="label_allPopupLayoutsExplanation">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set all the layouts for the Popup mode - one layout per line.&lt;/p&gt;&lt;p&gt;Valid formats:&lt;/p&gt;&lt;p&gt;[&lt;span style=&quot; font-weight:700;&quot;&gt;WxH&lt;/span&gt;] - an W column wide and H rows high grid layout (example 4x2 will give 2 rows with 4 columns each for a total of 8 tiles)&lt;/p&gt;&lt;p&gt;[&lt;span style=&quot; font-weight:700;&quot;&gt;X,Y,Width,Height&lt;/span&gt;] - an Width wide and Height tall tile located at X and Y coordinates (example 20,10,400px,200px for a 400 pixel wide, 200 pixel high tile placed at 20% screen width and 10% screen height)&lt;/p&gt;&lt;p&gt;[&lt;span style=&quot; font-weight:700;&quot;&gt;X,Y,Width,Height,AnchorX,AnchorY&lt;/span&gt;] - same as above, except tile is placed using the tile anchor point (example 50,50,320px,240px,CENTER,CENTER to place a 320x240 pixel large tile in the middle of the screen - without the CENTER anchor, the top-left corner would end up in the middle of the screen instead)&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;X&lt;/span&gt;, &lt;span style=&quot; font-weight:700;&quot;&gt;Y&lt;/span&gt;, &lt;span style=&quot; font-weight:700;&quot;&gt;Width&lt;/span&gt; and &lt;span style=&quot; font-weight:700;&quot;&gt;Height&lt;/span&gt; can be be in percent (usually between 0 and 100 - recommended) or pixels (absolute pixel value using px suffix - not recommended).&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;AnchorX&lt;/span&gt; can be a percentage of tile Width or one of &lt;span style=&quot; font-weight:700;&quot;&gt;LEFT&lt;/span&gt;, &lt;span style=&quot; font-weight:700;&quot;&gt;CENTER&lt;/span&gt; or &lt;span style=&quot; font-weight:700;&quot;&gt;RIGHT&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;AnchorY&lt;/span&gt; can be a percentage of tile Height or one of &lt;span style=&quot; font-weight:700;&quot;&gt;TOP&lt;/span&gt;, &lt;span style=&quot; font-weight:700;&quot;&gt;CENTER&lt;/span&gt; or &lt;span style=&quot; font-weight:700;&quot;&gt;BOTTOM&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;The layout can be made of multiple grids and/or tiles separated by a + (example 0,0,50,100+50,0,50,100 which is equal to a 2x1 grid).&lt;/p&gt;&lt;p&gt;You can also use one of these special layouts: SPECIAL_FILL, SPECIAL_SPLIT_VERTICAL, SPECIAL_SPLIT_HORIZONTAL, SPECIAL_MAXIMIZE, SPECIAL_MINIMIZE, SPECIAL_FULLSCREEN, SPECIAL_KEEP_ABOVE, SPECIAL_KEEP_BELOW, SPECIAL_NO_TITLEBAR_AND_FRAME, SPECIAL_CLOSE and SPECIAL_EMPTY.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set all the layouts for the Popup mode - one layout per line.&lt;/p&gt;&lt;p&gt;Valid formats:&lt;/p&gt;&lt;p&gt;[&lt;span style=&quot; font-weight:700;&quot;&gt;WxH&lt;/span&gt;] - an W column wide and H rows high grid layout (example 4x2 will give 2 rows with 4 columns each for a total of 8 tiles)&lt;/p&gt;&lt;p&gt;[&lt;span style=&quot; font-weight:700;&quot;&gt;X,Y,Width,Height&lt;/span&gt;] - an Width wide and Height tall tile located at X and Y coordinates (example 20,10,400px,200px for a 400 pixel wide, 200 pixel high tile placed at 20% screen width and 10% screen height)&lt;/p&gt;&lt;p&gt;[&lt;span style=&quot; font-weight:700;&quot;&gt;X,Y,Width,Height,AnchorX,AnchorY&lt;/span&gt;] - same as above, except tile is placed using the tile anchor point (example 50,50,320px,240px,CENTER,CENTER to place a 320x240 pixel large tile in the middle of the screen - without the CENTER anchor, the top-left corner would end up in the middle of the screen instead)&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;X&lt;/span&gt;, &lt;span style=&quot; font-weight:700;&quot;&gt;Y&lt;/span&gt;, &lt;span style=&quot; font-weight:700;&quot;&gt;Width&lt;/span&gt; and &lt;span style=&quot; font-weight:700;&quot;&gt;Height&lt;/span&gt; can be be in percent (usually between 0 and 100 - recommended) or pixels (absolute pixel value using px suffix - not recommended).&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;AnchorX&lt;/span&gt; can be a percentage of tile Width or one of &lt;span style=&quot; font-weight:700;&quot;&gt;LEFT&lt;/span&gt;, &lt;span style=&quot; font-weight:700;&quot;&gt;CENTER&lt;/span&gt; or &lt;span style=&quot; font-weight:700;&quot;&gt;RIGHT&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;AnchorY&lt;/span&gt; can be a percentage of tile Height or one of &lt;span style=&quot; font-weight:700;&quot;&gt;TOP&lt;/span&gt;, &lt;span style=&quot; font-weight:700;&quot;&gt;CENTER&lt;/span&gt; or &lt;span style=&quot; font-weight:700;&quot;&gt;BOTTOM&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;The layout can be made of multiple grids and/or tiles separated by a + (example 0,0,50,100+50,0,50,100 which is equal to a 2x1 grid).&lt;/p&gt;&lt;p&gt;You can also use one of these special layouts: SPECIAL_FILL, SPECIAL_SPLIT_VERTICAL, SPECIAL_SPLIT_HORIZONTAL, SPECIAL_MAXIMIZE, SPECIAL_MINIMIZE, SPECIAL_FULLSCREEN, SPECIAL_KEEP_ABOVE, SPECIAL_KEEP_BELOW, SPECIAL_NO_TITLEBAR_AND_FRAME, SPECIAL_CLOSE, SPECIAL_EMPTY, SPECIAL_AUTO_TILER_TOGGLE, SPECIAL_AUTO_TILER_1, SPECIAL_AUTO_TILER_2 and SPECIAL_AUTO_TILER_3.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -1470,38 +1534,8 @@
            <property name="sizeConstraint">
             <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
            </property>
-           <item row="12" column="3">
-            <widget class="Line" name="line_6">
-             <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="Line" name="line_2">
-             <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="2">
-            <widget class="QLabel" name="label_68">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Show Hint&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="12" column="2">
-            <widget class="Line" name="line_16">
+           <item row="2" column="3">
+            <widget class="Line" name="line_4">
              <property name="orientation">
               <enum>Qt::Orientation::Horizontal</enum>
              </property>
@@ -1527,97 +1561,10 @@
              </item>
             </layout>
            </item>
-           <item row="3" column="1" alignment="Qt::AlignmentFlag::AlignTop">
-            <widget class="QLineEdit" name="kcfg_shortcutChangeMode">
-             <property name="font">
-              <font>
-               <bold>true</bold>
-              </font>
-             </property>
+           <item row="4" column="0">
+            <widget class="QLabel" name="label_7">
              <property name="text">
-              <string>Meta+Ctrl+Space</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="Line" name="line_3">
-             <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="1" alignment="Qt::AlignmentFlag::AlignTop">
-            <widget class="QLineEdit" name="kcfg_shortcutShowAllSpan">
-             <property name="font">
-              <font>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Ctrl+Space</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_17">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-               <horstretch>1</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Name&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="2">
-            <layout class="QHBoxLayout" name="horizontalLayout_8">
-             <property name="topMargin">
-              <number>6</number>
-             </property>
-             <item alignment="Qt::AlignmentFlag::AlignTop">
-              <widget class="QCheckBox" name="kcfg_hintShowAllSpan">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="4" column="3">
-            <widget class="QLabel" name="label_14">
-             <property name="text">
-              <string>Show configuration dialog that lets you customize every detail of the tiler.</string>
-             </property>
-             <property name="wordWrap">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="Line" name="line_8">
-             <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="label_5">
-             <property name="text">
-              <string>Mouse Tiler: Change Mode</string>
-             </property>
-             <property name="wordWrap">
-              <bool>true</bool>
+              <string>Mouse Tiler: Show Config</string>
              </property>
             </widget>
            </item>
@@ -1638,34 +1585,64 @@
              </item>
             </layout>
            </item>
-           <item row="9" column="3">
-            <widget class="QLabel" name="label_62">
-             <property name="text">
-              <string>Toggle between regular tiling, and centering in tile.</string>
-             </property>
-            </widget>
-           </item>
-           <item row="6" column="3">
-            <widget class="QLabel" name="label_16">
-             <property name="text">
-              <string>Show or hide the mouse tiler. Useful if you just want to move a window without tiling it.</string>
-             </property>
-            </widget>
-           </item>
-           <item row="12" column="1">
-            <widget class="Line" name="line_5">
+           <item row="0" column="3">
+            <widget class="Line" name="line_9">
              <property name="orientation">
               <enum>Qt::Orientation::Horizontal</enum>
              </property>
             </widget>
            </item>
-           <item row="3" column="3">
-            <widget class="QLabel" name="label_13">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Toggle between &amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Popup Grid&lt;/span&gt;&amp;quot; and &amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Overlay&lt;/span&gt;&amp;quot; modes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <item row="11" column="1">
+            <widget class="QLineEdit" name="lineEdit">
+             <property name="font">
+              <font>
+               <bold>true</bold>
+              </font>
              </property>
-             <property name="wordWrap">
-              <bool>true</bool>
+             <property name="text">
+              <string>Ctrl+Alt+Left</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0">
+            <widget class="QLabel" name="label_46">
+             <property name="text">
+              <string>Mouse Tiler: Toggle Input Type</string>
+             </property>
+            </widget>
+           </item>
+           <item row="14" column="2">
+            <widget class="Line" name="line_16">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1" alignment="Qt::AlignmentFlag::AlignTop">
+            <widget class="QLineEdit" name="lineEdit_5">
+             <property name="font">
+              <font>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Ctrl+.</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_17">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>1</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Name&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
              </property>
             </widget>
            </item>
@@ -1687,6 +1664,238 @@
              </property>
             </widget>
            </item>
+           <item row="7" column="2">
+            <layout class="QHBoxLayout" name="horizontalLayout_10">
+             <property name="topMargin">
+              <number>6</number>
+             </property>
+             <item alignment="Qt::AlignmentFlag::AlignTop">
+              <widget class="QCheckBox" name="kcfg_hintInputType">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="2" column="0">
+            <widget class="Line" name="line_3">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="14" column="1">
+            <widget class="Line" name="line_5">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="3">
+            <widget class="QLabel" name="label_13">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Toggle between &amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Popup Grid&lt;/span&gt;&amp;quot; and &amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Overlay&lt;/span&gt;&amp;quot; modes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="3">
+            <widget class="QLabel" name="label_62">
+             <property name="text">
+              <string>Toggle between regular tiling, and centering in tile.</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="2">
+            <layout class="QHBoxLayout" name="horizontalLayout_9">
+             <property name="topMargin">
+              <number>6</number>
+             </property>
+             <item alignment="Qt::AlignmentFlag::AlignTop">
+              <widget class="QCheckBox" name="kcfg_hintVisibility">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::LayoutDirection::LeftToRight</enum>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="5" column="1" alignment="Qt::AlignmentFlag::AlignTop">
+            <widget class="QLineEdit" name="kcfg_shortcutShowAllSpan">
+             <property name="font">
+              <font>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Ctrl+Space</string>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="2">
+            <layout class="QHBoxLayout" name="horizontalLayout_14">
+             <property name="topMargin">
+              <number>6</number>
+             </property>
+             <item alignment="Qt::AlignmentFlag::AlignTop">
+              <widget class="QCheckBox" name="kcfg_hintMoveOnDrop">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="7" column="1" alignment="Qt::AlignmentFlag::AlignTop">
+            <widget class="QLineEdit" name="kcfg_shortcutInputType">
+             <property name="font">
+              <font>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Ctrl+Alt+I</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="3">
+            <widget class="QLabel" name="label_16">
+             <property name="text">
+              <string>Show or hide the mouse tiler. Useful if you just want to move a window without tiling it.</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="1" alignment="Qt::AlignmentFlag::AlignTop">
+            <widget class="QLineEdit" name="kcfg_shortcutVisibility">
+             <property name="font">
+              <font>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Meta+Space</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="Line" name="line_2">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="3">
+            <widget class="QLabel" name="label_14">
+             <property name="text">
+              <string>Show configuration dialog that lets you customize every detail of the tiler.</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="Line" name="line_7">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="0">
+            <widget class="QLabel" name="label_60">
+             <property name="text">
+              <string>Mouse Tiler: Toggle Center In Tile</string>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="0">
+            <widget class="QLabel" name="label_93">
+             <property name="text">
+              <string>Mouse Tiler: Auto Tiler - Increase Scroll Position</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="Line" name="line_17">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLabel" name="label_18">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>1</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Default Shortcut&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="3">
+            <layout class="QHBoxLayout" name="horizontalLayout_13">
+             <property name="topMargin">
+              <number>6</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="label_15">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Popup Grid&lt;/span&gt;&amp;quot; mode: Show or hide all layouts.&lt;/p&gt;&lt;p&gt;&amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Overlay&lt;/span&gt;&amp;quot; mode: Start or stop spanning from the hovered tile (a window can span multiple tiles).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="14" column="0">
+            <widget class="Line" name="line">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="Line" name="line_8">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
            <item row="2" column="2">
             <widget class="Line" name="line_15">
              <property name="orientation">
@@ -1701,10 +1910,38 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="2">
-            <widget class="Line" name="line_17">
-             <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+           <item row="12" column="1">
+            <widget class="QLineEdit" name="lineEdit_2">
+             <property name="font">
+              <font>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Ctrl+Alt+Right</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="3">
+            <widget class="QLabel" name="label_49">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Toggle between &amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Mouse&lt;/span&gt;&amp;quot; and &amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Window&lt;/span&gt;&amp;quot; input types.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QLabel" name="label_68">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Show Hint&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
              </property>
             </widget>
            </item>
@@ -1747,149 +1984,25 @@
              </property>
             </widget>
            </item>
-           <item row="9" column="0">
-            <widget class="QLabel" name="label_60">
-             <property name="text">
-              <string>Mouse Tiler: Toggle Center In Tile</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLabel" name="label_18">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-               <horstretch>1</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Default Shortcut&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="7" column="2">
-            <layout class="QHBoxLayout" name="horizontalLayout_10">
-             <property name="topMargin">
-              <number>6</number>
-             </property>
-             <item alignment="Qt::AlignmentFlag::AlignTop">
-              <widget class="QCheckBox" name="kcfg_hintInputType">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="6" column="1" alignment="Qt::AlignmentFlag::AlignTop">
-            <widget class="QLineEdit" name="kcfg_shortcutVisibility">
+           <item row="3" column="1" alignment="Qt::AlignmentFlag::AlignTop">
+            <widget class="QLineEdit" name="kcfg_shortcutChangeMode">
              <property name="font">
               <font>
                <bold>true</bold>
               </font>
              </property>
              <property name="text">
-              <string>Meta+Space</string>
+              <string>Meta+Ctrl+Space</string>
              </property>
             </widget>
            </item>
-           <item row="7" column="1" alignment="Qt::AlignmentFlag::AlignTop">
-            <widget class="QLineEdit" name="kcfg_shortcutInputType">
-             <property name="font">
-              <font>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Ctrl+Alt+I</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="1" alignment="Qt::AlignmentFlag::AlignTop">
-            <widget class="QLineEdit" name="lineEdit_5">
-             <property name="font">
-              <font>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Ctrl+.</string>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="3">
-            <layout class="QHBoxLayout" name="horizontalLayout_13">
-             <property name="topMargin">
-              <number>6</number>
-             </property>
-             <item>
-              <widget class="QLabel" name="label_15">
-               <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Popup Grid&lt;/span&gt;&amp;quot; mode: Show or hide all layouts.&lt;/p&gt;&lt;p&gt;&amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Overlay&lt;/span&gt;&amp;quot; mode: Start or stop spanning from the hovered tile (a window can span multiple tiles).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
-               </property>
-               <property name="wordWrap">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="label_7">
-             <property name="text">
-              <string>Mouse Tiler: Show Config</string>
-             </property>
-            </widget>
-           </item>
-           <item row="7" column="0">
-            <widget class="QLabel" name="label_46">
-             <property name="text">
-              <string>Mouse Tiler: Toggle Input Type</string>
-             </property>
-            </widget>
-           </item>
-           <item row="6" column="2">
-            <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <item row="5" column="2">
+            <layout class="QHBoxLayout" name="horizontalLayout_8">
              <property name="topMargin">
               <number>6</number>
              </property>
              <item alignment="Qt::AlignmentFlag::AlignTop">
-              <widget class="QCheckBox" name="kcfg_hintVisibility">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="layoutDirection">
-                <enum>Qt::LayoutDirection::LeftToRight</enum>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="10" column="2">
-            <layout class="QHBoxLayout" name="horizontalLayout_14">
-             <property name="topMargin">
-              <number>6</number>
-             </property>
-             <item alignment="Qt::AlignmentFlag::AlignTop">
-              <widget class="QCheckBox" name="kcfg_hintMoveOnDrop">
+              <widget class="QCheckBox" name="kcfg_hintShowAllSpan">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -1919,45 +2032,74 @@
              </property>
             </widget>
            </item>
-           <item row="7" column="3">
-            <widget class="QLabel" name="label_49">
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_5">
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Toggle between &amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Mouse&lt;/span&gt;&amp;quot; and &amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Window&lt;/span&gt;&amp;quot; input types.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>Mouse Tiler: Change Mode</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
-           <item row="2" column="3">
-            <widget class="Line" name="line_4">
+           <item row="14" column="3">
+            <widget class="Line" name="line_6">
              <property name="orientation">
               <enum>Qt::Orientation::Horizontal</enum>
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
-            <widget class="Line" name="line_7">
-             <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="12" column="0">
-            <widget class="Line" name="line">
-             <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="3">
-            <widget class="Line" name="line_9">
-             <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+           <item row="11" column="0">
+            <widget class="QLabel" name="label_92">
+             <property name="text">
+              <string>Mouse Tiler: Auto Tiler - Decrease Scroll Position</string>
              </property>
             </widget>
            </item>
            <item row="10" column="3">
             <widget class="QLabel" name="label_70">
              <property name="text">
-              <string>Toggle between moving to the new, or going back to the previous virtual desktop</string>
+              <string>Toggle between moving to the new, or going back to the previous virtual desktop.</string>
+             </property>
+            </widget>
+           </item>
+           <item row="13" column="0">
+            <widget class="QLabel" name="label_94">
+             <property name="text">
+              <string>Mouse Tiler: Toggle Auto Tile For Active Window</string>
+             </property>
+            </widget>
+           </item>
+           <item row="13" column="1">
+            <widget class="QLineEdit" name="lineEdit_3">
+             <property name="font">
+              <font>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Ctrl+Alt+A</string>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="3">
+            <widget class="QLabel" name="label_95">
+             <property name="text">
+              <string>Scroll infinitely in carousel layouts, otherwise scroll if there are more windows than the layout can fit.</string>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="3">
+            <widget class="QLabel" name="label_96">
+             <property name="text">
+              <string>Scroll infinitely in carousel layouts, otherwise scroll if there are more windows than the layout can fit.</string>
+             </property>
+            </widget>
+           </item>
+           <item row="13" column="3">
+            <widget class="QLabel" name="label_97">
+             <property name="text">
+              <string>Toggle auto tiling on or off. If no window is currently auto-tiled, SPECIAL_AUTO_TILER_1 layout will be used.</string>
              </property>
             </widget>
            </item>
@@ -2016,7 +2158,7 @@
           <item>
            <widget class="QLabel" name="label_6">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700; color:#ffaa00;&quot;&gt;Disable this&lt;/span&gt;. I am sorry about the hint - but I get questions regarding tiler visibility daily and people uninstall because they do not check the settings.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700; color:#ffaa00;&quot;&gt;IMPORTANT Disable this&lt;/span&gt;. I am sorry about the hint - but I get questions regarding tiler visibility daily and people uninstall because they do not check the settings.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -2147,6 +2289,825 @@
           </item>
          </layout>
         </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_6">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_autoTile">
+      <attribute name="icon">
+       <iconset theme="process-working"/>
+      </attribute>
+      <attribute name="title">
+       <string>Auto Tiling</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_25">
+       <item>
+        <widget class="QGroupBox" name="groupBox_16">
+         <property name="title">
+          <string/>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_27">
+          <item>
+           <widget class="QLabel" name="label_74">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Auto Tiling&lt;/span&gt;: Configure the auto tilier behavior. &lt;span style=&quot; color:#ffaa00;&quot;&gt;TIP&lt;/span&gt; You can use the &lt;a href=&quot;https://rxweb.epizy.com/mousetiler/editor.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#5294e2;&quot;&gt;graphical web editor&lt;/span&gt;&lt;/a&gt; to edit layouts - but need to manually add prefixes (such as the 0: or *: )&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="openExternalLinks">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_91">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;WARNING&lt;/span&gt; Enable &amp;quot;Auto tile newly opened windows&amp;quot; at own risk especially if you got a lot of windows open. It is preferrable to manually auto tile each app/window and save/restore the auto tile status with Remember Window Positions (v5.3.0 or newer). Please report problematic apps in the #auto-tiler-problematic-apps channel on Discord so I can add them to default blacklist.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="kcfg_autoTileNewWindows">
+            <property name="text">
+             <string>Auto tile newly opened windows - if not enabled, you can still auto tile using your mouse or keyboard shortcut (Ctrl+Alt+A). SPECIAL_AUTO_TILER_1 is the default tiler</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="kcfg_autoTilerEdgeScroll">
+            <property name="text">
+             <string>Scroll auto tiled windows by moving mouse to left / right screen edge. Carousel auto tilers have infinite scroll while normal auto tilers scroll if there are more windows than current layout can fit.</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="kcfg_autoTileMinimizedMaximized">
+            <property name="text">
+             <string>Auto tile windows that have been manually minimized or maximized once they return to default state</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="kcfg_autoTileRestoreSize">
+            <property name="text">
+             <string>Restore size after a window stops being auto tiled</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QFormLayout" name="formLayout_9">
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="kcfg_autoTileBlacklist"/>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_90">
+              <property name="text">
+               <string>Black list - will not auto tile these apps (comma separated)</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QGridLayout" name="gridLayout_4">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_76">
+              <property name="text">
+               <string>New window auto tile action</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="kcfg_autoTileFocusAction">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <item>
+               <property name="text">
+                <string>Scroll as close to focused window as possible - recommended for carousels</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Insert focused window at index</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Insert focused window at index - ignore primary</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Swap place with window at index</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Swap place with window at index - ignore primary</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Do nothing</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="kcfg_autoTileWindowAction">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <item>
+               <property name="text">
+                <string>Insert new window before window at index</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Insert new window after window at index</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="label_79">
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Do not auto tile this long after session start (&lt;span style=&quot; color:#ffaa00;&quot;&gt;increase&lt;/span&gt; to 10s or more if you use RWP)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_78">
+              <property name="text">
+               <string>A visible auto tiled window gains focus</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QSpinBox" name="kcfg_maxAutoTileDelay">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="suffix">
+               <string> seconds</string>
+              </property>
+              <property name="maximum">
+               <number>60</number>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_89">
+              <property name="text">
+               <string>A minimized auto tiled window gains focus (manually minimized see &quot;New window auto tile action&quot;)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QSpinBox" name="kcfg_autoTileWindowIndex">
+              <property name="minimum">
+               <number>-1</number>
+              </property>
+              <property name="maximum">
+               <number>16</number>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_75">
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Max auto tile delay (&lt;span style=&quot; color:#ffaa00;&quot;&gt;increase&lt;/span&gt; to 5s or more if you use Remember Window Positions)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_77">
+              <property name="text">
+               <string>Two auto tiled windows drag swap action</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QComboBox" name="kcfg_autoTileDragSwapAction">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="currentIndex">
+               <number>0</number>
+              </property>
+              <item>
+               <property name="text">
+                <string>Insert dragged window at target priority</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Swap places</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QSpinBox" name="kcfg_maxAutoTileDelaySessionStart">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="suffix">
+               <string> seconds</string>
+              </property>
+              <property name="maximum">
+               <number>60</number>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QComboBox" name="kcfg_autoTileMinimizedFocusAction">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <item>
+               <property name="text">
+                <string>Scroll as close to restored window as possible - recommended for carousels</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Insert restored window before window at index</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Swap place with window at index</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="2" column="2">
+             <widget class="QSpinBox" name="kcfg_autoTileMinimizedFocusIndex">
+              <property name="minimum">
+               <number>-1</number>
+              </property>
+              <property name="maximum">
+               <number>16</number>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QSpinBox" name="kcfg_autoTileFocusIndex">
+              <property name="minimum">
+               <number>-1</number>
+              </property>
+              <property name="maximum">
+               <number>16</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_15">
+         <property name="title">
+          <string/>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_26">
+          <item>
+           <widget class="QLabel" name="label_81">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Configurations used for auto tiling - three different auto tiling configurations are possible if you want to use different config on different monitors or virtual desktops. Only one configuration can be used on same screen + virtual desktop at a time - if you try to mix them, the new configuration replaces the old one. You can view instructions, predefined layouts (including pictures to give you an idea what each one does) and user submitted layouts &lt;a href=&quot;https://github.com/rxappdev/MouseTiler/blob/main/AUTOTILERGUIDE.md&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#5294e2;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+            <property name="openExternalLinks">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_18">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QGridLayout" name="gridLayout_3">
+            <item row="3" column="2">
+             <widget class="QPlainTextEdit" name="kcfg_autoTilerCustom3">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>120</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>120</height>
+               </size>
+              </property>
+              <property name="plainText">
+               <string>1:0,0,100,100
+1:0,0,50,100+2:50,0,50,100
+3:0,0,25,100+1:25,0,50,100+2:75,0,25,100
+3:0,0,25,100+1:25,0,50,100+2:75,0,25,50+4:75,50,25,50
+3:0,0,25,50+5:0,50,25,50+1:25,0,50,100+2:75,0,25,50+4:75,50,25,50
+4:0,0,25,50+6:0,50,25,50+1:25,0,25,100+2:50,0,25,100+3:75,0,25,50+5:75,50,25,50
+4:0,0,25,50+7:0,50,25,50+1:25,0,25,100+2:50,0,25,50+6:50,50,25,50+3:75,0,25,50+5:75,50,25,50
+4:0,0,25,50+8:0,50,25,50+1:25,0,25,50+7:25,50,25,50+2:50,0,25,50+6:50,50,25,50+3:75,0,25,50+5:75,50,25,50</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="label_83">
+              <property name="font">
+               <font>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>SPECIAL_AUTO_TILER_2</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="2">
+             <widget class="QLabel" name="label_73">
+              <property name="text">
+               <string>Custom Editor (pick CUSTOM 3 from menu above)</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="kcfg_autoTilerMode2">
+              <item>
+               <property name="text">
+                <string>CUSTOM 2</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - SINGLE TILE CAROUSEL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>❌ Multi-monitor friendly - THREE TILE CAROUSEL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>❌ Multi-monitor friendly - 50% CAROUSEL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>❌ Multi-monitor friendly - 66% CAROUSEL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>❌ Multi-monitor friendly - 96% CAROUSEL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 3 CARD STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 5 CARD STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - SPIRAL 4</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - SPIRAL 8</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 50% + 2 STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 50% + 3 STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 67% + 2 STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 67% + 3 STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 2 + 50% + 2 STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - * | 1 + 50% + * | 1 CAROUSEL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 1 | * + 50% + 1 | * CAROUSEL</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_71">
+              <property name="text">
+               <string>Custom Editor (pick CUSTOM 1 from menu above)</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QLabel" name="label_88">
+              <property name="font">
+               <font>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>SPECIAL_AUTO_TILER_3</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_80">
+              <property name="font">
+               <font>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400; color:#ffaa00;&quot;&gt;DEFAULT &lt;/span&gt;SPECIAL_AUTO_TILER_1&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLabel" name="label_72">
+              <property name="text">
+               <string>Custom Editor (pick CUSTOM 2 from menu above)</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QPlainTextEdit" name="kcfg_autoTilerCustom1">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>120</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>120</height>
+               </size>
+              </property>
+              <property name="plainText">
+               <string>1:0,0,100,100
+1:0,0,50,100+2:50,0,50,100
+1:0,0,50,100+2:50,0,50,50+3:50,50,50,50
+1:0,0,50,50+4:0,50,50,50+2:50,0,50,50+3:50,50,50,50</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QPlainTextEdit" name="kcfg_autoTilerCustom2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>120</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>120</height>
+               </size>
+              </property>
+              <property name="plainText">
+               <string>1:0,0,100,100
+1:0,0,50,100+2:50,0,50,100
+3:0,0,33,100+1:33,0,34,100+2:67,0,33,100
+3:0,0,33,100+1:33,0,34,100+2:67,0,33,50+4:67,50,33,50
+3:0,0,33,50+5:0,50,33,50+1:33,0,34,100+2:67,0,33,50+4:67,50,33,50
+3:0,0,33,50+5:0,50,33,50+1:33,0,34,50+6:33,50,34,50+2:67,0,33,50+4:67,50,33,50</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QComboBox" name="kcfg_autoTilerMode1">
+              <item>
+               <property name="text">
+                <string>CUSTOM 1</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - SINGLE TILE CAROUSEL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>❌ Multi-monitor friendly - THREE TILE CAROUSEL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>❌ Multi-monitor friendly - 50% CAROUSEL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>❌ Multi-monitor friendly - 66% CAROUSEL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>❌ Multi-monitor friendly - 96% CAROUSEL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 3 CARD STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 5 CARD STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - SPIRAL 4</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - SPIRAL 8</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 50% + 2 STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 50% + 3 STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 67% + 2 STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 67% + 3 STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 2 + 50% + 2 STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - * | 1 + 50% + * | 1 CAROUSEL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 1 | * + 50% + 1 | * CAROUSEL</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QComboBox" name="kcfg_autoTilerMode3">
+              <item>
+               <property name="text">
+                <string>CUSTOM 3</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - SINGLE TILE CAROUSEL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>❌ Multi-monitor friendly - THREE TILE CAROUSEL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>❌ Multi-monitor friendly - 50% CAROUSEL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>❌ Multi-monitor friendly - 66% CAROUSEL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>❌ Multi-monitor friendly - 96% CAROUSEL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 3 CARD STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 5 CARD STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - SPIRAL 4</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - SPIRAL 8</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 50% + 2 STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 50% + 3 STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 67% + 2 STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 67% + 3 STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 2 + 50% + 2 STACK</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - * | 1 + 50% + * | 1 CAROUSEL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>✅ Multi-monitor friendly - 1 | * + 50% + 1 | * CAROUSEL</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QCheckBox" name="kcfg_autoTilerCarousel1">
+              <property name="text">
+               <string>Carousel</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QCheckBox" name="kcfg_autoTilerCarousel2">
+              <property name="text">
+               <string>Carousel</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="2">
+             <widget class="QCheckBox" name="kcfg_autoTilerCarousel3">
+              <property name="text">
+               <string>Carousel</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_82">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Format is same as Popup Grid Layouts. One layout per line. Each line needs to have minimum X tiles where X is the line number. Each tile needs to be prefixed with priority index starting at 0: on line 1. Negative values are allowed to show windows at end of the list. Line 8 needs tiles 0: and 7 other tiles ranging from -6: to 7: (8 numbers including 0). Special tile *: can be used to create fixed tiles. *: tiles will not be be re-prioritized and are simply there to allow mixed auto and normal layout. Place *: in same spot on each layout for best experience.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Policy::Expanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>

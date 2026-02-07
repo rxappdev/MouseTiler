@@ -1,6 +1,6 @@
 # Default configurations
 
-Scroll with Ctrl+Alt+Left and Ctrl+Alt+Right
+Scroll with Ctrl+Alt+Left and Ctrl+Alt+Right or by moving mouse to left / right screen edge (if enabled)
 - In carousel layouts, you can scroll infinitely
 - In normal layouts, you can scroll when there are more windows than the layout can fit
 
@@ -28,21 +28,10 @@ Improved scrolling experience compared to SINGLE TILE CAROUSEL at the cost of mu
 -1:-100,0,100,100+0:0,0,100,100+1:100,0,100,100
 ```
 
-## 96% CAROUSEL
-❌ Multi-monitor friendly
-
-![](./assets/auto_3.png)
-```
-{"carousel":true,"focusAction":0}
-0:2,0,96,100
-0:2,0,96,100+1:98,0,96,100
--1:-94,0,96,100+0:2,0,96,100+1:98,0,96,100
-```
-
 ## 50% CAROUSEL
 ❌ Multi-monitor friendly
 
-![](./assets/auto_4.png)
+![](./assets/auto_3.png)
 ```
 {"carousel":true,"focusAction":0}
 0:25,0,50,100
@@ -53,12 +42,23 @@ Improved scrolling experience compared to SINGLE TILE CAROUSEL at the cost of mu
 ## 66% CAROUSEL
 ❌ Multi-monitor friendly
 
+![](./assets/auto_4.png)
+```
+{"carousel":true,"focusAction":0}
+0:17,0,66,100
+0:17,0,66,100+1:83,0,66,100
+-1:-49,0,66,100+0:17,0,66,100+1:83,0,66,100
+```
+
+## 96% CAROUSEL
+❌ Multi-monitor friendly
+
 ![](./assets/auto_5.png)
 ```
 {"carousel":true,"focusAction":0}
-0:12,0,66,100
-0:12,0,66,100+1:78,0,66,100
--1:-54,0,66,100+0:12,0,66,100+1:78,0,66,100
+0:2,0,96,100
+0:2,0,96,100+1:98,0,96,100
+-1:-94,0,96,100+0:2,0,96,100+1:98,0,96,100
 ```
 
 ## 3 CARD STACK

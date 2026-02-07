@@ -56,6 +56,11 @@
         <entry name="showTextHint" type="Bool">
             <default>true</default>
         </entry>
+        <entry name="gridTilerOpacity" type="Int">
+            <default>100</default>
+            <min>0</min>
+            <max>100</max>
+        </entry>
         <entry name="popupGridAt" type="Int">
             <default>0</default>
         </entry>
@@ -113,7 +118,10 @@ SPECIAL_SPLIT_HORIZONTAL
 4x1
 2x2
 SPECIAL_FILL
-4x2</default>
+4x2
+SPECIAL_AUTO_TILER_1
+SPECIAL_AUTO_TILER_2
+SPECIAL_AUTO_TILER_3</default>
         </entry>
         <entry name="allPopupLayouts" type="String">
             <default>SPECIAL_FILL
@@ -181,7 +189,11 @@ SPECIAL_CLOSE
 0,0,67,100+67,0,33,50+67,50,33,50
 0,0,33,50+0,50,33,50+33,0,67,100
 0,0,67,50+67,0,33,50+0,50,67,50+67,50,33,50
-0,0,33,50+33,0,67,50+0,50,33,50+33,50,67,50</default>
+0,0,33,50+33,0,67,50+0,50,33,50+33,50,67,50
+SPECIAL_AUTO_TILER_TOGGLE
+SPECIAL_AUTO_TILER_1
+SPECIAL_AUTO_TILER_2
+SPECIAL_AUTO_TILER_3</default>
         </entry>
         <entry name="shortcutChangeMode" type="String">
             <default>Meta+Ctrl+Space</default>
@@ -211,7 +223,7 @@ SPECIAL_CLOSE
             <default>true</default>
         </entry>
         <entry name="hintInputType" type="Bool">
-            <default>false</default>
+            <default>true</default>
         </entry>
         <entry name="hintCenterInTile" type="Bool">
             <default>true</default>
@@ -236,6 +248,81 @@ SPECIAL_CLOSE
         </entry>
         <entry name="sizeHintFormat" type="Int">
             <default>0</default>
+        </entry>
+        <entry name="autoTileNewWindows" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="autoTilerEdgeScroll" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="autoTileMinimizedMaximized" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="autoTileRestoreSize" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="autoTileBlacklist" type="String">
+            <default>krunner,kded,polkit,plasmashell,yakuake,spectacle,kded5,xwaylandvideobridge,ksplashqml,org.kde.plasmashell,org.kde.polkit-kde-authentication-agent-1,org.kde.kruler,kruler,kwin_wayland,ksmserver-logout-greeter</default>
+        </entry>
+        <entry name="autoTileWindowAction" type="Int">
+            <default>0</default>
+        </entry>
+        <entry name="autoTileWindowIndex" type="Int">
+            <default>0</default>
+        </entry>
+        <entry name="autoTileFocusAction" type="Int">
+            <default>0</default>
+        </entry>
+        <entry name="autoTileFocusIndex" type="Int">
+            <default>0</default>
+        </entry>
+        <entry name="autoTileMinimizedFocusAction" type="Int">
+            <default>0</default>
+        </entry>
+        <entry name="autoTileMinimizedFocusIndex" type="Int">
+            <default>0</default>
+        </entry>
+        <entry name="autoTileDragSwapAction" type="Int">
+            <default>0</default>
+        </entry>
+        <entry name="maxAutoTileDelay" type="Int">
+            <default>5</default>
+        </entry>
+        <entry name="maxAutoTileDelaySessionStart" type="Int">
+            <default>10</default>
+        </entry>
+        <entry name="autoTilerMode1" type="Int">
+            <default>8</default>
+        </entry>
+        <entry name="autoTilerMode2" type="Int">
+            <default>7</default>
+        </entry>
+        <entry name="autoTilerMode3" type="Int">
+            <default>12</default>
+        </entry>
+        <entry name="autoTilerCustom1" type="String">
+            <default>0:0,0,100,100
+0:0,0,50,100+1:50,0,50,100
+0:0,0,50,100+1:50,0,50,50+2:50,50,50,50
+0:0,0,50,50+3:0,50,50,50+1:50,0,50,50+2:50,50,50,50</default>
+        </entry>
+        <entry name="autoTilerCustom2" type="String">
+            <default>{"carousel":true}
+0:0,0,100,100</default>
+        </entry>
+        <entry name="autoTilerCustom3" type="String">
+            <default>0:0,0,67,100
+0:0,0,67,100+1:67,0,33,100
+0:0,0,67,100+1:67,0,33,50+2:67,50,33,50</default>
+        </entry>
+        <entry name="autoTilerCarousel1" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="autoTilerCarousel2" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="autoTilerCarousel3" type="Bool">
+            <default>false</default>
         </entry>
     </group>
 </kcfg>
