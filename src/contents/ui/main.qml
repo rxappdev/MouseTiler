@@ -707,7 +707,7 @@ SPECIAL_AUTO_TILER_3`;
                 moving = true;
                 currentlyMovedWindow = client;
                 showTiler(true);
-                if (config.tilerVisibility == 1) {
+                if (config.tilerVisibility == 1 || config.tilerVisibility == 4) {
                     autoHideTimer.startAutoHideTimer();
                 }
             } else if (client.resize) {
@@ -1166,15 +1166,14 @@ SPECIAL_AUTO_TILER_3`;
                 autoHideTimer.triggered.disconnect(onTimeoutTriggered);
                 timerIsRunning = false;
                 autoHideTimer.stop();
+
+                if (config.tilerVisibility == 4) {
+                    internalHideTiler();
+                }
             }
         }
 
-        function onTimeoutTriggered() {
-            log('Auto-hiding tiler');
-            autoHideTimer.triggered.disconnect(onTimeoutTriggered);
-            timerIsRunning = false;
-            autoHideTimer.stop();
-
+        function internalHideTiler() {
             hideTiler();
             if (!config.rememberTiler) {
                 setDefaultTiler();
@@ -1183,6 +1182,17 @@ SPECIAL_AUTO_TILER_3`;
                 setDefaultCenterInTile();
             }
             setDefaultMoveToVirtualDesktop();
+        }
+
+        function onTimeoutTriggered() {
+            log('Auto-hiding tiler');
+            autoHideTimer.triggered.disconnect(onTimeoutTriggered);
+            timerIsRunning = false;
+            autoHideTimer.stop();
+
+            if (config.tilerVisibility == 1) {
+                internalHideTiler();
+            }
         }
     }
 

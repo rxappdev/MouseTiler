@@ -128,6 +128,13 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QCheckBox" name="kcfg_allowTransient">
+            <property name="text">
+             <string>Allow tiling of transient windows (certain confirmation dialogs, toolbars, and other temporary sub-windows apps might create).</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -242,6 +249,11 @@
               <item>
                <property name="text">
                 <string>Hidden until mouse is near tiler (only works for Popup Grid mode)</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Hidden if window is dragged right away (otherwise will appear if you click and hold the mouse still for a short duration)</string>
                </property>
               </item>
              </widget>
