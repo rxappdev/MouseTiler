@@ -155,6 +155,7 @@ SPECIAL_AUTO_TILER_3`;
             centerInTileMode: KWin.readConfig("centerInTileMode", 0),
             rememberTiler: KWin.readConfig("rememberTiler", false),
             restoreSize: KWin.readConfig("restoreSize", false),
+            allowTransient: KWin.readConfig("allowTransient", false),
             tilerVisibility: KWin.readConfig("tilerVisibility", 0),
             revealMargin: KWin.readConfig("revealMargin", 200),
             windowVisibility: KWin.readConfig("windowVisibility", 0),
@@ -665,6 +666,7 @@ SPECIAL_AUTO_TILER_3`;
         if (client.skipTaskbar) return false;
         if (client.popupWindow) return false;
         if (client.deleted) return false;
+        if (!config.allowTransient && client.transient) return false;
 
         return true;
     }
