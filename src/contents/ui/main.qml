@@ -517,7 +517,7 @@ SPECIAL_AUTO_TILER_3`;
                                     isValid = false;
                                 }
                             } else {
-                                x = parseInt(coordinates[0]);
+                                x = parseFloat(coordinates[0]);
                                 if (Number.isNaN(x)) {
                                     isValid = false;
                                 }
@@ -529,7 +529,7 @@ SPECIAL_AUTO_TILER_3`;
                                     isValid = false;
                                 }
                             } else {
-                                y = parseInt(coordinates[1]);
+                                y = parseFloat(coordinates[1]);
                                 if (Number.isNaN(y)) {
                                     isValid = false;
                                 }
@@ -541,7 +541,7 @@ SPECIAL_AUTO_TILER_3`;
                                     isValid = false;
                                 }
                             } else {
-                                w = parseInt(coordinates[2]);
+                                w = parseFloat(coordinates[2]);
                                 if (Number.isNaN(w)) {
                                     isValid = false;
                                 }
@@ -553,7 +553,7 @@ SPECIAL_AUTO_TILER_3`;
                                     isValid = false;
                                 }
                             } else {
-                                h = parseInt(coordinates[3]);
+                                h = parseFloat(coordinates[3]);
                                 if (Number.isNaN(h)) {
                                     isValid = false;
                                 }
@@ -561,13 +561,13 @@ SPECIAL_AUTO_TILER_3`;
 
                             if (coordinates.length == 6) {
                                 let numericAX = coordinates[4].replace(/\b(?:left|center|right)\b/gi, value => anchorValue[value.toLowerCase()]);
-                                aX = parseInt(numericAX);
+                                aX = parseFloat(numericAX);
                                 if (Number.isNaN(aX)) {
                                     isValid = false;
                                 }
 
                                 let numericAY = coordinates[5].replace(/\b(?:top|center|bottom)\b/gi, value => anchorValue[value.toLowerCase()]);
-                                aY = parseInt(numericAY);
+                                aY = parseFloat(numericAY);
                                 if (Number.isNaN(aY)) {
                                     isValid = false;
                                 }
