@@ -517,7 +517,12 @@ SPECIAL_AUTO_TILER_3`;
                                     isValid = false;
                                 }
                             } else {
-                                x = parseInt(coordinates[0]);
+                                if(coordinates[0].includes("/")) {
+                                    let xFraction = coordinates[0].split("/")
+                                    x = xFraction.length == 2 ? 100 * parseInt(xFraction[0]) / parseInt(xFraction[1]) : NaN
+                                } else {
+                                    x = parseFloat(coordinates[0]); 
+                                }
                                 if (Number.isNaN(x)) {
                                     isValid = false;
                                 }
@@ -529,7 +534,12 @@ SPECIAL_AUTO_TILER_3`;
                                     isValid = false;
                                 }
                             } else {
-                                y = parseInt(coordinates[1]);
+                                if(coordinates[1].includes("/")) {
+                                    let yFraction = coordinates[1].split("/")
+                                    y = yFraction.length == 2 ? 100 * parseInt(yFraction[0]) / parseInt(yFraction[1]) : NaN
+                                } else {
+                                    y = parseFloat(coordinates[1]); 
+                                }
                                 if (Number.isNaN(y)) {
                                     isValid = false;
                                 }
@@ -541,7 +551,12 @@ SPECIAL_AUTO_TILER_3`;
                                     isValid = false;
                                 }
                             } else {
-                                w = parseInt(coordinates[2]);
+                                if(coordinates[2].includes("/")) {
+                                    let wFraction = coordinates[2].split("/")
+                                    w = wFraction.length == 2 ? 100 * parseInt(wFraction[0]) / parseInt(wFraction[1]) : NaN
+                                } else {
+                                    w = parseFloat(coordinates[2]); 
+                                }
                                 if (Number.isNaN(w)) {
                                     isValid = false;
                                 }
@@ -553,7 +568,12 @@ SPECIAL_AUTO_TILER_3`;
                                     isValid = false;
                                 }
                             } else {
-                                h = parseInt(coordinates[3]);
+                                if(coordinates[3].includes("/")) {
+                                    let hFraction = coordinates[3].split("/")
+                                    h = hFraction.length == 2 ? 100 * parseInt(hFraction[0]) / parseInt(hFraction[1]) : NaN
+                                } else {
+                                    h = parseFloat(coordinates[3]); 
+                                }
                                 if (Number.isNaN(h)) {
                                     isValid = false;
                                 }
@@ -561,13 +581,25 @@ SPECIAL_AUTO_TILER_3`;
 
                             if (coordinates.length == 6) {
                                 let numericAX = coordinates[4].replace(/\b(?:left|center|right)\b/gi, value => anchorValue[value.toLowerCase()]);
-                                aX = parseInt(numericAX);
+                                if(numericAX.includes("/")) {
+                                    let aXFraction = numericAX.split("/")
+                                    aX = aXFraction.length == 2 ? 100 * parseInt(aXFraction[0]) / parseInt(aXFraction[1]) : NaN
+                                } else {
+                                    aX = parseFloat(numericAX);
+                                }
+
                                 if (Number.isNaN(aX)) {
                                     isValid = false;
                                 }
 
                                 let numericAY = coordinates[5].replace(/\b(?:top|center|bottom)\b/gi, value => anchorValue[value.toLowerCase()]);
-                                aY = parseInt(numericAY);
+                                if(numericAY.includes("/")) {
+                                    let aYFraction = numericAY.split("/")
+                                    aY = aYFraction.length == 2 ? 100 * parseInt(aYFraction[0]) / parseInt(aYFraction[1]) : NaN
+                                } else {
+                                    aY = parseFloat(numericAY);
+                                }
+
                                 if (Number.isNaN(aY)) {
                                     isValid = false;
                                 }
