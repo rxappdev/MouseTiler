@@ -44,7 +44,7 @@ On Friday or Saturday each week, I will update the current donation amount, and 
 ## Size and donation goals:
 ```
 S = half day    - $250
-N = 1 day       - $490
+M = 1 day       - $490
 L = 2 days      - $970
 XL = 3-5 days   - $1900
 XXL = 6-10 days - $3700
@@ -82,19 +82,19 @@ Minimize system resource usage for low end users that are running bare minimum h
 ### 8. S - Remember Window Positions: Do not restore user moved windows
 Prevent restoration of windows that user moves before the restoration process finishes
 
-### 9. N - Mouse Tiler: Keyboard tiling shortcuts
+### 9. M - Mouse Tiler: Keyboard tiling shortcuts
 Add shortcuts and possibility to move already tiled windows. Example Ctrl+Meta+Num 4 to move window left in the layout it was tiled. (Maybe have left, right, up, down and empty keybindings that people can assign themselves). Alternative use the "overlay" mode layout for the moving options, no matter if you use Popup Grid or Overlay.
 
-### 10. N - Mouse Tiler: Add a toolbar to the UI (things like Cancel Move, Close, Keep Above, Maximize)
+### 10. M - Mouse Tiler: Add a toolbar to the UI (things like Cancel Move, Close, Keep Above, Maximize)
 Add a customizable toolbar that can be placed on left | top | right side of the tiler that gives access to common actions
 
-### 11. N - Mouse Tiler: Enable auto-tiling per screen, virtual desktop, activity
+### 11. M - Mouse Tiler: Enable auto-tiling per screen, virtual desktop, activity
 Have all windows auto-tile on specific screens/desktop instead for a global on/off switch
 
-### 12. N - Mouse Tiler: Add support for decimal and fractional values for x, y, width, height and anchor values on the website
+### 12. M - Mouse Tiler: Add support for decimal and fractional values for x, y, width, height and anchor values on the website
 Allow using values such as 66.67 or 2/3 in the online editor
 
-### 13. N - Mouse Tiler: Add per tile modifiers (keep above, fullscreen, center, etc)
+### 13. M - Mouse Tiler: Add per tile modifiers (keep above, fullscreen, center, etc)
 Add per tile modifiers so you can both tile and perform special operation at once.
 
 Example: center in tile, fullscreen, keep above, keep below, close
