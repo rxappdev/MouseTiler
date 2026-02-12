@@ -906,8 +906,10 @@ SPECIAL_AUTO_TILER_3`;
             moved = false;
             resizing = false;
             resized = false;
-            currentlyMovedWindow.opacity = 1;
-            currentlyMovedWindow = null;
+            if (currentlyMovedWindow != null) {
+                currentlyMovedWindow.opacity = 1;
+                currentlyMovedWindow = null;
+            }
         }
     }
 
