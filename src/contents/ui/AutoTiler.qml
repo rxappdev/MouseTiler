@@ -22,6 +22,7 @@ QtObject {
     // Use to determine if people can auto-tile
     property bool autoTileInitialized: false
 
+    property list<var> autoActivities: ([])
     property list<var> autoScreens: ([])
     property list<var> autoVirtualDesktops: ([])
 
@@ -411,6 +412,7 @@ QtObject {
             let currentMapping = getMappingById(window.mt_auto);
             logAutoTiler('### Disable 2');
             let index = currentMapping.windows.indexOf(window);
+            delete window.mt_auto;
             if (index >= 0) {
                 currentMapping.windows.splice(index, 1);
                 currentMapping.windowCount--;
@@ -428,7 +430,6 @@ QtObject {
                 updateShouldShowScreenEdges();
             }
             logAutoTiler('### Disable 4');
-            delete window.mt_auto;
             window.keepBelow = false;
             window.keepAbove = false;
             // TODO: Remove it from the auto-tiling
@@ -926,10 +927,11 @@ QtObject {
         logAutoTiler('Window added: ' + window.caption);
 
         window.minimizedChanged.connect(windowMinimizedChanged);
-        // window.maximizedChanged.connect(windowMaximizedChanged);
         window.maximizedAboutToChange.connect(windowMaximizedAboutToChange);
         window.maximizedChanged.connect(windowMaximizedChanged);
         window.transientChanged.connect(windowTransientChanged);
+        window.outputChanged.connect(windowOutputChanged);
+        window.desktopsChanged.connect(windowDesktopsChanged);
 
         delete window.mt_auto;
 
@@ -1000,6 +1002,20 @@ QtObject {
             logAutoTiler('Window transient: ' + window.caption + ' ' + window.transient);
             // TODO:
             internalDisableAutoTiling(window);
+        }
+
+        function windowOutputChanged() {
+            logAutoTiler('Window output changed: ' + window.caption + ' currently moved window: ' + (window == root.currentlyMovedWindow));
+            if (window != root.currentlyMovedWindow) {
+                internalDisableAutoTiling(window);
+            }
+        }
+
+        function windowDesktopsChanged() {
+            logAutoTiler('Window desktops changed: ' + window.caption + ' currently moved window: ' + (window == root.currentlyMovedWindow));
+            if (window != root.currentlyMovedWindow) {
+                internalDisableAutoTiling(window);
+            }
         }
     }
 
