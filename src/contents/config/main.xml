@@ -274,7 +274,7 @@ SPECIAL_AUTO_TILER_3</default>
             <default></default>
         </entry>
         <entry name="autoTileBlacklist" type="String">
-            <default>krunner,kded,polkit,plasmashell,yakuake,spectacle,kded5,xwaylandvideobridge,ksplashqml,org.kde.plasmashell,org.kde.polkit-kde-authentication-agent-1,org.kde.kruler,kruler,kwin_wayland,ksmserver-logout-greeter</default>
+            <default>krunner,kded,polkit,plasmashell,yakuake,spectacle,org.kde.spectacle,kded5,xwaylandvideobridge,ksplashqml,org.kde.plasmashell,org.kde.polkit-kde-authentication-agent-1,org.kde.kruler,kruler,kwin_wayland,kwin,ksmserver-logout-greeter,ksmserver</default>
         </entry>
         <entry name="autoTileWindowAction" type="Int">
             <default>0</default>

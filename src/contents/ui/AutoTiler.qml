@@ -1373,7 +1373,7 @@ QtObject {
     }
 
     function loadAutoTilerConfig() {
-        const defaultBlacklist = 'krunner,kded,polkit,plasmashell,yakuake,spectacle,kded5,xwaylandvideobridge,ksplashqml,org.kde.plasmashell,org.kde.polkit-kde-authentication-agent-1,org.kde.kruler,kruler,kwin_wayland,ksmserver-logout-greeter';
+        const defaultBlacklist = 'krunner,kded,polkit,plasmashell,yakuake,spectacle,org.kde.spectacle,kded5,xwaylandvideobridge,ksplashqml,org.kde.plasmashell,org.kde.polkit-kde-authentication-agent-1,org.kde.kruler,kruler,kwin_wayland,kwin,ksmserver-logout-greeter,ksmserver';
 
         configAutoTileNewWindows = KWin.readConfig("autoTileNewWindows", false);
         configAutoTileMinimizedMaximized = KWin.readConfig("autoTileMinimizedMaximized", true);
