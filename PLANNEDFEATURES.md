@@ -106,7 +106,7 @@ Also add text hint of what a tile does (like C for center F for fullscreen A for
 ### 14. L - Mouse Tiler: Per screen layout configuration
 For advanced users who want to have different tiling options per screen
 
-### 15. L - Mouse Tiler: Add support for auto-tiling on Activities
+### 15. DONE (did it for free) - L - Mouse Tiler: Add support for auto-tiling on Activities
 Add support for activities when using auto-tiling
 
 ### 16. L - Mouse Tiler: Update default layouts (including grids) to use decimal values and fractions
