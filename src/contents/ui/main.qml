@@ -857,7 +857,7 @@ SPECIAL_AUTO_TILER_3`;
                         var geometry = currentTiler.getGeometry();
                         if (geometry != null) {
                             let xOffset = (getCursorPosition().x - client.x) / client.width;
-                            client.mt_originalSize = {xOffset: xOffset, width: client.width, height: client.height};
+                            client.mt_originalSize = {xOffset: xOffset, x: client.x, y: client.y, width: client.width, height: client.height};
 
                             switch (geometry.special) {
                                 case 'SPECIAL_FILL':
@@ -1401,6 +1401,8 @@ SPECIAL_AUTO_TILER_3`;
 
     Component.onDestruction: {
         log('Closing...');
+
+        autoTiler.restoreAllOffScreenAutoTiledWindows();
 
         for (let i = allConnections.length - 1; i >= 0; i--) {
             allConnections[i]();

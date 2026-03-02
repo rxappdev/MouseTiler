@@ -7,6 +7,7 @@ QtObject {
     property bool configAutoTileNewWindows: false
     property bool configAutoTileMinimizedMaximized: true
     property bool configAutoTileRestoreSize: false
+    property bool configAutoTileRestoreSizeAndPosition: true
     property int configAutoTileWindowAction: 0
     property int configAutoTileWindowIndex: 0
     property int configAutoTileFocusAction: 0
@@ -180,7 +181,7 @@ QtObject {
 
     function reinitialize() {
         logAutoTiler('reinitialize called...');
-        autoWindowMapping = [];
+        autoWindowMapping = {};
         autoActivities = [];
         autoScreens = [];
         autoVirtualDesktops = [];
@@ -981,9 +982,7 @@ QtObject {
 
     function toggleAutoTile(window, tiler = -1) {
         if (window.mt_auto == undefined) {
-            if (configAutoTileRestoreSize) {
-                window.mt_originalSize = {xOffset: 0, width: window.width, height: window.height};
-            }
+            window.mt_originalSize = {xOffset: 0, x: window.x, y: window.y, width: window.width, height: window.height};
             let currentMapping = getMappingForWindow(window);
             let configIndex = tiler != -1 ? tiler : (currentMapping.autoTilerIndex != -1 ? currentMapping.autoTilerIndex : 0);
             let insertIndex = autoLayoutConfigs[configIndex].autoTileIndex;
@@ -1372,12 +1371,34 @@ QtObject {
         }
     }
 
+    /*
+     * Restore all auto-tiled windows to their original position and size, this is required when disabling mouse tiler to make sure the windows do not stay off-screen.
+     * Only time this would be needed is if the script unloads before other apps are closed. Mostly good to have.
+     */
+    function restoreAllOffScreenAutoTiledWindows() {
+        if (!configAutoTileRestoreSizeAndPosition) return;
+        log('Trying to restore all off-screen auto tiled windows');
+
+        let keys = Object.keys(autoWindowMapping);
+        for (let m = 0; m < keys.length; m++) {
+            let mapping = autoWindowMapping[keys[m]];
+            for (let w = 0; w < mapping.windows.length; w++) {
+                let window = mapping.windows[w];
+                if (window.mt_originalSize) {
+                    window.frameGeometry = Qt.rect(window.mt_originalSize.x, window.mt_originalSize.y, window.mt_originalSize.width, window.mt_originalSize.height);
+                    delete window.mt_originalSize;
+                }
+            }
+        }
+    }
+
     function loadAutoTilerConfig() {
         const defaultBlacklist = 'krunner,kded,polkit,plasmashell,yakuake,spectacle,org.kde.spectacle,kded5,xwaylandvideobridge,ksplashqml,org.kde.plasmashell,org.kde.polkit-kde-authentication-agent-1,org.kde.kruler,kruler,kwin_wayland,kwin,ksmserver-logout-greeter,ksmserver';
 
         configAutoTileNewWindows = KWin.readConfig("autoTileNewWindows", false);
         configAutoTileMinimizedMaximized = KWin.readConfig("autoTileMinimizedMaximized", true);
         configAutoTileRestoreSize = KWin.readConfig("autoTileRestoreSize", false);
+        configAutoTileRestoreSizeAndPosition = KWin.readConfig("autoTileRestoreSizeAndPosition", true);
         configAutoTileWindowAction = KWin.readConfig("autoTileWindowAction", 0);
         configAutoTileWindowIndex = KWin.readConfig("autoTileWindowIndex", 0);
         configAutoTileFocusAction = KWin.readConfig("autoTileFocusAction", 0);
