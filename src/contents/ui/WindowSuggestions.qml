@@ -175,14 +175,17 @@ Window {
             let width = (tile.pxW == undefined ? tile.w / 100 * windowSuggestions.width : tile.pxW);
             let height = (tile.pxH == undefined ? tile.h / 100 * windowSuggestions.height : tile.pxH);
 
+            // Temporarily add clientArea x/y since it is needed for calculating margins
             let geometry = {
-                x: (tile.pxX == undefined ? tile.x / 100 * windowSuggestions.width : tile.pxX) - (tile.aX == undefined ? 0 : tile.aX * width / 100),
-                y: (tile.pxY == undefined ? tile.y / 100 * windowSuggestions.height : tile.pxY) - (tile.aY == undefined ? 0 : tile.aY * height / 100),
+                x: clientArea.x + ((tile.pxX == undefined ? tile.x / 100 * windowSuggestions.width : tile.pxX) - (tile.aX == undefined ? 0 : tile.aX * width / 100)),
+                y: clientArea.y + ((tile.pxY == undefined ? tile.y / 100 * windowSuggestions.height : tile.pxY) - (tile.aY == undefined ? 0 : tile.aY * height / 100)),
                 width: width,
                 height: height,
                 tileIndex: i
             };
             root.addMargins(geometry, true, true, true, true);
+            geometry.x -= clientArea.x;
+            geometry.y -= clientArea.y;
             converted.push(geometry);
         }
         windowSuggestions.convertedOverlay = converted;
