@@ -1326,7 +1326,8 @@ SPECIAL_AUTO_TILER_3`;
         function onTimeoutTriggered() {
             let desktopBefore = Workspace.currentDesktop;
 
-            while (timeoutData.length > 0 && timeoutData[0].time <= Date.now()) {
+            let timeNow = Date.now();
+            while (timeoutData.length > 0 && timeoutData[0].time <= timeNow) {
                 let data = timeoutData.shift();
                 log('Trying to auto tile window: ' + data.window.internalId);
                 autoTiler.autoTileWindowOnStart(data.window);
@@ -1345,6 +1346,58 @@ SPECIAL_AUTO_TILER_3`;
                 autoTileTimer.triggered.disconnect(onTimeoutTriggered);
                 timeoutIsRunning = false;
                 autoTileTimer.stop();
+            }
+        }
+    }
+
+    Timer {
+        id: retileAllTimer
+
+        property var timeoutIsRunning: false
+        property var timeoutData: []
+
+        function setTimeout(mappingId) {
+            log('Setting retile timeout isRunning: ' + timeoutIsRunning + ' timer count: ' + timeoutData.length + ' id: ' + mappingId);
+
+            const delay = 1000;
+            const repeats = 3;
+            let matchTimerIndex = timeoutData.findIndex((t) => mappingId === t.id);
+
+            if (matchTimerIndex != -1) {
+                timeoutData[matchTimerIndex].time = Date.now() + delay;
+                timeoutData[matchTimerIndex].repeats = repeats;
+                timeoutData.sort((a, b) => a.time - b.time);
+            } else {
+                timeoutData.push({time: Date.now() + delay, id: mappingId, repeats: repeats});
+                timeoutData.sort((a, b) => a.time - b.time);
+
+                if (!timeoutIsRunning) {
+                    retileAllTimer.interval = 250;
+                    retileAllTimer.repeat = true;
+                    retileAllTimer.triggered.connect(onTimeoutTriggered);
+                    timeoutIsRunning = true;
+
+                    retileAllTimer.start();
+                }
+            }
+        }
+
+        function onTimeoutTriggered() {
+            let timeNow = Date.now();
+            while (timeoutData.length > 0 && timeoutData[0].time <= timeNow) {
+                let data = timeoutData.shift();
+                autoTiler.internalRetileAll(autoTiler.getMappingById(data.id));
+                data.repeats--;
+                if (data.repeats > 0) {
+                    data.time = timeNow + 1500;
+                    timeoutData.push(data);
+                }
+            }
+
+            if (timeoutData.length == 0) {
+                retileAllTimer.triggered.disconnect(onTimeoutTriggered);
+                timeoutIsRunning = false;
+                retileAllTimer.stop();
             }
         }
     }

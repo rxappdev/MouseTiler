@@ -171,6 +171,9 @@ QtObject {
                         } else {
                             toggleAutoTile(window);
                         }
+                        if (window.mt_auto) {
+                            retileAllTimer.setTimeout(window.mt_auto);
+                        }
                     }
                 } else {
                     window.mt_autoRestore = 128;
