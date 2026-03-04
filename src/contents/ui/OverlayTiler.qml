@@ -2,11 +2,12 @@ import QtQuick
 import org.kde.kwin
 import org.kde.plasma.core as PlasmaCore
 
-Window {
+// Window {
+PlasmaCore.Dialog {
     id: overlayTiler
 
     property var activeScreen: null
-    property var clientArea: ({width: 0, height: 0, x: 0, y: 0})
+    property var clientArea: ({width: 1, height: 1, x: 0, y: 0})
     property var tilePadding: 2
     property int activeIndex: -1
     property int spanFromIndex: -1
@@ -22,12 +23,12 @@ Window {
     y: clientArea.y + root.config.overlayScreenEdgeMargin
     // flags: Qt.Popup | Qt.BypassWindowManagerHint | Qt.FramelessWindowHint
     flags: Qt.Tool | Qt.BypassWindowManagerHint | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus
-    color: "transparent"
+    // color: "transparent" // Window
     visible: false
-    // backgroundHints: PlasmaCore.Types.NoBackground
-    // outputOnly: true
+    backgroundHints: PlasmaCore.Types.NoBackground // PlasmaCore.Dialog
+    outputOnly: true // PlasmaCore.Dialog
     // type: PlasmaCore.Dialog.OnScreenDisplay
-    // location: PlasmaCore.Types.Desktop
+    location: PlasmaCore.Types.Desktop // PlasmaCore.Dialog
 
     function reset() {
         activeScreen = null;
@@ -57,11 +58,11 @@ Window {
         let converted = [];
         for (let i = 0; i < layout.length; i++) {
             let tile = layout[i];
-            let width = (tile.pxW == undefined ? tile.w / 100 * tiles.width : tile.pxW);
-            let height = (tile.pxH == undefined ? tile.h / 100 * tiles.height : tile.pxH);
+            let width = (tile.pxW == undefined ? tile.w / 100 * mainItem.width : tile.pxW);
+            let height = (tile.pxH == undefined ? tile.h / 100 * mainItem.height : tile.pxH);
             converted.push({
-                pxX: (tile.pxX == undefined ? tile.x / 100 * tiles.width : tile.pxX) - (tile.aX == undefined ? 0 : tile.aX * width / 100),
-                pxY: (tile.pxY == undefined ? tile.y / 100 * tiles.height : tile.pxY) - (tile.aY == undefined ? 0 : tile.aY * height / 100),
+                pxX: (tile.pxX == undefined ? tile.x / 100 * mainItem.width : tile.pxX) - (tile.aX == undefined ? 0 : tile.aX * width / 100),
+                pxY: (tile.pxY == undefined ? tile.y / 100 * mainItem.height : tile.pxY) - (tile.aY == undefined ? 0 : tile.aY * height / 100),
                 pxW: width,
                 pxH: height
             });
@@ -135,8 +136,9 @@ Window {
     }
 
     Item {
-        id: tiles
-        anchors.fill: parent
+        id: mainItem
+        width: popupTiler.width
+        height: popupTiler.height
 
         SequentialAnimation {
             id: showOverlayTilerAnimation

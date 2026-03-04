@@ -3,11 +3,12 @@ import QtQuick.Layouts
 import org.kde.kwin
 import org.kde.plasma.core as PlasmaCore
 
-Window {
+// Window {
+PlasmaCore.Dialog {
     id: popupTiler
 
     property var activeScreen: null
-    property var clientArea: ({width: 0, height: 0, x: 0, y: 0})
+    property var clientArea: ({width: 1, height: 1, x: 0, y: 0})
     property int tilePadding: 2
     property int borderOffset: 2
     property int activeLayoutIndex: -1
@@ -41,12 +42,12 @@ Window {
     y: clientArea.y
     //flags: Qt.Popup | Qt.BypassWindowManagerHint | Qt.FramelessWindowHint
     flags: Qt.Tool | Qt.BypassWindowManagerHint | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus
-    color: "transparent"
+    // color: "transparent" // Window
     visible: false
-    // backgroundHints: PlasmaCore.Types.NoBackground
-    // outputOnly: true
+    backgroundHints: PlasmaCore.Types.NoBackground // PlasmaCore.Dialog
+    outputOnly: true // PlasmaCore.Dialog
     // type: PlasmaCore.Dialog.OnScreenDisplay
-    // location: PlasmaCore.Types.Desktop
+    location: PlasmaCore.Types.Desktop // PlasmaCore.Dialog
 
     function reset() {
         activeScreen = null;
@@ -505,7 +506,9 @@ Window {
     }
 
     Item {
-        anchors.fill: parent
+        id: mainItem
+        width: popupTiler.width
+        height: popupTiler.height
         visible: revealed
 
         SequentialAnimation {

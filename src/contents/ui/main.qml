@@ -2,7 +2,8 @@ import QtQuick
 import QtCore
 import org.kde.kwin
 
-Window {
+// Window {
+Item {
     // API and guides
     // https://develop.kde.org/docs/plasma/kwin/
     // https://develop.kde.org/docs/plasma/kwin/api/
@@ -13,14 +14,14 @@ Window {
 
     id: root
 
-    x: 69
-    y: -7
-    width: 1
-    height: 1
-    flags: Qt.BypassWindowManagerHint | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus
-    color: "transparent"
-
-    visible: true
+    // Needed when root is Window instead of Item
+    // x: 69
+    // y: -7
+    // width: 1
+    // height: 1
+    // flags: Qt.BypassWindowManagerHint | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus
+    // color: "transparent"
+    // visible: true
 
     property var debugLogs: false
     property var config: ({})

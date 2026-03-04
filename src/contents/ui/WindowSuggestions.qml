@@ -4,7 +4,8 @@ import org.kde.plasma.core as PlasmaCore
 import org.kde.kirigami as Kirigami
 import org.kde.plasma.components as PlasmaComponents
 
-Window {
+// Window {
+PlasmaCore.Dialog {
     id: windowSuggestions
 
     property var activeScreen: null
@@ -14,7 +15,7 @@ Window {
     property int layoutIndex: 0
     property int tileIndex: 0
 
-    property var clientArea: ({width: 0, height: 0, x: 0, y: 0})
+    property var clientArea: ({width: 1, height: 1, x: 0, y: 0})
     property var tilePadding: 2
     property list<var> convertedOverlay: ([])
 
@@ -53,8 +54,14 @@ Window {
     x: clientArea.x
     y: clientArea.y
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus | Qt.BypassWindowManagerHint
-    color: "transparent"
+    // flags: Qt.Tool | Qt.BypassWindowManagerHint | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus
+    // flags: Qt.Tool | Qt.BypassWindowManagerHint | Qt.FramelessWindowHint
+    // color: "transparent" // PlasmaCore.Dialog
     visible: false
+    // outputOnly: true
+    backgroundHints: PlasmaCore.Types.NoBackground // PlasmaCore.Dialog
+    // type: PlasmaCore.Dialog.OnScreenDisplay
+    location: PlasmaCore.Types.Desktop // PlasmaCore.Dialog
 
     function init() {
         suggestionsVisibility = KWin.readConfig("suggestionsVisibility", 0);
@@ -270,8 +277,9 @@ Window {
     }
 
     Item {
-        id: tiles
-        anchors.fill: parent
+        id: mainItem
+        width: windowSuggestions.width
+        height: windowSuggestions.height
 
         TapHandler {
             onTapped: windowSuggestions.visible = false;
