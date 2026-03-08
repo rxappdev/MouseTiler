@@ -36,17 +36,20 @@ PlasmaCore.Dialog {
     // property var scrollLeftTime: 0
     // property var scrollRightTime: 0
 
+    // Workaround for plasma 6.6 and earlier - needed by Window and Plasma Dialog - replaced by Qt.WindowTransparentForInput in Plasma 6.7
+    property bool outputOnly: true
+
     width: clientArea.width
     height: clientArea.height
     x: clientArea.x
     y: clientArea.y
     //flags: Qt.Popup | Qt.BypassWindowManagerHint | Qt.FramelessWindowHint
     // flags: Qt.Tool | Qt.BypassWindowManagerHint | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus
-    flags: (root.config.displayAs == 0 ? 0 : Qt.Popup) | (Qt.BypassWindowManagerHint | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus)
+    flags: (root.config.displayAs == 0 ? 0 : Qt.Popup) | (Qt.BypassWindowManagerHint | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus | Qt.WindowTransparentForInput)
     // color: "transparent" // Window
     visible: false
     backgroundHints: PlasmaCore.Types.NoBackground // PlasmaCore.Dialog
-    outputOnly: true // PlasmaCore.Dialog
+    // outputOnly: true // PlasmaCore.Dialog
     // type: PlasmaCore.Dialog.OnScreenDisplay
     location: PlasmaCore.Types.Desktop // PlasmaCore.Dialog
 
