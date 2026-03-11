@@ -631,7 +631,7 @@ QtObject {
             let windowIndex = data.index;
             logAutoTiler('i: ' + i + ' w: ' + windowIndex);
             logAutoTiler('RETILE 2.1 - width before: ' + mapping.windows[windowIndex].width);
-            root.moveAndResizeWindow(mapping.windows[windowIndex], data.geometry);
+            root.moveAndResizeWindow(mapping.windows[windowIndex], data.geometry, true);
             logAutoTiler('RETILE 2.2 - width after: ' + mapping.windows[windowIndex].width);
             isVisible[windowIndex] = true;
             if (updateLayerKeepBelow) {
@@ -735,7 +735,7 @@ QtObject {
                     logAutoTiler('INSERT Z ---- currentMapping.geometries: ' + currentMapping.geometries.length + ' wanted: ' + geometryIndex);
                     let geometry = JSON.parse(JSON.stringify(currentMapping.geometries[geometryIndex]));
                     root.addMargins(geometry, true, true, true, true);
-                    root.moveAndResizeWindow(window, geometry);
+                    root.moveAndResizeWindow(window, geometry, false);
                     return;
                 }
                 logAutoTiler('INSERT Z index: ' + index);
@@ -917,7 +917,7 @@ QtObject {
                 let geometry = JSON.parse(JSON.stringify(currentMapping.geometries[geometryIndex]));
                 disableAutoTiling(window);
                 root.addMargins(geometry, true, true, true, true);
-                root.moveAndResizeWindow(window, geometry);
+                root.moveAndResizeWindow(window, geometry, false);
             } else if (currentMapping.id == previousMapping.id) {
                 logAutoTiler('windowDropped 5 target index: ' + targetIndex);
 

@@ -244,34 +244,55 @@ PlasmaCore.Dialog {
             let index = localWindows.indexOf(window);
             if (index != -1) {
                 localWindows.splice(index, 1);
-            }
 
-            if (!window.desktops.includes(currentDesktop)) {
-                window.desktops = [currentDesktop];
-            }
-            if (!window.activities.includes(currentActivity)) {
-                window.activities = [currentActivity];
-            }
-            if (window.mt_auto) {
-                autoTiler.disableAutoTiling(window);
-            }
-            if (window.minimized) {
-                window.minimized = false;
-            }
-            root.moveAndResizeWindow(window, geometry);
-            Workspace.raiseWindow(window);
-
-            activeIndex = 0;
-
-            if (localWindows.length == 0 || convertedOverlay.length == 0) {
-                windowSuggestions.visible = false;
-                validWindows = [];
-            } else {
-                validWindows = localWindows;
-                if (suggestionsInsideTile) {
-                    updateSizes();
+                if (!window.desktops.includes(currentDesktop)) {
+                    window.desktops = [currentDesktop];
                 }
-                updateOffsets();
+                if (!window.activities.includes(currentActivity)) {
+                    window.activities = [currentActivity];
+                }
+                if (window.mt_auto) {
+                    autoTiler.disableAutoTiling(window);
+                }
+                if (window.minimized) {
+                    window.minimized = false;
+                }
+                root.moveAndResizeWindow(window, geometry);
+                Workspace.raiseWindow(window);
+
+                activeIndex = 0;
+
+                if (localWindows.length == 0 || convertedOverlay.length == 0) {
+                    windowSuggestions.visible = false;
+                    validWindows = [];
+                } else {
+                    validWindows = localWindows;
+                    if (suggestionsInsideTile) {
+                        updateSizes();
+                    }
+                    updateOffsets();
+                }
+            }
+        }
+    }
+
+    function windowClosed(window) {
+        log('Closed window caption: ' + window.caption);
+
+        if (activeIndex != -1 && validWindows.length > 0) {
+            let localWindows = [...validWindows];
+            let index = localWindows.indexOf(window);
+            if (index != -1) {
+                localWindows.splice(index, 1);
+
+                if (localWindows.length == 0) {
+                    validWindows = [];
+                } else {
+                    validWindows = localWindows;
+                    if (suggestionsInsideTile) {
+                        updateSizes();
+                    }
+                }
             }
         }
     }

@@ -792,6 +792,7 @@ SPECIAL_AUTO_TILER_3`;
                 doCleanup();
             }
             autoTiler.windowClosed(client);
+            windowSuggestions.windowClosed(client);
             disconnectAll();
             removeEmptyVirtualDesktops();
         }
@@ -1127,7 +1128,15 @@ SPECIAL_AUTO_TILER_3`;
         }
     }
 
-    function moveAndResizeWindow(window, geometry) {
+    function moveAndResizeWindow(window, geometry, autoTile = false) {
+        if (autoTile && !autoTiler.isValidAutoTileWindow(window)) {
+            logE('Not a valid auto tile window anymore!');
+            return false;
+        } else if (!isValidWindow(window)) {
+            logE('Not a valid window anymore!');
+            return false;
+        }
+
         log('Moving and resizing: ' + window.caption);
         if (window.resizeable) {
             if (geometry.width > 20 && geometry.height > 20) {
@@ -1136,6 +1145,7 @@ SPECIAL_AUTO_TILER_3`;
         } else {
             window.frameGeometry = Qt.rect(geometry.x, geometry.y, window.width, window.height);
         }
+        return true;
     }
 
     function updateWindowVisibility() {
