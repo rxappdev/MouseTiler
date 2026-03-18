@@ -878,8 +878,9 @@ SPECIAL_AUTO_TILER_3`;
                                     }
                                     break;
                                 case 1:
-                                    Workspace.activeWindow = client;
-                                    Workspace.slotWindowMaximize();
+                                    // Workspace.activeWindow = client;
+                                    // Workspace.slotWindowMaximize();
+                                    client.setMaximize(true, true);
                                     if (!moveToVirtualDesktopOnDrop) {
                                         Workspace.currentDesktop = virtualDesktopAtMoveStart;
                                     }
@@ -923,8 +924,9 @@ SPECIAL_AUTO_TILER_3`;
                                     client.keepBelow = !client.keepBelow;
                                     break;
                                 case 'SPECIAL_MAXIMIZE':
-                                    Workspace.activeWindow = client;
-                                    Workspace.slotWindowMaximize();
+                                    // Workspace.activeWindow = client;
+                                    // Workspace.slotWindowMaximize();
+                                    client.setMaximize(true, true);
                                     break;
                                 case 'SPECIAL_MINIMIZE':
                                     client.minimized = true;
