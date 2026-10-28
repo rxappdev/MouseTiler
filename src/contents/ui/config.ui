@@ -810,7 +810,7 @@
        <iconset theme="edit-select-all"/>
       </attribute>
       <attribute name="title">
-       <string>Popup Grid - Tab 1</string>
+       <string>Popup Grid (1)</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_8">
        <item>
@@ -844,7 +844,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="kcfg_showTextHint">
+           <widget class="QCheckBox" name="kcfg_showTextHintv2">
             <property name="text">
              <string>Show text hint below the tiler. Keyboard shortcuts and special functionality information is displayed in the hint.</string>
             </property>
@@ -1266,7 +1266,7 @@
        <iconset theme="edit-select-all"/>
       </attribute>
       <attribute name="title">
-       <string>Popup Grid - Tab 2</string>
+       <string>Popup Grid (2)</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_23">
        <item>
@@ -1666,6 +1666,154 @@
           </item>
          </layout>
         </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_toolBar">
+      <attribute name="icon">
+       <iconset theme="applications-engineering"/>
+      </attribute>
+      <attribute name="title">
+       <string>Toolbar</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_29">
+       <item>
+        <widget class="QLabel" name="label_112">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Toolbar&lt;/span&gt;: Add a toolbar that provides quick access to common actions and tools without the need of using keyboard shortcuts.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="kcfg_toolBarEnabled">
+         <property name="title">
+          <string>Enable toobar </string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_30">
+          <item>
+           <layout class="QFormLayout" name="formLayout_13">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_113">
+              <property name="text">
+               <string>Toolbar position</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="kcfg_toolBarPosition">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <item>
+               <property name="text">
+                <string>TOP</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>BOTTOM</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>LEFT</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>RIGHT</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_114">
+              <property name="text">
+               <string>Hover action delay (toggles and other hoverable items)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QSpinBox" name="kcfg_toolBarHoverTime">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="suffix">
+               <string> ms</string>
+              </property>
+              <property name="minimum">
+               <number>750</number>
+              </property>
+              <property name="maximum">
+               <number>5000</number>
+              </property>
+              <property name="singleStep">
+               <number>250</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_111">
+            <property name="text">
+             <string>List of items in the toolbar. You can change the order or remove items you do not want (just add a # in front to remove an item).</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPlainTextEdit" name="kcfg_toolBarItems">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>300</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>300</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_115">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Valid options:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;CANCEL_MOVE&lt;/span&gt; - &lt;span style=&quot; font-weight:700;&quot;&gt;Drop&lt;/span&gt;: Cancel the move of the window restoring the position it had before you picked it up.&lt;br&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;CLOSE_WINDOW&lt;/span&gt; - &lt;span style=&quot; font-weight:700;&quot;&gt;Drop&lt;/span&gt;: Close current window.&lt;br&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;HIDE_TILER&lt;/span&gt; - &lt;span style=&quot; font-weight:700;&quot;&gt;Hover&lt;/span&gt;: Hide the tiler. Same as pressing &lt;span style=&quot; font-weight:700;&quot;&gt;Meta+Space&lt;/span&gt; once.&lt;br&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;MAXIMIZE&lt;/span&gt; - &lt;span style=&quot; font-weight:700;&quot;&gt;Drop&lt;/span&gt;: Toggle windows Maximize.&lt;br&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;MINIMIZE_OBSTRUCTED&lt;/span&gt; - &lt;span style=&quot; font-weight:700;&quot;&gt;Drop&lt;/span&gt;: Minimize all windows that are not fully visible (obstructed by other windows).&lt;br&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;MINIMIZE_OTHER&lt;/span&gt; - &lt;span style=&quot; font-weight:700;&quot;&gt;Drop&lt;/span&gt;: Minimize all other windows on current desktop.&lt;br&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;TOGGLE_AUTO_TILE_DESKTOP&lt;/span&gt; - &lt;span style=&quot; font-weight:700;&quot;&gt;Drop&lt;/span&gt;: Toggle auto-tiling of new windows on current desktop.&lt;br&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;TOGGLE_CENTER_IN_TILE&lt;/span&gt; - &lt;span style=&quot; font-weight:700;&quot;&gt;Drop&lt;/span&gt;: Center current window on current desktop. &lt;span style=&quot; font-weight:700;&quot;&gt;Hover&lt;/span&gt;: Toggle center in tile. Same as pressing &lt;span style=&quot; font-weight:700;&quot;&gt;Meta+Ctrl+C&lt;/span&gt;.&lt;br&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;TOGGLE_KEEP_ABOVE&lt;/span&gt; - &lt;span style=&quot; font-weight:700;&quot;&gt;Drop&lt;/span&gt;: Toggle windows Keep Above Others.&lt;br&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;TOGGLE_KEEP_BELOW&lt;/span&gt; - &lt;span style=&quot; font-weight:700;&quot;&gt;Drop&lt;/span&gt;: Toggle windows Keep Below Others.&lt;br&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;TOGGLE_SHOW_ALL&lt;/span&gt; - &lt;span style=&quot; font-weight:700;&quot;&gt;Hover&lt;/span&gt;: Toggle between all layouts and default layouts. Same as pressing &lt;span style=&quot; font-weight:700;&quot;&gt;Ctrl+Space&lt;/span&gt;.&lt;br&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;TOGGLE_SUGGESTIONS&lt;/span&gt; - &lt;span style=&quot; font-weight:700;&quot;&gt;Hover&lt;/span&gt;: Toggle suggestions for other tiles in a layout. Same as pressing &lt;span style=&quot; font-weight:700;&quot;&gt;Meta+Ctrl+S&lt;/span&gt;.&lt;br&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;TRUE_MAXIMIZE&lt;/span&gt; - &lt;span style=&quot; font-weight:700;&quot;&gt;Drop&lt;/span&gt;: Toggle windows Maximize and No Titlebar and Frame at once.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_8">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>

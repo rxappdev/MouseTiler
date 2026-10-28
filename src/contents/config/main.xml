@@ -62,7 +62,7 @@
         <entry name="showTargetTileHint" type="Bool">
             <default>true</default>
         </entry>
-        <entry name="showTextHint" type="Bool">
+        <entry name="showTextHintv2" type="Bool">
             <default>true</default>
         </entry>
         <entry name="gridTilerOpacity" type="Int">
@@ -372,6 +372,30 @@ SPECIAL_FIT</default>
         </entry>
         <entry name="suggestMinimized" type="Bool">
             <default>false</default>
+        </entry>
+        <entry name="toolBarEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="toolBarPosition" type="Int">
+            <default>3</default>
+        </entry>
+        <entry name="toolBarItems" type="String">
+            <default>CANCEL_MOVE
+TOGGLE_SUGGESTIONS
+TOGGLE_CENTER_IN_TILE
+TOGGLE_SHOW_ALL
+HIDE_TILER
+TOGGLE_AUTO_TILE_DESKTOP
+CLOSE_WINDOW
+TOGGLE_KEEP_ABOVE
+TOGGLE_KEEP_BELOW
+MAXIMIZE
+TRUE_MAXIMIZE
+MINIMIZE_OTHER
+MINIMIZE_OBSTRUCTED</default>
+        </entry>
+        <entry name="toolBarHoverTime" type="Int">
+            <default>1000</default>
         </entry>
     </group>
 </kcfg>

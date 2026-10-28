@@ -21,6 +21,7 @@ QtObject {
     property var configAutoTileBlacklist: ([])
     property int configAutoTileToggleBehavior: 0
     property var configAutoTileIds: ([])
+    property var configAutoTileIdsFromToolbar: ([])
 
     // Use to determine if people can auto-tile
     property bool autoTileInitialized: false
@@ -174,8 +175,7 @@ QtObject {
 
     function printAutoTileId() {
         console.warn('MouseTiler: ###############################################################################################');
-        let currentMapping = getMappingForCurrentScreenDesktopAndActivity();
-        console.warn('MouseTiler: Auto-tiler id: ' + currentMapping.id);
+        console.warn('MouseTiler: Auto-tiler id: ' + getIdForCurrentScreenDesktopAndActivity());
         console.warn('MouseTiler: ###############################################################################################');
     }
 
@@ -258,6 +258,14 @@ QtObject {
             mapping = autoWindowMapping[Workspace.activeScreen.name + Workspace.currentDesktop.id + Workspace.currentActivity];
         }
         return mapping;
+    }
+
+    function getIdForCurrentScreenDesktopAndActivity() {
+        return getMappingForCurrentScreenDesktopAndActivity().id;
+    }
+
+    function isCurrentScreenDesktopAndActivityAutoTiledByDefault() {
+        return configAutoTileIds.includes(getIdForCurrentScreenDesktopAndActivity());
     }
 
     function updateAutoTilersInPopupTiler() {
@@ -1062,7 +1070,6 @@ QtObject {
         logAutoTiler('Window added: ' + window.caption);
 
         window.minimizedChanged.connect(windowMinimizedChanged);
-        window.maximizedAboutToChange.connect(windowMaximizedAboutToChange);
         window.maximizedChanged.connect(windowMaximizedChanged);
         window.transientChanged.connect(windowTransientChanged);
         window.modalChanged.connect(windowModalChanged);
@@ -1076,17 +1083,18 @@ QtObject {
         allConnections[window.internalId] = disconnectAll;
 
         function disconnectAll() {
-            window.minimizedChanged.disconnect(windowMinimizedChanged);
-            window.maximizedAboutToChange.disconnect(windowMaximizedAboutToChange);
-            window.maximizedChanged.disconnect(windowMaximizedChanged);
-            window.transientChanged.disconnect(windowTransientChanged);
-            window.modalChanged.disconnect(windowModalChanged);
-            window.outputChanged.disconnect(windowOutputChanged);
-            window.desktopsChanged.disconnect(windowDesktopsChanged);
-            window.activitiesChanged.disconnect(windowActivitiesChanged);
-            window.fullScreenChanged.disconnect(windowFullScreenChanged);
+            if (window) {
+                window.minimizedChanged.disconnect(windowMinimizedChanged);
+                window.maximizedChanged.disconnect(windowMaximizedChanged);
+                window.transientChanged.disconnect(windowTransientChanged);
+                window.modalChanged.disconnect(windowModalChanged);
+                window.outputChanged.disconnect(windowOutputChanged);
+                window.desktopsChanged.disconnect(windowDesktopsChanged);
+                window.activitiesChanged.disconnect(windowActivitiesChanged);
+                window.fullScreenChanged.disconnect(windowFullScreenChanged);
 
-            delete allConnections[window.internalId];
+                delete allConnections[window.internalId];
+            }
         }
 
         let now = Date.now();
@@ -1129,24 +1137,14 @@ QtObject {
             }
         }
 
-        function windowMaximizedAboutToChange(mode) {
-            logAutoTiler('Window maximized about to change: ' + window.caption + ' ' + JSON.stringify(mode));
-            // TODO: 0 disabled 3 enabled probably mask 1 & 2
-            if (mode != 0) {
-                if (window.mt_auto && configAutoTileMinimizedMaximized) {
-                    logAutoTiler('11111111111111111111111111111');
-                    window.mt_autoRestoreMinMax = true;
-                }
-                disableAutoTiling(window);
-            } else if (configAutoTileMinimizedMaximized && window.mt_autoRestoreMinMax) {
-                currentWindowUnMaximized = true;
-            }
-        }
-
         function windowMaximizedChanged() {
             if (currentWindowUnMaximized) {
                 logAutoTiler('22222222222222222222222222222');
-                toggleAutoTile(window);
+                if (root.currentlyMovedWindow == window) {
+                    window.mt_autoTileOnRestoreMinMax = true;
+                } else {
+                    toggleAutoTile(window);
+                }
                 delete window.mt_autoRestoreMinMax;
             }
             currentWindowUnMaximized = false;
@@ -1226,6 +1224,20 @@ QtObject {
         disableAutoTiling(window);
         if (allConnections[window.internalId]) {
             allConnections[window.internalId]();
+        }
+    }
+
+    function windowMaximizedAboutToChange(window, mode) {
+        logAutoTiler('Window maximized about to change: ' + window.caption + ' ' + JSON.stringify(mode));
+        // TODO: 0 disabled 3 enabled probably mask 1 & 2
+        if (mode != 0) {
+            if (window.mt_auto && configAutoTileMinimizedMaximized) {
+                logAutoTiler('11111111111111111111111111111');
+                window.mt_autoRestoreMinMax = true;
+            }
+            disableAutoTiling(window);
+        } else if (configAutoTileMinimizedMaximized && window.mt_autoRestoreMinMax) {
+            currentWindowUnMaximized = true;
         }
     }
 
@@ -1483,12 +1495,70 @@ QtObject {
         configMaxAutoTileDelaySessionStart = KWin.readConfig("maxAutoTileDelaySessionStart", 10);
         configAutoTileBlacklist = KWin.readConfig("autoTileBlacklist", defaultBlacklist).replace(/\s+/g, '').split(',');
         configAutoTileToggleBehavior = KWin.readConfig("autoTileToggleBehavior", 0);
-        configAutoTileIds = KWin.readConfig("autoTileIds", "").replace(/\s+/g, '').split(',');
+        configAutoTileIds = KWin.readConfig("autoTileIds", "").replace(/\s+/g, '').split(',').filter((value) => Boolean(value));
+        configAutoTileIdsFromToolbar = JSON.parse(settings.autoTilingIds);
+
+        if (configAutoTileIdsFromToolbar.removed) {
+            for (let i = 0; i < configAutoTileIdsFromToolbar.removed.length; i++) {
+                let index = configAutoTileIds.indexOf(configAutoTileIdsFromToolbar.removed[i]);
+                if (index != -1) {
+                    configAutoTileIds.splice(index, 1);
+                } else {
+                    configAutoTileIdsFromToolbar.removed.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+
+        if (configAutoTileIdsFromToolbar.added) {
+            for (let i = 0; i < configAutoTileIdsFromToolbar.added.length; i++) {
+                if (!configAutoTileIds.includes(configAutoTileIdsFromToolbar.added[i])) {
+                    configAutoTileIds.push(configAutoTileIdsFromToolbar.added[i]);
+                }
+            }
+        }
+
+        settings.autoTilingIds = JSON.stringify(configAutoTileIdsFromToolbar);
 
         initAutoTilingBlocked();
         initAutoTilerLayout(1);
         initAutoTilerLayout(2);
         initAutoTilerLayout(3);
+    }
+
+    function toggleAutoTilingNewWindowsForCurrent() {
+        let mapping = getMappingForCurrentScreenDesktopAndActivity();
+        let id = mapping.id;
+        let index = configAutoTileIds.indexOf(id);
+        if (index != -1) {
+            configAutoTileIds.splice(index, 1);
+            if (configAutoTileIdsFromToolbar.added) {
+                let indexAdded = configAutoTileIdsFromToolbar.added.indexOf(id);
+                if (indexAdded != -1) {
+                    configAutoTileIdsFromToolbar.added.splice(indexAdded, 1);
+                }
+            }
+            if (!configAutoTileIdsFromToolbar.removed) {
+                configAutoTileIdsFromToolbar.removed = [];
+            }
+            configAutoTileIdsFromToolbar.removed.push(id);
+        } else {
+            configAutoTileIds.push(id);
+            if (!configAutoTileIdsFromToolbar.added) {
+                configAutoTileIdsFromToolbar.added = [];
+            }
+            configAutoTileIdsFromToolbar.added.push(id);
+            if (configAutoTileIdsFromToolbar.removed) {
+                let indexRemoved = configAutoTileIdsFromToolbar.removed.indexOf(id);
+                if (indexRemoved != -1) {
+                    configAutoTileIdsFromToolbar.removed.splice(indexRemoved, 1);
+                }
+            }
+        }
+
+        mapping.autoTileByDefault = configAutoTileNewWindows || configAutoTileIds.includes(id);
+
+        settings.autoTilingIds = JSON.stringify(configAutoTileIdsFromToolbar);
     }
 
     function initAutoTilingBlocked() {

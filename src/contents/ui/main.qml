@@ -41,7 +41,7 @@ Item {
     property bool virtualDesktopVisibile: false
     property bool moveToVirtualDesktopOnDrop: false
     property bool moveToVirtualDesktopOnTile: false
-    property var positionAtMoveStart: ({x: 0, y: 0})
+    property var positionAtMoveStart: ({x: 0, y: 0, maximized: false})
     property var virtualDesktopAtMoveStart: Workspace.currentDesktop
     property var virtualDesktopIndexAtMoveStart: Workspace.desktops.indexOf(Workspace.currentDesktop)
     property var virtualDesktopChangedSinceMoveStart: false
@@ -52,6 +52,8 @@ Item {
     property bool autoTilerEdgeScroll: false
 
     property list<var> allConnections: ([])
+
+    property alias systemSettings: settings
 
     function log(string) {
         if (!debugLogs) return;
@@ -154,6 +156,19 @@ SPECIAL_FILL;Fill
 SPECIAL_AUTO_TILER_1
 SPECIAL_AUTO_TILER_2
 SPECIAL_AUTO_TILER_3`;
+        const defaultToolBarItems = `CANCEL_MOVE
+TOGGLE_SUGGESTIONS
+TOGGLE_CENTER_IN_TILE
+TOGGLE_SHOW_ALL
+HIDE_TILER
+TOGGLE_AUTO_TILE_DESKTOP
+CLOSE_WINDOW
+TOGGLE_KEEP_ABOVE
+TOGGLE_KEEP_BELOW
+MAXIMIZE
+TRUE_MAXIMIZE
+MINIMIZE_OTHER
+MINIMIZE_OBSTRUCTED`;
 
         useAutoTilerPreview = KWin.readConfig("debugDesignAuto", false);
 
@@ -184,7 +199,7 @@ SPECIAL_AUTO_TILER_3`;
             overlayPollingRate: KWin.readConfig("overlayPollingRate", 100),
             rememberAllLayouts: KWin.readConfig("rememberAllLayouts", false),
             showTargetTileHint: KWin.readConfig("showTargetTileHint", true),
-            showTextHint: KWin.readConfig("showTextHint", true),
+            showTextHint: KWin.readConfig("showTextHintv2", true),
             gridTilerOpacity: Math.min(1, Math.max(0, (KWin.readConfig("gridTilerOpacity", 100) / 100))),
             popupGridAt: KWin.readConfig("popupGridAt", 0),
             horizontalAlignment: KWin.readConfig("horizontalAlignment", 1),
@@ -220,10 +235,15 @@ SPECIAL_AUTO_TILER_3`;
             showPositionHint: KWin.readConfig("showPositionHint", false),
             showPositionHintInPixels: KWin.readConfig("positionHintFormat", 0) == 0,
             showSizeHint: KWin.readConfig("showSizeHint", false),
-            showSizeHintInPixels: KWin.readConfig("sizeHintFormat", 0) == 0
+            showSizeHintInPixels: KWin.readConfig("sizeHintFormat", 0) == 0,
+            toolBarEnabled: KWin.readConfig("toolBarEnabled", true),
+            toolBarPosition: KWin.readConfig("toolBarPosition", 3),
+            toolBarHoverTime: KWin.readConfig("toolBarHoverTime", 1000),
+            toolBarItems: KWin.readConfig("toolBarItems", defaultToolBarItems)
 
             // live settings
         };
+
         config.tileMarginLeftTop = Math.floor(config.tileMargin / 2);
         config.tileMarginRightBottom = Math.ceil(config.tileMargin / 2);
         config.rememberCenterInTile = config.centerInTileMode == 1 || config.centerInTileMode == 3;
@@ -754,17 +774,31 @@ SPECIAL_AUTO_TILER_3`;
         client.interactiveMoveResizeStarted.connect(onInteractiveMoveResizeStarted);
         client.interactiveMoveResizeStepped.connect(onInteractiveMoveResizeStepped);
         client.interactiveMoveResizeFinished.connect(onInteractiveMoveResizeFinished);
+        client.maximizedAboutToChange.connect(onWindowMaximizedAboutToChange);
 
         allConnections.push(disconnectAll);
 
         function disconnectAll() {
-            client.closed.disconnect(onClosed);
-            client.interactiveMoveResizeStarted.disconnect(onInteractiveMoveResizeStarted);
-            client.interactiveMoveResizeStepped.disconnect(onInteractiveMoveResizeStepped);
-            client.interactiveMoveResizeFinished.disconnect(onInteractiveMoveResizeFinished);
-            let indexOf = allConnections.indexOf(disconnectAll);
-            if (indexOf != -1) {
-                allConnections.splice(indexOf, 1);
+            if (client) {
+                if (client.closed) {
+                    client.closed.disconnect(onClosed);
+                }
+                if (client.interactiveMoveResizeStarted) {
+                    client.interactiveMoveResizeStarted.disconnect(onInteractiveMoveResizeStarted);
+                }
+                if (client.interactiveMoveResizeStepped) {
+                    client.interactiveMoveResizeStepped.disconnect(onInteractiveMoveResizeStepped);
+                }
+                if (client.interactiveMoveResizeFinished) {
+                    client.interactiveMoveResizeFinished.disconnect(onInteractiveMoveResizeFinished);
+                }
+                if (client.maximizedAboutToChange) {
+                    client.maximizedAboutToChange.disconnect(onWindowMaximizedAboutToChange);
+                }
+                let indexOf = allConnections.indexOf(disconnectAll);
+                if (indexOf != -1) {
+                    allConnections.splice(indexOf, 1);
+                }
             }
         }
 
@@ -795,6 +829,19 @@ SPECIAL_AUTO_TILER_3`;
             }
         }
 
+        function onWindowMaximizedAboutToChange(mode) {
+            if (mode == 3) {
+                if (!client.positionBeforeMaximize || !client.positionBeforeMaximize.valid) {
+                    client.positionBeforeMaximize = {x: client.x, y: client.y, valid: true};
+                }
+            } else {
+                if (client.positionBeforeMaximize) {
+                    client.positionBeforeMaximize.valid = false;
+                }
+            }
+            autoTiler.windowMaximizedAboutToChange(client, mode);
+        }
+
         function onClosed() {
             if (currentlyMovedWindow == client) {
                 doCleanup();
@@ -811,7 +858,7 @@ SPECIAL_AUTO_TILER_3`;
                 if (!useMouseCursor) {
                     windowCursor = Qt.point(client.x + client.width / 2, client.y);
                 }
-                positionAtMoveStart = {x: client.x, y: client.y};
+                positionAtMoveStart = {x: client.x, y: client.y, maximized: client.maximizeMode == 3};
                 if ((config.restoreSize || autoTiler.configAutoTileRestoreSize && client.mt_auto) && client.mt_originalSize) {
                     client.frameGeometry = Qt.rect(getCursorPosition().x, client.frameGeometry.y, client.mt_originalSize.width, client.mt_originalSize.height);
                     delete client.mt_originalSize;
@@ -860,6 +907,7 @@ SPECIAL_AUTO_TILER_3`;
                 if (moved) {
                     let moveHandledByAutoTiler = false;
                     var activeVirtualDesktopIndex = currentTiler.getActiveVirtualDesktopIndex();
+                    var activeToolBarItemId = currentTiler.getActiveToolBarItemId();
                     if (activeVirtualDesktopIndex != -1) {
                         let desktop;
                         if (activeVirtualDesktopIndex == virtualDesktopIndexAtMoveStart && config.virtualDesktopDropAction == 0 && client.mt_auto) {
@@ -895,6 +943,117 @@ SPECIAL_AUTO_TILER_3`;
                         }
 
                         setCurrentVirtualDesktop();
+                    } else if (activeToolBarItemId != -1) {
+                        switch (activeToolBarItemId) {
+                            case 'CENTER':
+                                let clientArea = Workspace.clientArea(KWin.FullScreenArea, Workspace.activeScreen, Workspace.currentDesktop);
+                                client.frameGeometry = Qt.rect(clientArea.x + ((clientArea.width - client.width) / 2), clientArea.y + ((clientArea.height - client.height) / 2), client.width, client.height);
+                                break;
+                            case 'SHOWALL':
+                                client.frameGeometry = Qt.rect(positionAtMoveStart.x, positionAtMoveStart.y, client.width, client.height);
+                                break;
+                            case 'HIDE':
+                                client.frameGeometry = Qt.rect(positionAtMoveStart.x, positionAtMoveStart.y, client.width, client.height);
+                                break;
+                            case 'AUTO':
+                                autoTiler.toggleAutoTilingNewWindowsForCurrent();
+                                break;
+                            case 'CANCEL':
+                                if (client.mt_auto) {
+                                    moveHandledByAutoTiler = true;
+                                    autoTiler.cancelMove(client);
+                                } else {
+                                    client.frameGeometry = Qt.rect(positionAtMoveStart.x, positionAtMoveStart.y, client.width, client.height);
+                                    if (positionAtMoveStart.maximized) {
+                                        if (client.positionBeforeMaximize) {
+                                            client.positionBeforeMaximize.valid = true;
+                                        }
+                                        client.setMaximize(true, true);
+                                    }
+                                }
+                                break;
+                            case 'CLOSE':
+                                client.frameGeometry = Qt.rect(positionAtMoveStart.x, positionAtMoveStart.y, client.width, client.height);
+                                Workspace.activeWindow = client;
+                                Workspace.slotWindowClose();
+                                break;
+                            case 'ABOVE':
+                                client.frameGeometry = Qt.rect(positionAtMoveStart.x, positionAtMoveStart.y, client.width, client.height);
+                                client.keepAbove = !client.keepAbove;
+                                if (positionAtMoveStart.maximized) {
+                                    if (client.positionBeforeMaximize) {
+                                        client.positionBeforeMaximize.valid = true;
+                                    }
+                                    client.setMaximize(true, true);
+                                }
+                                break;
+                            case 'BELOW':
+                                client.frameGeometry = Qt.rect(positionAtMoveStart.x, positionAtMoveStart.y, client.width, client.height);
+                                client.keepBelow = !client.keepBelow;
+                                if (positionAtMoveStart.maximized) {
+                                    if (client.positionBeforeMaximize) {
+                                        client.positionBeforeMaximize.valid = true;
+                                    }
+                                    client.setMaximize(true, true);
+                                }
+                                break;
+                            case 'MAXIMIZE':
+                                if (positionAtMoveStart.maximized) {
+                                    client.setMaximize(false, false);
+                                    if (client.mt_autoTileOnRestoreMinMax) {
+                                        autoTiler.toggleAutoTile(client);
+                                        moveHandledByAutoTiler = true;
+                                    } else {
+                                        if (client.positionBeforeMaximize) {
+                                            client.frameGeometry = Qt.rect(client.positionBeforeMaximize.x, client.positionBeforeMaximize.y, client.width, client.height);
+                                        }
+                                    }
+                                } else {
+                                    client.positionBeforeMaximize = {x: positionAtMoveStart.x, y: positionAtMoveStart.y, valid: true};
+                                    client.frameGeometry = Qt.rect(positionAtMoveStart.x, positionAtMoveStart.y, client.width, client.height);
+                                    client.setMaximize(true, true);
+                                }
+                                break;
+                            case 'TRUEMAX':
+                                if (positionAtMoveStart.maximized && client.noBorder) {
+                                    client.noBorder = false;
+                                    client.setMaximize(false, false);
+                                    if (client.mt_autoTileOnRestoreMinMax) {
+                                        autoTiler.toggleAutoTile(client);
+                                        moveHandledByAutoTiler = true;
+                                    } else {
+                                        if (client.positionBeforeMaximize) {
+                                            client.frameGeometry = Qt.rect(client.positionBeforeMaximize.x, client.positionBeforeMaximize.y, client.width, client.height);
+                                        }
+                                    }
+                                } else {
+                                    client.positionBeforeMaximize = {x: positionAtMoveStart.x, y: positionAtMoveStart.y, valid: true};
+                                    client.frameGeometry = Qt.rect(positionAtMoveStart.x, positionAtMoveStart.y, client.width, client.height);
+                                    client.noBorder = true;
+                                    client.setMaximize(true, true);
+                                }
+                                break;
+                            case 'MINOTHER':
+                                client.frameGeometry = Qt.rect(positionAtMoveStart.x, positionAtMoveStart.y, client.width, client.height);
+                                if (positionAtMoveStart.maximized) {
+                                    if (client.positionBeforeMaximize) {
+                                        client.positionBeforeMaximize.valid = true;
+                                    }
+                                    client.setMaximize(true, true);
+                                }
+                                minimizeOther(client);
+                                break;
+                            case 'MINOBSTRUCTED':
+                                client.frameGeometry = Qt.rect(positionAtMoveStart.x, positionAtMoveStart.y, client.width, client.height);
+                                if (positionAtMoveStart.maximized) {
+                                    if (client.positionBeforeMaximize) {
+                                        client.positionBeforeMaximize.valid = true;
+                                    }
+                                    client.setMaximize(true, true);
+                                }
+                                minimizeObstructed(client);
+                                break;
+                        }
                     } else {
                         var geometry = currentTiler.getGeometry();
                         if (geometry != null) {
@@ -992,7 +1151,43 @@ SPECIAL_AUTO_TILER_3`;
             } else if (moved) {
                 autoTiler.windowMoved(client);
             }
+            delete client.mt_autoTileOnRestoreMinMax;
             doCleanup();
+        }
+    }
+
+    function minimizeOther(client) {
+        const windows = Workspace.stackingOrder;
+        for (var i = 0; i < windows.length; i++) {
+            let window = windows[i];
+            if (client.internalId != window.internalId && isValidWindow(window) && !window.minimized && (window.onAllDesktops || window.desktops.includes(Workspace.currentDesktop)) && (window.activities.length == 0 || window.activities.includes(Workspace.currentActivity))) {
+                window.minimized = true;
+            }
+        }
+    }
+
+    function minimizeObstructed(client) {
+        const windows = Workspace.stackingOrder;
+        let validWindowGeometries = [];
+        let maximizedWindowFound = positionAtMoveStart.maximized;
+        for (var i = windows.length - 1; i >= 0; i--) {
+            let window = windows[i];
+            if (isValidWindow(window) && !window.minimized && (window.onAllDesktops || window.desktops.includes(Workspace.currentDesktop)) && (window.activities.length == 0 || window.activities.includes(Workspace.currentActivity))) {
+                let windowGeometry = Qt.rect(window.x, window.y, window.width, window.height);
+                let obstructed = false;
+                for (var v = 0; !obstructed && v < validWindowGeometries.length; v++) {
+                    if (maximizedWindowFound || geometryOverlaps(validWindowGeometries[v], windowGeometry)) {
+                        obstructed = true;
+                        window.minimized = true;
+                    }
+                }
+                if (!obstructed) {
+                    validWindowGeometries.push(windowGeometry);
+                    if (window.maximizeMode == 3) {
+                        maximizedWindowFound = true;
+                    }
+                }
+            }
         }
     }
 
@@ -1538,6 +1733,7 @@ SPECIAL_AUTO_TILER_3`;
         property bool showTilingSuggestions: true
         property bool autoTilingBlockedCrossSession: false
         property int autoTilingBlockedMode: 0
+        property string autoTilingIds: "{}"
     }
 
     Connections {

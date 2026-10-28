@@ -139,10 +139,14 @@ PlasmaCore.Dialog {
         return -1;
     }
 
+    function getActiveToolBarItemId() {
+        return -1;
+    }
+
     Item {
         id: mainItem
-        width: popupTiler.width
-        height: popupTiler.height
+        width: overlayTiler.width
+        height: overlayTiler.height
 
         SequentialAnimation {
             id: showOverlayTilerAnimation

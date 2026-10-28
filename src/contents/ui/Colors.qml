@@ -212,6 +212,31 @@ Item {
         }
     }
 
+    property var tileBackgroundColorToggle: {
+        switch (config.theme) {
+            case 1:
+                return "#800099FF";
+            case 2:
+                return "#80FF9F00";
+            case 3:
+                return "#80FF0000";
+            case 4:
+                return "#80FF0000";
+            case 5:
+                return "#80B5FF00";
+            case 6:
+                return "#809F00FF";
+            case 7:
+                return "#8000FF00";
+            case 8:
+                return "#80FFFF00";
+            case 9:
+                return "#800067FF";
+            default:
+                return Kirigami.ColorUtils.tintWithAlpha("transparent", Kirigami.Theme.highlightColor, 0.5);
+        }
+    }
+
     property var tileBackgroundColorActive: {
         switch (config.theme) {
             case 1:

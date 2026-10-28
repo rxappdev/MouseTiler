@@ -32,6 +32,9 @@ PlasmaCore.Dialog {
     property int activeVirtualDesktopIndex: -1
     property var activeVirtualDesktopHoverTime: -1
     property bool virtualDesktopVisibilityOverride: false
+    property var activeToolBarItemHoverTime: -1
+    property bool activeToolBarItemToggled: false
+    property bool autoTileNewWindowsActiveOnCurrentScreen: false
     // property bool shouldShowAutoTileScroll: false
     // property var scrollLeftTime: 0
     // property var scrollRightTime: 0
@@ -57,9 +60,11 @@ PlasmaCore.Dialog {
         activeScreen = null;
         activeLayoutIndex = -1;
         activeTileIndex = -1;
+        toolBar.activeToolBarItemIndex = -1;
         hint = null;
         showPopupDropHint = false;
         updateHintContent();
+        toolBar.initToolbar();
     }
 
     function resetShowAll() {
@@ -82,6 +87,7 @@ PlasmaCore.Dialog {
             // shouldShowAutoTileScroll = autoTiler.shouldShowAutoTileScroll();
             activeScreen = Workspace.activeScreen;
             clientArea = Workspace.clientArea(KWin.FullScreenArea, Workspace.activeScreen, Workspace.currentDesktop);
+            autoTileNewWindowsActiveOnCurrentScreen = autoTiler.isCurrentScreenDesktopAndActivityAutoTiledByDefault();
 
             let localCursorPos = Workspace.activeScreen.mapFromGlobal(root.getCursorPosition());
 
@@ -144,10 +150,12 @@ PlasmaCore.Dialog {
             // positionX = localCursorPos.x - layouts.width / 2;
             // positionY = localCursorPos.y - (layouts.height + popupHint.height + 2) / 2;
 
+            let totalWidth = mainItem.toolbarEnabled && config.toolBarPosition < 2 ? mainItem.calculatedWidth : mainItem.toolbarWidth + mainItem.calculatedWidth + 2;
+
             if (positionX < 0) {
                 positionX = 0;
-            } else if (positionX + layouts.width > popupTiler.width) {
-                positionX = popupTiler.width - layouts.width;
+            } else if (positionX + totalWidth > popupTiler.width) {
+                positionX = popupTiler.width - totalWidth;
             }
 
             let totalHeight = visibleHeight;
@@ -159,6 +167,24 @@ PlasmaCore.Dialog {
             }
             if (root.config.showTextHint) {
                 totalHeight += popupHint.height + 2;
+            }
+
+            if (mainItem.toolbarEnabled) {
+                switch (config.toolBarPosition) {
+                    case 0: // TOP
+                    case 1: // BOTTOM
+                        if (totalHeight >0) {
+                            totalHeight += 2;
+                        }
+                        totalHeight += toolBar.height;
+                        break;
+                    case 2: // LEFT
+                    case 3: // RIGHT
+                        if (toolBar.height > totalHeight) {
+                            totalHeight = toolBar.height;
+                        }
+                        break;
+                }
             }
 
             if (positionY < 0) {
@@ -210,6 +236,11 @@ PlasmaCore.Dialog {
             }
         }
         return null;
+    }
+
+    function getActiveToolBarItemId() {
+        if (toolBar.activeToolBarItemIndex < 0) return -1;
+        return toolBar.toolBarItems[toolBar.activeToolBarItemIndex].id;
     }
 
     function getActiveVirtualDesktopIndex() {
@@ -314,7 +345,46 @@ PlasmaCore.Dialog {
     }
 
     function updateHintContent() {
-        if (activeVirtualDesktopIndex >= 0) {
+        if (toolBar.activeToolBarItemIndex >= 0) {
+            hasValidPopupDropHint = false;
+            showPopupDropHint = false;
+            var enabled = false;
+            switch (toolBar.toolBarItems[toolBar.activeToolBarItemIndex].id) {
+                case 'CENTER':
+                    enabled = root.centerInTile;
+                    break;
+                case 'SHOWALL':
+                    enabled = popupTiler.showAll;
+                    break;
+                case 'ABOVE':
+                    if (root.currentlyMovedWindow) {
+                        enabled = root.currentlyMovedWindow.keepAbove;
+                    }
+                    break;
+                case 'BELOW':
+                    if (root.currentlyMovedWindow) {
+                        enabled = root.currentlyMovedWindow.keepBelow;
+                    }
+                    break;
+                case 'SUGGEST':
+                    enabled = root.systemSettings.showTilingSuggestions;
+                    break;
+                case 'MAXIMIZE':
+                    enabled = root.positionAtMoveStart.maximized;
+                    break;
+                case 'TRUEMAX':
+                    enabled = root.positionAtMoveStart.maximized && root.currentlyMovedWindow.noBorder;
+                    break;
+                case 'AUTO':
+                    enabled = autoTileNewWindowsActiveOnCurrentScreen;
+                    break;
+            }
+            if (enabled) {
+                hint = toolBar.toolBarItems[toolBar.activeToolBarItemIndex].hintEnabled;
+            } else {
+                hint = toolBar.toolBarItems[toolBar.activeToolBarItemIndex].hint;
+            }
+        } else if (activeVirtualDesktopIndex >= 0) {
             hasValidPopupDropHint = false;
             showPopupDropHint = false;
             if (root.virtualDesktops[activeVirtualDesktopIndex].isAdd) {
@@ -520,6 +590,17 @@ PlasmaCore.Dialog {
         height: popupTiler.height
         visible: revealed
 
+        property var calculatedWidth: Math.max(toolBar.fullWidth + layoutGrid.columnSpacing * 2, Math.max(virtualDesktopLayout.implicitWidth + layoutGrid.columnSpacing * 2, layoutGrid.implicitWidth + layoutGrid.columnSpacing * 2))
+        property var toolbarWidth: config.toolBarPosition < 2 ? calculatedWidth : toolBar.fullWidth + layoutGrid.columnSpacing * 2
+
+        property bool toolbarEnabled: config.toolBarEnabled
+        property var toolbarHeight: toolbarEnabled ? toolBar.height + 2 : 0
+        property var toolbarXOffset: toolbarEnabled && config.toolBarPosition == 3 ? layouts.width + 2 : 0
+        property var toolbarYOffset: toolbarEnabled && config.toolBarPosition == 1 && layouts.visible ? layouts.height + 2 : 0
+        property var toolbarOtherXOffset: toolbarEnabled && config.toolBarPosition == 2 ? toolbarWidth + 2 : 0
+        property var toolbarLayoutsYOffset: toolbarEnabled && config.toolBarPosition == 0 ? toolbarHeight : 0
+        property var toolbarVirtualDekstopsYOffset: toolbarEnabled && config.toolBarPosition == 1 ? toolbarHeight : 0
+
         SequentialAnimation {
             id: showPopupTilerAnimation
             running: false
@@ -570,9 +651,23 @@ PlasmaCore.Dialog {
             }
         }
 
+        ToolBar {
+            id: toolBar
+
+            width: mainItem.toolbarWidth
+            height: toolBar.fullHeight + layoutGrid.rowSpacing * 2
+
+            anchors.left: parent.left
+            anchors.leftMargin: positionX + mainItem.toolbarXOffset
+            anchors.top: parent.top
+            anchors.topMargin: positionY + mainItem.toolbarYOffset
+
+            visible: mainItem.toolbarEnabled
+        }
+
         Rectangle {
             id: layouts
-            width: layoutGrid.implicitWidth + layoutGrid.columnSpacing * 2
+            width: mainItem.calculatedWidth
             height: layoutGrid.implicitHeight + layoutGrid.rowSpacing * 2
             color: root.config.gridTilerOpacity != 1 ? Qt.alpha(colors.backgroundColor, root.config.gridTilerOpacity) : colors.backgroundColor
             border.color: colors.borderColor
@@ -581,17 +676,17 @@ PlasmaCore.Dialog {
             visible: virtualDesktopVisibilityOverride || root.config.virtualDesktopVisibility != 1
 
             anchors.left: parent.left
-            anchors.leftMargin: positionX
+            anchors.leftMargin: positionX + mainItem.toolbarOtherXOffset
             anchors.top: parent.top
-            anchors.topMargin: positionY
+            anchors.topMargin: positionY + mainItem.toolbarLayoutsYOffset
 
             GridLayout {
                 id: layoutGrid
                 columns: showAll ? root.config.gridAllColumns : root.config.gridColumns
                 columnSpacing: root.config.gridSpacing
                 rowSpacing: root.config.gridSpacing
-                anchors.fill: parent
-                anchors.margins: root.config.gridSpacing
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
                 uniformCellWidths: true
                 uniformCellHeights: true
 
@@ -715,7 +810,7 @@ PlasmaCore.Dialog {
 
         Rectangle {
             id: virtualDesktop
-            width: layoutGrid.implicitWidth + layoutGrid.columnSpacing * 2
+            width: mainItem.calculatedWidth
             height: virtualDesktopLayout.implicitHeight + layoutGrid.rowSpacing * 2
             color: root.config.gridTilerOpacity != 1 ? Qt.alpha(colors.backgroundColor, root.config.gridTilerOpacity) : colors.backgroundColor
             border.color: colors.borderColor
@@ -724,9 +819,9 @@ PlasmaCore.Dialog {
             visible: root.virtualDesktopVisibile
 
             anchors.left: parent.left
-            anchors.leftMargin: positionX
+            anchors.leftMargin: positionX + mainItem.toolbarOtherXOffset
             anchors.top: layouts.visible ? layouts.bottom : parent.top
-            anchors.topMargin: layouts.visible ? 2 : positionY
+            anchors.topMargin: (layouts.visible ? 2 : positionY) + mainItem.toolbarVirtualDekstopsYOffset
 
             GridLayout {
                 id: virtualDesktopLayout
@@ -741,7 +836,7 @@ PlasmaCore.Dialog {
                     model: root.virtualDesktops
 
                     Item {
-                        id: virtualDesktop
+                        id: virtualDesktopItem
 
                         property bool currentVirtualDesktop: root.currentVirtualDesktopIndex == index
                         property bool activeVirtualDesktop: activeVirtualDesktopIndex == index
@@ -781,7 +876,7 @@ PlasmaCore.Dialog {
 
         Rectangle {
             id: popupHint
-            width: layoutGrid.implicitWidth + layoutGrid.columnSpacing * 2
+            width: mainItem.calculatedWidth
             height: popupHintText.implicitHeight + layoutGrid.rowSpacing * 2
             color: root.config.gridTilerOpacity != 1 ? Qt.alpha(colors.backgroundColor, root.config.gridTilerOpacity) : colors.backgroundColor
             border.color: colors.borderColor
@@ -790,7 +885,7 @@ PlasmaCore.Dialog {
             visible: root.config.showTextHint && hint != null
 
             anchors.left: parent.left
-            anchors.leftMargin: positionX
+            anchors.leftMargin: positionX + mainItem.toolbarOtherXOffset
             anchors.top: virtualDesktop.visible ? virtualDesktop.bottom : layouts.bottom
             anchors.topMargin: 2
 
@@ -865,6 +960,8 @@ PlasmaCore.Dialog {
                 let layoutIndex = -1;
                 let tileIndex = -1;
                 let virtualDesktopIndex = -1;
+                let toolBarItemIndex = -1;
+                let hoverDetected = false;
 
                 if (root.config.windowVisibility == 2) {
                     var updatedHovered;
@@ -887,6 +984,7 @@ PlasmaCore.Dialog {
                         let currentLayoutPosition = currentLayout.mapToGlobal(Qt.point(0, 0));
 
                         if (currentLayoutPosition.x <= x && currentLayoutPosition.x + currentLayout.width >= x && currentLayoutPosition.y <= y && currentLayoutPosition.y + currentLayout.height >= y) {
+                            hoverDetected = true;
                             layoutIndex = i;
                             // if (layoutRepeater.model[layoutIndex].special) {
                             //     tileIndex = 0;
@@ -909,12 +1007,14 @@ PlasmaCore.Dialog {
                     }
                 }
 
-                if (root.virtualDesktopVisibile && layoutIndex == -1) {
+                if (!hoverDetected && root.virtualDesktopVisibile) {
                     for (let i = 0; i < virtualDesktopRepeater.count; i++) {
                         let currentVirtualDesktop = virtualDesktopRepeater.itemAt(i);
                         let currentVirtualDesktopPosition = currentVirtualDesktop.mapToGlobal(Qt.point(0, 0));
                         if (currentVirtualDesktopPosition.x <= x && currentVirtualDesktopPosition.x + currentVirtualDesktop.width >= x && currentVirtualDesktopPosition.y <= y && currentVirtualDesktopPosition.y + currentVirtualDesktop.height >= y) {
                             virtualDesktopIndex = i;
+                            hoverDetected = true;
+                            break;
                         }
                     }
                 }
@@ -934,6 +1034,36 @@ PlasmaCore.Dialog {
                 } else if (switchVirtualDesktop && config.virtualDesktopHoverTime > 0 && Date.now() - activeVirtualDesktopHoverTime > config.virtualDesktopHoverTime) {
                     autoTiler.virtualDesktopAboutToChange(); // Notify to remove window from current virtual desktop auto-tiler
                     Workspace.currentDesktop = root.virtualDesktops[activeVirtualDesktopIndex].desktop;
+                    updateHintContent();
+                }
+
+                if (!hoverDetected) {
+                    toolBarItemIndex = toolBar.findActive(x, y);
+                }
+
+                if (toolBar.activeToolBarItemIndex != toolBarItemIndex) {
+                    toolBar.activeToolBarItemIndex = toolBarItemIndex;
+                    if (toolBar.activeHasHoverAction()) {
+                        activeToolBarItemHoverTime = Date.now();
+                        activeToolBarItemToggled = false;
+                    }
+                    updateHintContent();
+                } else if (!activeToolBarItemToggled && toolBar.activeHasHoverAction() && Date.now() - activeToolBarItemHoverTime > config.toolBarHoverTime) {
+                    activeToolBarItemToggled = true;
+                    switch (toolBar.toolBarItems[toolBar.activeToolBarItemIndex].id) {
+                        case 'CENTER':
+                            root.centerInTile = !root.centerInTile;
+                            break;
+                        case 'SHOWALL':
+                            toggleShowAll();
+                            break;
+                        case 'HIDE':
+                            root.hideTiler();
+                            break;
+                        case 'SUGGEST':
+                            root.systemSettings.showTilingSuggestions = !root.systemSettings.showTilingSuggestions;
+                            break;
+                    }
                     updateHintContent();
                 }
 
