@@ -219,10 +219,22 @@ PlasmaCore.Dialog {
                     height: popupDropHintHeight
                 };
             } else if (layoutRepeater.model[activeLayoutIndex].special) {
-                return {
-                    special: layoutRepeater.model[activeLayoutIndex].special,
-                    specialMode: activeTileIndex
-                };
+                if (hasValidPopupDropHint && layoutRepeater.model[activeLayoutIndex].special.startsWith('SPECIAL_CUSTOM_')) {
+                    return {
+                        x: clientArea.x + popupDropHintX,
+                        y: clientArea.y + popupDropHintY,
+                        width: popupDropHintWidth,
+                        height: popupDropHintHeight,
+                        defaultLayouts: !showAll,
+                        layoutIndex: activeLayoutIndex,
+                        tileIndex: activeTileIndex
+                    };
+                } else {
+                    return {
+                        special: layoutRepeater.model[activeLayoutIndex].special,
+                        specialMode: activeTileIndex
+                    };
+                }
             } else if (!root.centerInTile) {
                 return {
                     x: clientArea.x + popupDropHintX,
@@ -294,10 +306,19 @@ PlasmaCore.Dialog {
             case 'SPECIAL_CLOSE':
             case 'SPECIAL_AUTO_TILER_TOGGLE':
                 break;
+            case 'SPECIAL_CUSTOM_1':
+            case 'SPECIAL_CUSTOM_2':
+            case 'SPECIAL_CUSTOM_3':
+            case 'SPECIAL_CUSTOM_4':
+            case 'SPECIAL_CUSTOM_5':
+            case 'SPECIAL_CUSTOM_6':
+            case 'SPECIAL_CUSTOM_7':
+            case 'SPECIAL_CUSTOM_8':
+            case 'SPECIAL_CUSTOM_9':
             case 'SPECIAL_AUTO_TILER_1':
             case 'SPECIAL_AUTO_TILER_2':
             case 'SPECIAL_AUTO_TILER_3':
-                if (!layoutRepeater.model[activeLayoutIndex].activeAutoTiler) {
+                if (!layoutRepeater.model[activeLayoutIndex].showDropHint) {
                     break;
                 }
             default:
@@ -482,7 +503,7 @@ PlasmaCore.Dialog {
                         hint = tile.hint;
                         break;
                 }
-            } else if (layoutRepeater.model[activeLayoutIndex].activeAutoTiler == true && tile.t != '*') {
+            } else if (layoutRepeater.model[activeLayoutIndex].showDropHint == true && layoutRepeater.model[activeLayoutIndex].special.startsWith('SPECIAL_AUTO_TILER_') && tile.t != '*') {
                 hint = 'Auto-tile in this tile<br>Cycle auto-tiled windows with Ctrl+Alt+Left or Right';
             } else if (root.virtualDesktopChangedSinceMoveStart) {
                 if (root.moveToVirtualDesktopOnTile) {
@@ -699,7 +720,7 @@ PlasmaCore.Dialog {
                         width: root.config.gridWidth
                         height: root.config.gridHeight
                         color: "transparent"
-                        border.color: modelData.activeAutoTiler ? colors.tileBorderColor : colors.borderColor
+                        border.color: modelData.showDropHint ? colors.tileBorderColor : colors.borderColor
                         border.width: 1
                         radius: 8
                         clip: modelData.clip == true

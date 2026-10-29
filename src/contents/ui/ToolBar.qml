@@ -64,7 +64,7 @@ Item {
                     toolBarItems.push({id: 'MAXIMIZE', toggle: true, short: '⌞⌝', text: '⌞⌝ MAXIMIZE', hint: '<b>Drop</b>: Maximize window', hintEnabled: '<b>Drop</b>: Restore maximized window'});
                     break;
                 case 'TRUE_MAXIMIZE':
-                    toolBarItems.push({id: 'TRUEMAX', toggle: true, short: '🗖', text: '🗖 TRUE MAX', hint: '<b>Drop</b>: Maximize window removing titlebar and frame<br><font color="orange">⚠</font> <b>WARNING</b> you might need to press <b>Alt+F3</b> to re-enable', hintEnabled: '<b>Drop</b>: Restore maximized window restoring titlebar and frame'});
+                    toolBarItems.push({id: 'TRUEMAX', toggle: true, short: '🗖', text: '🗖 TRUE MAX', hint: '<b>Drop</b>: Maximize window removing titlebar and frame<br><font color="orange">⚠</font> <b>WARNING</b> you might need to press <b>Alt+F3</b> to re-enable<br>You can restore the window by holding <b>Meta+Drag</b> (drag it here)', hintEnabled: '<b>Drop</b>: Restore maximized window restoring titlebar and frame'});
                     break;
                 case 'MINIMIZE_OTHER':
                     toolBarItems.push({id: 'MINOTHER', toggle: false, short: '🗕', text: '🗕 OTHER', hint: '<b>Drop</b>: Minimize all other windows on current desktop'});

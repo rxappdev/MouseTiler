@@ -291,33 +291,33 @@ QtObject {
             if (currentScreenAutoTilerIndex == -1) {
                 if (currentLayoutMapping.all) {
                     popupGridAllLayouts[currentLayoutMapping.index].tiles = [{x: 0, y: 0, w: 100, h: 100, t: "START<br>AUTO TILING", hint: "Start using Auto Tiler \"<b>" + autoLayoutConfigs[currentLayoutMapping.autoTilerIndex].name + "</b>\""}];
-                    popupGridAllLayouts[currentLayoutMapping.index].activeAutoTiler = false;
+                    popupGridAllLayouts[currentLayoutMapping.index].showDropHint = false;
                 } else {
                     popupGridLayouts[currentLayoutMapping.index].tiles = [{x: 0, y: 0, w: 100, h: 100, t: "START<br>AUTO TILING", hint: "Start using Auto Tiler \"<b>" + autoLayoutConfigs[currentLayoutMapping.autoTilerIndex].name + "</b>\""}];
-                    popupGridLayouts[currentLayoutMapping.index].activeAutoTiler = false;
+                    popupGridLayouts[currentLayoutMapping.index].showDropHint = false;
                 }
             } else if (currentLayoutMapping.autoTilerIndex == currentScreenAutoTilerIndex) {
                 logAutoTiler('updateAutoTilersInPopupTiler 2.2');
                 if (currentLayoutMapping.all) {
                     popupGridAllLayouts[currentLayoutMapping.index].tiles = autoLayouts[currentLayoutMapping.autoTilerIndex][currentScreenLayoutIndex].tiles;
                     popupGridAllLayouts[currentLayoutMapping.index].clip = autoLayoutConfigs[currentLayoutMapping.autoTilerIndex].clip;
-                    popupGridAllLayouts[currentLayoutMapping.index].activeAutoTiler = true;
+                    popupGridAllLayouts[currentLayoutMapping.index].showDropHint = true;
                 } else {
                     logAutoTiler('updateAutoTilersInPopupTiler 2.4 ' + JSON.stringify(autoLayouts[currentLayoutMapping.autoTilerIndex][currentScreenLayoutIndex]) + ' ' + currentLayoutMapping.index);
                     popupGridLayouts[currentLayoutMapping.index].tiles = autoLayouts[currentLayoutMapping.autoTilerIndex][currentScreenLayoutIndex].tiles;
                     popupGridLayouts[currentLayoutMapping.index].clip = autoLayoutConfigs[currentLayoutMapping.autoTilerIndex].clip;
-                    popupGridLayouts[currentLayoutMapping.index].activeAutoTiler = true;
+                    popupGridLayouts[currentLayoutMapping.index].showDropHint = true;
                 }
             } else {
                 logAutoTiler('updateAutoTilersInPopupTiler 2.3');
                 if (currentLayoutMapping.all) {
                     // popupGridAllLayouts[currentLayoutMapping.index].tiles = autoLayouts[currentLayoutMapping.autoTilerIndex][Math.min(nextLayoutIndex, autoLayouts[currentLayoutMapping.autoTilerIndex].length - 1)].tiles;
                     popupGridAllLayouts[currentLayoutMapping.index].tiles = [{x: 0, y: 0, w: 100, h: 100, t: "SWITCH<br>AUTO TILER", hint: "Switch to Auto Tiler \"<b>" + autoLayoutConfigs[currentLayoutMapping.autoTilerIndex].name + "</b>\""}];
-                    popupGridAllLayouts[currentLayoutMapping.index].activeAutoTiler = false;
+                    popupGridAllLayouts[currentLayoutMapping.index].showDropHint = false;
                 } else {
                     // popupGridLayouts[currentLayoutMapping.index].tiles = autoLayouts[currentLayoutMapping.autoTilerIndex][Math.min(nextLayoutIndex, autoLayouts[currentLayoutMapping.autoTilerIndex].length - 1)].tiles;
                     popupGridLayouts[currentLayoutMapping.index].tiles = [{x: 0, y: 0, w: 100, h: 100, t: "SWITCH<br>AUTO TILER", hint: "Switch to Auto Tiler \"<b>" + autoLayoutConfigs[currentLayoutMapping.autoTilerIndex].name + "</b>\""}];
-                    popupGridLayouts[currentLayoutMapping.index].activeAutoTiler = false;
+                    popupGridLayouts[currentLayoutMapping.index].showDropHint = false;
                 }
             }
         }

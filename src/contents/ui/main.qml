@@ -50,6 +50,7 @@ Item {
     property list<var> popupGridLayouts: ([])
     property list<var> popupGridAllLayouts: ([])
     property bool autoTilerEdgeScroll: false
+    property var customLayouts: ({})
 
     property list<var> allConnections: ([])
 
@@ -142,7 +143,16 @@ SPECIAL_AUTO_TILER_TOGGLE
 SPECIAL_AUTO_TILER_1
 SPECIAL_AUTO_TILER_2
 SPECIAL_AUTO_TILER_3
-SPECIAL_FIT`;
+SPECIAL_FIT
+SPECIAL_CUSTOM_1
+SPECIAL_CUSTOM_2
+SPECIAL_CUSTOM_3
+SPECIAL_CUSTOM_4
+SPECIAL_CUSTOM_5
+SPECIAL_CUSTOM_6
+SPECIAL_CUSTOM_7
+SPECIAL_CUSTOM_8
+SPECIAL_CUSTOM_9`;
         const defaultOverlayLayout = '4x2';
         const defaultPopupLayouts = `1x1
 2x1
@@ -153,6 +163,9 @@ SPECIAL_SPLIT_HORIZONTAL;Horizontal Split
 2x2
 SPECIAL_FILL;Fill
 4x2
+SPECIAL_CUSTOM_1
+SPECIAL_CUSTOM_2
+SPECIAL_CUSTOM_3
 SPECIAL_AUTO_TILER_1
 SPECIAL_AUTO_TILER_2
 SPECIAL_AUTO_TILER_3`;
@@ -239,7 +252,8 @@ MINIMIZE_OBSTRUCTED`;
             toolBarEnabled: KWin.readConfig("toolBarEnabled", true),
             toolBarPosition: KWin.readConfig("toolBarPosition", 3),
             toolBarHoverTime: KWin.readConfig("toolBarHoverTime", 1000),
-            toolBarItems: KWin.readConfig("toolBarItems", defaultToolBarItems)
+            toolBarItems: KWin.readConfig("toolBarItems", defaultToolBarItems),
+            customLayoutsUsePixels: KWin.readConfig("customLayoutsUsePixels", false)
 
             // live settings
         };
@@ -255,12 +269,102 @@ MINIMIZE_OBSTRUCTED`;
         setDefaultMoveToVirtualDesktop();
         updateVirtualDesktops();
 
+        customLayouts = JSON.parse(settings.allCustomLayouts);
+
+        for (let i = 1; i <= 9; i++) {
+            updateCustomLayout(i);
+        }
+
         autoTiler.loadAutoTilerConfig();
         autoTiler.updateLayoutMapping();
         autoTiler.initAll();
         windowSuggestions.init();
 
         setDefaultSuggestionsVisibility();
+    }
+
+    function updateCustomLayout(id) {
+        if (id < 1 || id > 9) return;
+        let index = id - 1;
+        let name = 'SPECIAL_CUSTOM_' + id;
+        let tiles = [];
+        let showDropHint = false;
+
+        if (!customLayouts['custom' + id]) {
+            tiles.push({x: 0, y: 0, w: 100, h: 100, t: "CUSTOM<br>" + id, hint: "<b>Drop:</b> Save current desktop layout as custom layout<br>Press <b>Meta+Ctrl+Alt+" + id + "</b> to save or update the custom layout<br>Saving an empty layout clears the custom layout"});
+            showDropHint = false;
+        } else {
+            tiles = [...customLayouts['custom' + id]];
+            showDropHint = true;
+        }
+
+        for (let i = 0; i < popupGridLayouts.length; i++) {
+            if (popupGridLayouts[i].special == name) {
+                popupGridLayouts[i].tiles = tiles;
+                popupGridLayouts[i].showDropHint = showDropHint;
+            }
+        }
+
+        for (let i = 0; i < popupGridAllLayouts.length; i++) {
+            if (popupGridAllLayouts[i].special == name) {
+                popupGridAllLayouts[i].tiles = tiles;
+                popupGridAllLayouts[i].showDropHint = showDropHint;
+            }
+        }
+    }
+
+    function saveCustomLayout(id) {
+        if (id < 1 || id > 9) return;
+        let index = id - 1;
+        let name = 'SPECIAL_CUSTOM_' + id;
+
+        let screenGeometry = Workspace.activeScreen.geometry;
+        let fullScreenArea = Workspace.clientArea(KWin.FullScreenArea, Workspace.activeScreen, Workspace.currentDesktop);
+        let freeAreas = [fullScreenArea];
+        let validWindowGeometries = [];
+
+        const windows = Workspace.stackingOrder;
+        for (var i = windows.length - 1; i >= 0; i--) {
+            let window = windows[i];
+            if (isValidWindow(window) && !window.minimized && (window.onAllDesktops || window.desktops.includes(Workspace.currentDesktop)) && (window.activities.length == 0 || window.activities.includes(Workspace.currentActivity))) {
+                let area = Qt.rect(window.frameGeometry.x, window.frameGeometry.y, window.frameGeometry.width, window.frameGeometry.height);
+                for (let j = 0; j < freeAreas.length; j++) {
+                    if (geometryOverlaps(freeAreas[j], area)) {
+                        let convertedPosition = window.output.mapFromGlobal(window.pos);
+                        validWindowGeometries.unshift(Qt.rect(convertedPosition.x, convertedPosition.y, area.width, area.height));
+                        removeUsedAreas(freeAreas, area);
+                        removeOverlappingSmallerAreas(freeAreas);
+                    }
+                }
+            }
+        }
+
+        log('Got valid geometries: ' + JSON.stringify(validWindowGeometries));
+
+        if (validWindowGeometries.length == 0) {
+            delete customLayouts['custom' + id];
+            onScreenDisplay.show('Custom Layout ' + id + ' removed', 'emblem-unreadable');
+        } else if (config.customLayoutsUsePixels) {
+            customLayouts['custom' + id] = [];
+            for (var i = 0; i < validWindowGeometries.length; i++) {
+                customLayouts['custom' + id].push({pxX: validWindowGeometries[i].x, pxY: validWindowGeometries[i].y, pxW: validWindowGeometries[i].width, pxH: validWindowGeometries[i].height});
+            }
+            onScreenDisplay.show('Custom Layout ' + id + ' updated', 'emblem-default');
+        } else {
+            let screenWidth = fullScreenArea.width;
+            let screenHeight = fullScreenArea.height;
+            customLayouts['custom' + id] = [];
+            for (var i = 0; i < validWindowGeometries.length; i++) {
+                customLayouts['custom' + id].push({x: 100 * validWindowGeometries[i].x / screenWidth, y: 100 * validWindowGeometries[i].y / screenHeight, w: 100 * validWindowGeometries[i].width / screenWidth, h: 100 * validWindowGeometries[i].height / screenHeight});
+            }
+            onScreenDisplay.show('Custom Layout ' + id + ' updated', 'emblem-default');
+        }
+
+        log('Custom layouts: ' + JSON.stringify(customLayouts));
+
+        settings.allCustomLayouts = JSON.stringify(customLayouts);
+
+        updateCustomLayout(id);
     }
 
     function setDefaultSuggestionsVisibility() {
@@ -513,6 +617,42 @@ MINIMIZE_OBSTRUCTED`;
                                     case 'SPECIAL_CLOSE':
                                         layout.tiles.push({x: 0, y: 0, w: 100, h: 100, t: '<br>CLOSE<br>🗙', hint: '🗙 Close the window<br>Useful for windows without a titlebar'});
                                         layout.special = 'SPECIAL_CLOSE';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_CUSTOM_1':
+                                        layout.special = 'SPECIAL_CUSTOM_1';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_CUSTOM_2':
+                                        layout.special = 'SPECIAL_CUSTOM_2';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_CUSTOM_3':
+                                        layout.special = 'SPECIAL_CUSTOM_3';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_CUSTOM_4':
+                                        layout.special = 'SPECIAL_CUSTOM_4';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_CUSTOM_5':
+                                        layout.special = 'SPECIAL_CUSTOM_5';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_CUSTOM_6':
+                                        layout.special = 'SPECIAL_CUSTOM_6';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_CUSTOM_7':
+                                        layout.special = 'SPECIAL_CUSTOM_7';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_CUSTOM_8':
+                                        layout.special = 'SPECIAL_CUSTOM_8';
+                                        isValid = true;
+                                        break;
+                                    case 'SPECIAL_CUSTOM_9':
+                                        layout.special = 'SPECIAL_CUSTOM_9';
                                         isValid = true;
                                         break;
                                     case 'SPECIAL_AUTO_TILER_TOGGLE':
@@ -1051,7 +1191,7 @@ MINIMIZE_OBSTRUCTED`;
                                     }
                                     client.setMaximize(true, true);
                                 }
-                                minimizeObstructed(client);
+                                minimizeObstructed();
                                 break;
                         }
                     } else {
@@ -1102,6 +1242,32 @@ MINIMIZE_OBSTRUCTED`;
                                 case 'SPECIAL_CLOSE':
                                     Workspace.activeWindow = client;
                                     Workspace.slotWindowClose();
+                                    break;
+                                case 'SPECIAL_CUSTOM_1':
+                                case 'SPECIAL_CUSTOM_2':
+                                case 'SPECIAL_CUSTOM_3':
+                                case 'SPECIAL_CUSTOM_4':
+                                case 'SPECIAL_CUSTOM_5':
+                                case 'SPECIAL_CUSTOM_6':
+                                case 'SPECIAL_CUSTOM_7':
+                                case 'SPECIAL_CUSTOM_8':
+                                case 'SPECIAL_CUSTOM_9':
+                                    let customLayoutId = parseInt(geometry.special.replace('SPECIAL_CUSTOM_', ''));
+                                    if (customLayoutId > 0) {
+                                        if (client.mt_auto) {
+                                            moveHandledByAutoTiler = true;
+                                            autoTiler.cancelMove(client);
+                                        } else {
+                                            client.frameGeometry = Qt.rect(positionAtMoveStart.x, positionAtMoveStart.y, client.width, client.height);
+                                            if (positionAtMoveStart.maximized) {
+                                                if (client.positionBeforeMaximize) {
+                                                    client.positionBeforeMaximize.valid = true;
+                                                }
+                                                client.setMaximize(true, true);
+                                            }
+                                        }
+                                        saveCustomLayout(customLayoutId);
+                                    }
                                     break;
                                 case 'SPECIAL_AUTO_TILER_TOGGLE':
                                     autoTiler.toggleAutoTile(client);
@@ -1166,7 +1332,7 @@ MINIMIZE_OBSTRUCTED`;
         }
     }
 
-    function minimizeObstructed(client) {
+    function minimizeObstructed() {
         const windows = Workspace.stackingOrder;
         let validWindowGeometries = [];
         let maximizedWindowFound = positionAtMoveStart.maximized;
@@ -1734,6 +1900,7 @@ MINIMIZE_OBSTRUCTED`;
         property bool autoTilingBlockedCrossSession: false
         property int autoTilingBlockedMode: 0
         property string autoTilingIds: "{}"
+        property string allCustomLayouts: "{}"
     }
 
     Connections {
@@ -2041,6 +2208,22 @@ MINIMIZE_OBSTRUCTED`;
         onActivated: {
             log('Auto Tiler - Block Toggle triggered!');
             autoTiler.toggleAutoTilingBlocked();
+        }
+    }
+
+    Repeater {
+        model: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+        delegate: Item {
+            ShortcutHandler {
+                name: "Mouse Tiler: Save/Update Custom Layout #" + modelData
+                text: "Mouse Tiler: Save/Update Custom Layout #" + modelData
+                sequence: "Meta+Ctrl+Alt+" + modelData
+                onActivated: {
+                    log('Save/Update Custom Layout #' + modelData + ' triggered!');
+                    saveCustomLayout(modelData);
+                }
+            }
         }
     }
 
