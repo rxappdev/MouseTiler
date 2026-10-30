@@ -34,10 +34,10 @@ Item {
             valid = true;
             switch (item) {
                 case 'TOGGLE_SUGGESTIONS':
-                    toolBarItems.push({id: 'SUGGEST', toggle: true, short: '💡', text: '💡 SUGGEST', hint: '<b>Hover</b>: Toggle window suggestions: ❌ <b>Disabled</b>', hintEnabled: '<b>Hover</b>: Toggle window suggestions: ✅ <b>Enabled</b>'});
+                    toolBarItems.push({id: 'SUGGEST', toggle: true, short: '💡', text: '💡 SUGGEST', hint: '<b>Hover</b>: Toggle window suggestions. <b>Currently</b>: ❌ <b>Disabled</b>', hintEnabled: '<b>Hover</b>: Toggle window suggestions. <b>Currently</b>: ✅ <b>Enabled</b>'});
                     break;
                 case 'TOGGLE_CENTER_IN_TILE':
-                    toolBarItems.push({id: 'CENTER', toggle: true, enabled: false, short: '⸰', text: '⸰ CENTER', hint: '<b>Hover</b>: Toggle "Center in Tile": ❌ <b>Disabled</b><br><b>Drop</b>: Center window on current desktop', hintEnabled: '<b>Hover</b>: Toggle "Center in Tile": ✅ <b>Enabled</b><br><b>Drop</b>: Center window on current desktop'});
+                    toolBarItems.push({id: 'CENTER', toggle: true, enabled: false, short: '⸰', text: '⸰ CENTER', hint: '<b>Hover</b>: Toggle "Center in Tile". <b>Currently</b>: ❌ <b>Disabled</b><br><b>Drop</b>: Center window on current desktop', hintEnabled: '<b>Hover</b>: Toggle "Center in Tile". <b>Currently</b>: ✅ <b>Enabled</b><br><b>Drop</b>: Center window on current desktop'});
                     break;
                 case 'TOGGLE_SHOW_ALL':
                     toolBarItems.push({id: 'SHOWALL', toggle: true, enabled: false, short: '👀', text: '👀 SHOW ALL', hint: '<b>Hover</b>: Show all layouts', hintEnabled: '<b>Hover</b>: Show default layouts'});
@@ -46,7 +46,7 @@ Item {
                     toolBarItems.push({id: 'HIDE', toggle: false, enabled: false, short: '🙈', text: '🙈 HIDE', hint: '<b>Hover</b>: Hide tiler', hintEnabled: ''});
                     break;
                 case 'TOGGLE_AUTO_TILE_DESKTOP':
-                    toolBarItems.push({id: 'AUTO', toggle: true, enabled: false, short: '🤖', text: '🤖 AUTO', hint: '<b>Drop</b>: Toggle auto tiling of new windows: ❌ <b>Disabled</b><br>Persists after reboot (for this screen + activity + virtual desktop)', hintEnabled: '<b>Drop</b>: Toggle auto tiling of new windows: ✅ <b>Enabled</b><br>Persists after reboot (for this screen + activity + virtual desktop)'});
+                    toolBarItems.push({id: 'AUTO', toggle: true, enabled: false, short: '🤖', text: '🤖 AUTO', hint: '<b>Drop</b>: Toggle auto tiling of new windows. <b>Currently</b>: ❌ <b>Disabled</b><br>Persists after reboot (for this screen + activity + virtual desktop)', hintEnabled: '<b>Drop</b>: Toggle auto tiling of new windows. <b>Currently</b>: ✅ <b>Enabled</b><br>Persists after reboot (for this screen + activity + virtual desktop)'});
                     break;
                 case 'CANCEL_MOVE':
                     toolBarItems.push({id: 'CANCEL', toggle: false, short: '↩️', text: '↩️ CANCEL', hint: '<b>Drop</b>: Cancel move<br>Window will be placed back where it was picked up'});
@@ -55,10 +55,10 @@ Item {
                     toolBarItems.push({id: 'CLOSE', toggle: false, short: '🗙', text: '🗙 CLOSE', hint: '<b>Drop</b>: Close window'});
                     break;
                 case 'TOGGLE_KEEP_ABOVE':
-                    toolBarItems.push({id: 'ABOVE', toggle: true, enabled: false, short: '▲', text: '▲ ABOVE', hint: '<b>Drop</b>: Toggle "Keep Above Others": ❌ <b>Disabled</b>', hintEnabled: '<b>Drop</b>: Toggle "Keep Above Others": ✅ <b>Enabled</b>'});
+                    toolBarItems.push({id: 'ABOVE', toggle: true, enabled: false, short: '▲', text: '▲ ABOVE', hint: '<b>Drop</b>: Toggle "Keep Above Others". <b>Currently</b>: ❌ <b>Disabled</b>', hintEnabled: '<b>Drop</b>: Toggle "Keep Above Others". <b>Currently</b>: ✅ <b>Enabled</b>'});
                     break;
                 case 'TOGGLE_KEEP_BELOW':
-                    toolBarItems.push({id: 'BELOW', toggle: true, enabled: false, short: '▼', text: '▼ BELOW', hint: '<b>Drop</b>: Toggle "Keep Below Others": ❌ <b>Disabled</b>', hintEnabled: '<b>Drop</b>: Toggle "Keep Below Others": ✅ <b>Enabled</b>'});
+                    toolBarItems.push({id: 'BELOW', toggle: true, enabled: false, short: '▼', text: '▼ BELOW', hint: '<b>Drop</b>: Toggle "Keep Below Others". <b>Currently</b>: ❌ <b>Disabled</b>', hintEnabled: '<b>Drop</b>: Toggle "Keep Below Others". <b>Currently</b>: ✅ <b>Enabled</b>'});
                     break;
                 case 'MAXIMIZE':
                     toolBarItems.push({id: 'MAXIMIZE', toggle: true, short: '⌞⌝', text: '⌞⌝ MAXIMIZE', hint: '<b>Drop</b>: Maximize window', hintEnabled: '<b>Drop</b>: Restore maximized window'});
@@ -73,7 +73,7 @@ Item {
                     toolBarItems.push({id: 'MINOBSTRUCTED', toggle: false, short: '🗗', text: '🗗 HIDDEN', hint: '<b>Drop</b>: Minimize obstructed windows on current desktop'});
                     break;
                 case 'CUSTOM_LAYOUT_MODE':
-                    toolBarItems.push({id: 'CUSTOMLAYOUT', toggle: true, enabled: false, short: '%', text: '👾 PIXELS', hint: '<b>Hover</b>: Toggle custom layout save mode: 👾 <b>px Pixels</b><br>Will precisely save layout to nearest pixel<br>Not recommended if you have multiple monitors with different sizes', hintEnabled: '<b>Hover</b>: Toggle custom layout save mode: 🖥️ <b>% Percent</b><br>Will save layout in percentages<br>This will work across different monitor sizes but might be a few pixels off'});
+                    toolBarItems.push({id: 'CUSTOMLAYOUT', toggle: true, enabled: false, short: '%', text: '% PIXELS', hint: '<b>Hover</b>: Toggle custom layout save mode. <b>Current mode</b>: 👾 <b>Pixels</b><br>Will precisely save layout to nearest pixel<br>Not recommended if you have multiple monitors with different sizes', hintEnabled: '<b>Hover</b>: Toggle custom layout save mode. <b>Current mode</b>: 🖥️ <b>Percent</b><br>Will save layout in percentages<br>This will work across different monitor sizes but might be a few pixels off'});
                     break;
                 default:
                     valid = false;
