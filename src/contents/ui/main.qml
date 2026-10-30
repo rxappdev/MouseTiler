@@ -181,7 +181,8 @@ TOGGLE_KEEP_BELOW
 MAXIMIZE
 TRUE_MAXIMIZE
 MINIMIZE_OTHER
-MINIMIZE_OBSTRUCTED`;
+MINIMIZE_OBSTRUCTED
+CUSTOM_LAYOUT_MODE`;
 
         useAutoTilerPreview = KWin.readConfig("debugDesignAuto", false);
 
@@ -252,8 +253,7 @@ MINIMIZE_OBSTRUCTED`;
             toolBarEnabled: KWin.readConfig("toolBarEnabled", true),
             toolBarPosition: KWin.readConfig("toolBarPosition", 3),
             toolBarHoverTime: KWin.readConfig("toolBarHoverTime", 1000),
-            toolBarItems: KWin.readConfig("toolBarItems", defaultToolBarItems),
-            customLayoutsUsePixels: KWin.readConfig("customLayoutsUsePixels", false)
+            toolBarItems: KWin.readConfig("toolBarItems", defaultToolBarItems)
 
             // live settings
         };
@@ -344,18 +344,18 @@ MINIMIZE_OBSTRUCTED`;
         if (validWindowGeometries.length == 0) {
             delete customLayouts['custom' + id];
             onScreenDisplay.show('Custom Layout ' + id + ' removed', 'emblem-unreadable');
-        } else if (config.customLayoutsUsePixels) {
-            customLayouts['custom' + id] = [];
-            for (var i = 0; i < validWindowGeometries.length; i++) {
-                customLayouts['custom' + id].push({pxX: validWindowGeometries[i].x, pxY: validWindowGeometries[i].y, pxW: validWindowGeometries[i].width, pxH: validWindowGeometries[i].height});
-            }
-            onScreenDisplay.show('Custom Layout ' + id + ' updated', 'emblem-default');
-        } else {
+        } else if (settings.customLayoutsSaveAsPercentages) {
             let screenWidth = fullScreenArea.width;
             let screenHeight = fullScreenArea.height;
             customLayouts['custom' + id] = [];
             for (var i = 0; i < validWindowGeometries.length; i++) {
                 customLayouts['custom' + id].push({x: 100 * validWindowGeometries[i].x / screenWidth, y: 100 * validWindowGeometries[i].y / screenHeight, w: 100 * validWindowGeometries[i].width / screenWidth, h: 100 * validWindowGeometries[i].height / screenHeight});
+            }
+            onScreenDisplay.show('Custom Layout ' + id + ' updated', 'emblem-default');
+        } else {
+            customLayouts['custom' + id] = [];
+            for (var i = 0; i < validWindowGeometries.length; i++) {
+                customLayouts['custom' + id].push({pxX: validWindowGeometries[i].x, pxY: validWindowGeometries[i].y, pxW: validWindowGeometries[i].width, pxH: validWindowGeometries[i].height});
             }
             onScreenDisplay.show('Custom Layout ' + id + ' updated', 'emblem-default');
         }
@@ -1193,6 +1193,9 @@ MINIMIZE_OBSTRUCTED`;
                                 }
                                 minimizeObstructed();
                                 break;
+                            case 'CUSTOMLAYOUT':
+                                client.frameGeometry = Qt.rect(positionAtMoveStart.x, positionAtMoveStart.y, client.width, client.height);
+                                break;
                         }
                     } else {
                         var geometry = currentTiler.getGeometry();
@@ -1901,6 +1904,7 @@ MINIMIZE_OBSTRUCTED`;
         property int autoTilingBlockedMode: 0
         property string autoTilingIds: "{}"
         property string allCustomLayouts: "{}"
+        property bool customLayoutsSaveAsPercentages: true
     }
 
     Connections {

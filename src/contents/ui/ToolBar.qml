@@ -72,6 +72,9 @@ Item {
                 case 'MINIMIZE_OBSTRUCTED':
                     toolBarItems.push({id: 'MINOBSTRUCTED', toggle: false, short: '🗗', text: '🗗 HIDDEN', hint: '<b>Drop</b>: Minimize obstructed windows on current desktop'});
                     break;
+                case 'CUSTOM_LAYOUT_MODE':
+                    toolBarItems.push({id: 'CUSTOMLAYOUT', toggle: true, enabled: false, short: '%', text: '👾 PIXELS', hint: '<b>Hover</b>: Toggle custom layout save mode: 👾 <b>px Pixels</b><br>Will precisely save layout to nearest pixel<br>Not recommended if you have multiple monitors with different sizes', hintEnabled: '<b>Hover</b>: Toggle custom layout save mode: 🖥️ <b>% Percent</b><br>Will save layout in percentages<br>This will work across different monitor sizes but might be a few pixels off'});
+                    break;
                 default:
                     valid = false;
                     break;
@@ -159,6 +162,8 @@ Item {
                                 return root.positionAtMoveStart.maximized;
                             case 'TRUEMAX':
                                 return root.currentlyMovedWindow ? root.positionAtMoveStart.maximized && root.currentlyMovedWindow.noBorder : false;
+                            case 'CUSTOMLAYOUT':
+                                return root.systemSettings.customLayoutsSaveAsPercentages;
                             default:
                                 return false;
                         }

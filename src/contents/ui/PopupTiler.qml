@@ -399,6 +399,9 @@ PlasmaCore.Dialog {
                 case 'AUTO':
                     enabled = autoTileNewWindowsActiveOnCurrentScreen;
                     break;
+                case 'CUSTOMLAYOUT':
+                    enabled = root.systemSettings.customLayoutsSaveAsPercentages;
+                    break;
             }
             if (enabled) {
                 hint = toolBar.toolBarItems[toolBar.activeToolBarItemIndex].hintEnabled;
@@ -1083,6 +1086,9 @@ PlasmaCore.Dialog {
                             break;
                         case 'SUGGEST':
                             root.systemSettings.showTilingSuggestions = !root.systemSettings.showTilingSuggestions;
+                            break;
+                        case 'CUSTOMLAYOUT':
+                            root.systemSettings.customLayoutsSaveAsPercentages = !root.systemSettings.customLayoutsSaveAsPercentages;
                             break;
                     }
                     updateHintContent();

@@ -404,7 +404,8 @@ TOGGLE_KEEP_BELOW
 MAXIMIZE
 TRUE_MAXIMIZE
 MINIMIZE_OTHER
-MINIMIZE_OBSTRUCTED</default>
+MINIMIZE_OBSTRUCTED
+CUSTOM_LAYOUT_MODE</default>
         </entry>
         <entry name="toolBarHoverTime" type="Int">
             <default>1000</default>
