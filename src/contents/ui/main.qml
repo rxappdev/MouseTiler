@@ -1695,8 +1695,10 @@ CUSTOM_LAYOUT_MODE`;
             let window = Workspace.stackingOrder[i];
             if (isValidWindow(window)) {
                 if (window.onAllDesktops) {
-                    // A window occupies all windows - do not remove anything
-                    return;
+                    // Pinned to all desktops: it exists on every desktop, so it must
+                    // not keep an otherwise-empty desktop alive. Skip it instead of
+                    // aborting the whole sweep.
+                    continue;
                 }
                 for (let d = 0; d < window.desktops.length; d++) {
                     let index = Workspace.desktops.indexOf(window.desktops[d]);
@@ -1713,7 +1715,7 @@ CUSTOM_LAYOUT_MODE`;
         }
 
         // i must be > 0, we do not delete the first desktop
-        for (let i = virtualDesktopWindowCount.length; i > 0; i--) {
+        for (let i = virtualDesktopWindowCount.length - 1; i > 0; i--) {
             if (virtualDesktopWindowCount[i] == 0) {
                 log('Trying to remove empty virtual desktop with index: ' + i);
                 Workspace.removeDesktop(Workspace.desktops[i]);
@@ -1912,6 +1914,13 @@ CUSTOM_LAYOUT_MODE`;
 
         function onWindowAdded(client) {
             addWindow(client);
+        }
+
+        function onWindowRemoved(client) {
+            // Backstop for auto-remove: the per-window "closed" handler wired in
+            // addWindow() only covers windows this script registered as valid.
+            // This workspace-level signal fires for every removal.
+            removeEmptyVirtualDesktops();
         }
 
         function onCurrentDesktopChanged(previous) {
